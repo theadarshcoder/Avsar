@@ -11,9 +11,7 @@ load_dotenv(ROOT_DIR / ".env")
 
 # The base URL Phase 2 frontend will run on. Kept in one place so the
 # checkout link builder can be swapped without hunting through code.
-FRONTEND_URL: str = os.environ.get(
-    "FRONTEND_URL", "https://doctro-backend.preview.emergentagent.com"
-).rstrip("/")
+FRONTEND_URL: str = os.environ.get("FRONTEND_URL", "http://localhost:3000").rstrip("/")
 
 # BUSINESS RULE: handling fee is a FLAT RUPEE AMOUNT. Never a percentage.
 HANDLING_FEE: int = int(os.environ.get("HANDLING_FEE", "50"))
@@ -28,4 +26,5 @@ RAZORPAY_WEBHOOK_SECRET: str = os.environ.get(
 
 
 def checkout_link(token: str) -> str:
-    return f"{FRONTEND_URL}/checkout/{token}"
+    base = os.environ.get("FRONTEND_URL", FRONTEND_URL).rstrip("/")
+    return f"{base}/checkout/{token}"

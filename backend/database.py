@@ -30,6 +30,8 @@ transactions = col("transactions")
 priority_passes = col("priority_passes")
 checkout_tokens = col("checkout_tokens")
 sent_messages = col("sent_messages")
+subscription_transactions = col("subscription_transactions")
+enterprise_leads = col("enterprise_leads")
 
 
 async def ensure_indexes() -> None:
@@ -38,6 +40,12 @@ async def ensure_indexes() -> None:
     # sparse=True lets us have transactions without eventId if needed.
     await transactions.create_index(
         "razorpayEventId", unique=True, sparse=True, name="uniq_razorpay_event"
+    )
+    await subscription_transactions.create_index(
+        "razorpayEventId", unique=True, sparse=True, name="uniq_sub_razorpay_event"
+    )
+    await subscription_transactions.create_index(
+        "razorpayPaymentId", unique=True, sparse=True, name="uniq_sub_razorpay_payment"
     )
     await checkout_tokens.create_index("token", unique=True, name="uniq_checkout_token")
     await slots.create_index([("clinicId", 1), ("startTime", 1)], name="clinic_start")
