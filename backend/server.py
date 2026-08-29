@@ -13,6 +13,7 @@ from fastapi import APIRouter, FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from database import client, ensure_indexes
+from routes.auth import router as auth_router
 from routes.checkout import router as checkout_router
 from routes.clinics import router as clinics_router
 from routes.slots import router as slots_router
@@ -50,6 +51,7 @@ async def health():
     return {"status": "ok"}
 
 
+api_router.include_router(auth_router)
 api_router.include_router(clinics_router)
 api_router.include_router(slots_router)
 api_router.include_router(checkout_router)
