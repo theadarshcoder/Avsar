@@ -54,6 +54,19 @@ Backend
 - PriorityPass 14-day TTL, auto-applied at next checkout, redeemed inside winning lock.
 - Acceptance script: broadcast/consent/failure-isolation, duplicate-eventId, concurrency race, expired slot — all green.
 
+### Concurrency-test disclosure
+
+The concurrency race test in `acceptance_test.py` consisted of **two synthetic
+HMAC-signed webhook payloads POSTed directly to `/api/webhooks/razorpay` in
+parallel via `asyncio.gather` (through the `/api/checkout/{token}/mock-pay`
+internal path that fires the same handler)** — NOT two real Razorpay
+test-mode checkouts racing. The simulated payloads exercise the atomic
+`find_one_and_update` lock and the idempotency index on `razorpayEventId`,
+which is what the test is designed to prove. **Live Razorpay concurrency has
+not been tested because the gateway is mocked** (both order creation and
+refunds go through functions marked `# MOCK:` — replace when real
+Razorpay Key Secret + Webhook Secret are provided).
+
 Frontend
 - Homepage: hero, ROI calculator (three sliders + live math + verbatim footnote), three explainer sections with product-UI mockups (built as CSS/SVG — guarantees zero price leak in the WhatsApp mockup), pricing section (₹1,999/mo AND ₹50 handling as two separate line items), compliance section, near-black footer.
 - Dashboard: today's slots, cancel-scheduled fires broadcast, teal Mock WhatsApp outbox with per-patient status + per-patient checkout link, cancel-booked opens the choice page link, `RevenueTicker` polls stats every 5s.

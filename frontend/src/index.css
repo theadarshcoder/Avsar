@@ -62,6 +62,19 @@ body {
     border: 1px solid transparent;
 }
 
+/* FIXED width variant — width does NOT flex with label. Used on the
+   refund/credit choice buttons so equal-size holds regardless of future
+   copy edits. */
+.doctro-pill-fixed {
+    width: 220px;
+    min-width: 220px;
+    max-width: 220px;
+    padding: 0 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .doctro-pill:hover { transform: translateY(-1px); }
 .doctro-pill:active { transform: translateY(0); }
 .doctro-pill:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }

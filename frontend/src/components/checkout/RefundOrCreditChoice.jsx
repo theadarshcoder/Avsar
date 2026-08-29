@@ -59,7 +59,7 @@ export default function RefundOrCreditChoice({ amount, onSubmit, disabled }) {
                     onClick={() => {
                         setSelected("refund");
                     }}
-                    className={`doctro-pill ${
+                    className={`doctro-pill doctro-pill-fixed ${
                         selected === "refund"
                             ? "doctro-pill-primary"
                             : "doctro-pill-secondary"
@@ -73,7 +73,7 @@ export default function RefundOrCreditChoice({ amount, onSubmit, disabled }) {
                     onClick={() => {
                         setSelected("credit");
                     }}
-                    className={`doctro-pill ${
+                    className={`doctro-pill doctro-pill-fixed ${
                         selected === "credit"
                             ? "doctro-pill-primary"
                             : "doctro-pill-secondary"
