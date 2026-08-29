@@ -19,24 +19,27 @@ export default function Checkout() {
     const nav = useNavigate();
     const [data, setData] = useState(null);
     const [outcome, setOutcome] = useState(OUTCOME.IDLE);
-    const [error, setError] = useState(null);
+    // Fatal = invalid/missing token (blocks the whole page).
+    // Retry = inline retryable payment failure (keeps Pay button visible).
+    const [fatalError, setFatalError] = useState(null);
+    const [retryError, setRetryError] = useState(null);
 
     useEffect(() => {
         let alive = true;
         getCheckout(slotToken)
             .then((d) => alive && setData(d))
-            .catch((e) => alive && setError(e?.response?.data?.detail || String(e)));
+            .catch((e) => alive && setFatalError(e?.response?.data?.detail || String(e)));
         return () => {
             alive = false;
         };
     }, [slotToken]);
 
-    if (error) {
+    if (fatalError) {
         return (
             <Frame>
                 <div className="doctro-card max-w-xl" data-testid="checkout-error">
                     <div className="font-serif text-2xl mb-2">This checkout link isn't valid.</div>
-                    <p className="opacity-80 text-sm">{String(error)}</p>
+                    <p className="opacity-80 text-sm">{String(fatalError)}</p>
                 </div>
             </Frame>
         );
@@ -70,7 +73,7 @@ export default function Checkout() {
 
     const doPay = async ({ simulateFailure = false } = {}) => {
         setOutcome(OUTCOME.PAYING);
-        setError(null);
+        setRetryError(null);
         try {
             const r = await mockPay(slotToken, { simulateFailure });
             const wh = r?.webhookResponse;
@@ -89,14 +92,14 @@ export default function Checkout() {
             }
             if (code === "PAYMENT_FAILED" || code === "DUPLICATE_EVENT") {
                 setOutcome(OUTCOME.FAILED);
-                setError(wh.message || "Payment did not complete.");
+                setRetryError(wh.message || "Payment did not complete.");
                 return;
             }
             setOutcome(OUTCOME.FAILED);
-            setError(`Unexpected response: ${JSON.stringify(wh)}`);
+            setRetryError(`Unexpected response: ${JSON.stringify(wh)}`);
         } catch (e) {
             setOutcome(OUTCOME.FAILED);
-            setError(e?.response?.data?.detail || String(e));
+            setRetryError(e?.response?.data?.detail || String(e));
         }
     };
 
@@ -152,7 +155,6 @@ export default function Checkout() {
                                 style={{ background: "#FFE4E4", color: "#5A0E0E" }}
                             >
                                 <b>Payment did not complete.</b>
-                                <div className="opacity-80 mt-1">{error}</div>
                                 <div className="opacity-80 mt-1">
                                     You can try again — this slot is still open.
                                 </div>

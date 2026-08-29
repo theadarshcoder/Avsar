@@ -1,0 +1,21 @@
+{
+  "summary": "Frontend-only regression testing of the Checkout error-state split fix (fatalError vs retryError) on doctro. Ran 4 Playwright flows against the public preview URL: (1) simulated payment failure + retry, (2) invalid token fatal screen, (3) happy-path pay, (4) 'slot just taken' screen. All 4 passed. Re-seeded the DB (python /app/backend/seed.py --reset) first because all previously seeded scheduled slots were already consumed (no 'Cancel & broadcast' buttons available).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Checkout — inline retry card (checkout-failed-msg)", "issues": ["Copy duplication: bold heading 'Payment did not complete.' is immediately followed by the backend retryError string 'Payment did not complete. Retry is possible; slot remains open.' and then 'You can try again — this slot is still open.' — three lines saying the same thing. Cosmetic only."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": ["Optional cosmetic: de-duplicate the retry card copy (skip the backend message line when it repeats the heading).", "Note for demos: seeded scheduled slots get consumed by each run; re-seed with `python /app/backend/seed.py --reset` when no 'Cancel & broadcast' button is present."],
+  "critical_code_review_comments": ["Checkout.jsx state split is correct: fatalError is only set in the initial getCheckout().catch, retryError only inside doPay; the fatal branch can no longer be reached from the pay flow. Verified in code and at runtime."],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested", "frontend": "100% (4/4 scenarios)"},
+  "seed_data_creation": "Re-ran /app/backend/seed.py --reset (fresh clinic_smile_dental_indiranagar, patients aarav/bhavna/chirag/disha, slots slot_today_1000/1130/1630 scheduled). Test run then broadcast slot_today_1000 (booked by aarav after failed+retry) and slot_today_1130 (booked by chirag happy-path).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified: after clicking btn-simulate-fail, checkout-error (fatal invalid-link card) count=0, checkout-failed-msg appears with 'You can try again — this slot is still open.', btn-pay-now/price-breakdown/urgency-banner remain visible and pay button stays enabled; clicking btn-pay-now then routes to /confirmation/<id> with confirmation-card, confirmation-amount, confirmation-appt. Invalid token /checkout/definitely-not-a-real-token-xyz-123 still renders checkout-error \"This checkout link isn't valid.\" (404 from GET is expected, console 404 noise only). patient_bhavna's link for the already-booked slot correctly renders checkout-taken with no fatal/retry cards. Note: immediately after checkout-frame appears the page is in 'Loading…' state, so assert on [data-testid=btn-pay-now] rather than checkout-frame before interacting. Slots must be re-seeded before repeating these flows.",
+  "rca_of_the_issue": "Original bug (error state overloaded so PAYMENT_FAILED rendered the fatal invalid-link screen) is fixed by the fatalError/retryError split in /app/frontend/src/pages/Checkout.jsx; confirmed not reproducible end-to-end."
+}
