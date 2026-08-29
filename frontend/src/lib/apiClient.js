@@ -9,6 +9,25 @@ const client = axios.create({
     headers: { "Content-Type": "application/json" },
 });
 
+// Attach Authorization header if clinic token is stored
+client.interceptors.request.use((config) => {
+    const token = localStorage.getItem("doctro_clinic_token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+// ── auth ────────────────────────────────────────────────────────────────
+export const loginClinic = (credentials) =>
+    client.post("/auth/login", credentials).then((r) => r.data);
+
+export const registerClinic = (body) =>
+    client.post("/auth/register", body).then((r) => r.data);
+
+export const getMe = () =>
+    client.get("/auth/me").then((r) => r.data);
+
 // ── clinics / slots ─────────────────────────────────────────────────────
 export const getClinic = (clinicId) =>
     client.get(`/clinics/${clinicId}`).then((r) => r.data);
@@ -69,8 +88,6 @@ export const mockPay = (token, { forceEventId, simulateFailure = false } = {}) =
                 simulateFailure,
             },
             {
-                // Live server may be in razorpay mode — this header keeps mock-pay usable
-                // from Playwright / manual dev flows. Never used from the real Pay button.
                 headers: { "X-Doctro-Test-Override": "doctro-testing-override" },
             },
         )
@@ -81,5 +98,25 @@ export const createOrder = (token) =>
 
 export const pollCheckoutOutcome = (token) =>
     client.get(`/checkout/${token}/outcome`).then((r) => r.data);
+
+// ── subscriptions & pricing ─────────────────────────────────────────────
+export const createSubscriptionOrder = (payload) =>
+    client.post("/clinics/subscribe/order", payload).then((r) => r.data);
+
+export const confirmSubscription = (payload) =>
+    client.post("/clinics/subscribe/confirm", payload).then((r) => r.data);
+
+export const mockSubscriptionPay = (payload) =>
+    client
+        .post("/clinics/subscribe/mock-pay", payload, {
+            headers: { "X-Doctro-Test-Override": "doctro" },
+        })
+        .then((r) => r.data);
+
+export const startFreeTrial = (payload) =>
+    client.post("/clinics/subscribe/trial", payload).then((r) => r.data);
+
+export const submitEnterpriseLead = (payload) =>
+    client.post("/clinics/enterprise-lead", payload).then((r) => r.data);
 
 export default client;
