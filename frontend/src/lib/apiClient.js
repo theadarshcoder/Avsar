@@ -38,9 +38,9 @@ export const listWaitlist = (clinicId) =>
 export const addToWaitlist = (clinicId, body) =>
     client.post(`/clinics/${clinicId}/waitlist`, body).then((r) => r.data);
 
-export const recordConsent = (entryId, consentText) =>
+export const recordConsent = (entryId) =>
     client
-        .post(`/clinics/waitlist/${entryId}/consent`, { consentText })
+        .post(`/clinics/waitlist/${entryId}/consent`)
         .then((r) => r.data);
 
 export const removeWaitlistEntry = (entryId) =>

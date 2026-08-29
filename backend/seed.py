@@ -58,10 +58,9 @@ PATIENT_SPECS = [
     ("p6", "Farhan Qureshi", "+919812345676", False),
 ]
 
-CONSENT_TEXT = (
-    "I agree to receive WhatsApp notifications about last-minute appointment "
-    "openings at Smile Dental, Indiranagar. No prices will be included in messages."
-)
+from services.waitlist_service import render_consent_text
+
+CONSENT_TEXT = render_consent_text("Smile Dental, Indiranagar")
 
 
 async def _upsert_clinic() -> str:

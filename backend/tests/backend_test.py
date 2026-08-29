@@ -164,11 +164,18 @@ class TestWaitlistCrud:
         datetime.fromisoformat(entry["consentGivenAt"])
 
     def test_consent_given_without_text_rejected(self, api, temp_clinic):
+        # HARDENING: consentText is now server-authoritative. A client that
+        # sends an empty (or forged) consentText no longer gets a 400 — the
+        # server ignores the field and stores its own canonical text.
         r = api.post(f"{API}/clinics/{temp_clinic}/waitlist", json={
             "name": "TEST_BadConsent", "phone": "+919000000903",
             "consentGiven": True, "consentText": "   ",
         })
-        assert r.status_code == 400, r.text
+        assert r.status_code == 200, r.text
+        entry = r.json()["waitlistEntry"]
+        expected = consent_text_for("TEST_Waitlist Clinic")
+        assert entry["consentText"] == expected
+        assert entry["consentGivenAt"] is not None
 
     def test_blank_name_rejected(self, api, temp_clinic):
         r = api.post(f"{API}/clinics/{temp_clinic}/waitlist", json={

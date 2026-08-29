@@ -1,19 +1,22 @@
 """Waitlist consent + membership logic.
 
-All timestamping is done here so the value comes from the server, not the
-client. The broadcast query in routes/clinics.py is intentionally not
-touched — it still filters {consentGivenAt: {$ne: None}}.
+Both `consentGivenAt` and `consentText` are server-authoritative. The
+consent copy is rendered here from the clinic's canonical name using the
+same template shipped by the frontend (`/app/frontend/src/lib/consent.js`),
+so the audit value of a consent record is exactly what the product shows
+regardless of what any client sent in the request body.
+
+The broadcast query in routes/clinics.py is intentionally not touched —
+it still filters {consentGivenAt: {$ne: None}}.
 """
 from __future__ import annotations
 
 import logging
-import uuid
 from datetime import datetime, timezone
-from typing import Optional
 
 from fastapi import HTTPException
 
-from database import patients, waitlist_entries
+from database import clinics, patients, waitlist_entries
 from models.patient import Patient
 from models.waitlist import WaitlistEntry
 
@@ -24,6 +27,23 @@ def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+# NOTE: keep in lock-step with /app/frontend/src/lib/consent.js. Any change
+# to the wording must be made in BOTH files (Phase-1 has no shared schema
+# for consent copy — the two files are the source of truth together).
+def render_consent_text(clinic_name: str) -> str:
+    return (
+        f"I agree to receive WhatsApp notifications about last-minute "
+        f"appointment openings at {clinic_name}. No prices will be included in messages."
+    )
+
+
+async def _consent_text_for_clinic(clinic_id: str) -> str:
+    clinic = await clinics.find_one({"id": clinic_id}, {"_id": 0, "name": 1})
+    if not clinic:
+        raise HTTPException(404, "Clinic not found")
+    return render_consent_text(clinic["name"])
+
+
 async def add_patient_with_consent(
     *,
     clinic_id: str,
@@ -31,17 +51,16 @@ async def add_patient_with_consent(
     phone: str,
     notification_preference: str,
     consent_given: bool,
-    consent_text: Optional[str],
 ) -> dict:
     """Create a Patient + WaitlistEntry.
 
-    If consent_given is True, consentGivenAt is set to server-now and
-    consentText is stored verbatim. Otherwise both are null. Never backfill.
+    If consent_given is True, both `consentGivenAt` and `consentText` are
+    set server-side. `consentText` is rendered from the clinic's canonical
+    name via `render_consent_text()`. **No client-supplied consent text or
+    timestamp is ever honored.** Otherwise both are null. Never backfill.
     """
     if not name.strip() or not phone.strip():
         raise HTTPException(400, "Name and phone are required.")
-    if consent_given and not (consent_text or "").strip():
-        raise HTTPException(400, "consentText is required when consent is given.")
 
     # Duplicate check must be based on ACTIVE waitlist membership, not on the
     # existence of a stale Patient doc. If a Patient exists but has no
@@ -75,6 +94,7 @@ async def add_patient_with_consent(
         patient_id = p.id
 
     now_iso = _now_iso() if consent_given else None
+    server_consent_text = await _consent_text_for_clinic(clinic_id) if consent_given else None
     wl = WaitlistEntry(
         patientId=patient_id,
         clinicId=clinic_id,
@@ -83,7 +103,7 @@ async def add_patient_with_consent(
     wl_doc = wl.model_dump()
     wl_doc["createdAt"] = wl.createdAt.isoformat()
     wl_doc["consentGivenAt"] = now_iso
-    wl_doc["consentText"] = consent_text.strip() if consent_given and consent_text else None
+    wl_doc["consentText"] = server_consent_text
     await waitlist_entries.insert_one(wl_doc)
 
     logger.info(
@@ -96,10 +116,13 @@ async def add_patient_with_consent(
     }
 
 
-async def record_consent(entry_id: str, consent_text: str) -> dict:
-    if not (consent_text or "").strip():
-        raise HTTPException(400, "consentText is required.")
+async def record_consent(entry_id: str) -> dict:
+    """Record consent server-side for an existing entry.
 
+    Both `consentGivenAt` (server time) and `consentText` (server-rendered
+    from the clinic's name) are set here. Any client-supplied text is
+    ignored — the audit record must reflect what the product shows.
+    """
     entry = await waitlist_entries.find_one({"id": entry_id}, {"_id": 0})
     if not entry:
         raise HTTPException(404, "Waitlist entry not found.")
@@ -107,12 +130,13 @@ async def record_consent(entry_id: str, consent_text: str) -> dict:
         raise HTTPException(409, "Consent is already on record for this entry.")
 
     now_iso = _now_iso()
+    server_consent_text = await _consent_text_for_clinic(entry["clinicId"])
     await waitlist_entries.update_one(
         {"id": entry_id},
-        {"$set": {"consentGivenAt": now_iso, "consentText": consent_text.strip()}},
+        {"$set": {"consentGivenAt": now_iso, "consentText": server_consent_text}},
     )
     entry["consentGivenAt"] = now_iso
-    entry["consentText"] = consent_text.strip()
+    entry["consentText"] = server_consent_text
     return entry
 
 

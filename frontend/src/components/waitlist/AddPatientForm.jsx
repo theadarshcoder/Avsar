@@ -29,7 +29,6 @@ export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
                 phone,
                 notificationPreference: "whatsapp",
                 consentGiven: consent,
-                consentText: consent ? consentText : null,
             };
             const result = await addToWaitlist(clinicId, body);
             onAdded?.(result);

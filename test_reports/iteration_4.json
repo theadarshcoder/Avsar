@@ -1,0 +1,43 @@
+{
+  "summary": "Iteration-4: verified the server-authoritative consent hardening. Wrote /app/backend/tests/test_consent_security.py (12 tests) + /app/backend/tests/test_choice_flow.py (2 tests) and re-ran the existing suite. Full pytest run: 30/30 PASS. All four SECURITY-CRITICAL forgery cases pass: forged consentText on add is ignored, forged consentText on POST /waitlist/{id}/consent is ignored (200, not 400), consent with no body / empty {} body works, and a backdated consentGivenAt (1970) is replaced by a fresh server timestamp. Frontend Playwright run on /dashboard/clinic_smile_dental_indiranagar confirmed the shown copy (consent-text, consent-panel-text-<id>, row-consent-text-<id>) is byte-identical to the persisted consentText for BOTH the 'Add with consent' path and the 'Record consent' path, and the add -> remove -> re-add-without-consent path stores nulls. /choice page smoke passed: both pills (submit-refund, submit-credit) measure exactly 220x52. No backend errors in supervisor logs. Test data cleaned; seeded waitlist restored to 4 consented + 2 non-consented.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/clinics/{clinic_id}/waitlist", "issue": "Unknown body fields (consentText, consentGivenAt) are silently dropped by Pydantic rather than rejected. Behaviour is SAFE (verified stored value is always the server template), but consider model_config extra='forbid' so an integrator sending consentText gets a loud 422 instead of a silent no-op."},
+      {"endpoint": "test-data hygiene", "issue": "backend_test.py creates throwaway clinics/slots that are never deleted (34 slot docs accumulated in Mongo). Not user-visible, but the DB grows every test run."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/choice/{txId} (edge case: totalPaid == 0)", "issues": ["When a booking was fully covered by a priority pass (totalPaid=0) the page reads 'How would you like to receive your \u20b90?' and offers a \u20b90 refund / \u20b90 credit. Copy should short-circuit for zero-value transactions. Reproduced only with a credit-redeeming transaction; low priority."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_consent_security.py",
+    "/app/backend/tests/test_choice_flow.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Optional: set extra='forbid' on AddPatientBody so forged consent fields 422 instead of being silently ignored.",
+    "Optional: teardown test clinics/slots created by backend_test.py.",
+    "Optional: handle totalPaid == 0 copy on the /choice page."
+  ],
+  "critical_code_review_comments": [
+    "render_consent_text() in services/waitlist_service.py is correctly the single backend source of truth and is reused by seed.py, so seeded and runtime rows cannot drift - verified all consented rows (seeded + newly created) return the identical string.",
+    "record_consent(entry_id) takes no body at the route level, so FastAPI structurally cannot accept client text - the strongest possible form of this fix. Double-consent still correctly 409s.",
+    "consent.js and waitlist_service.render_consent_text are duplicated wording in two languages with only a comment linking them. Considering exposing the template via a tiny GET /api/clinics/{id}/consent-text and having the UI render from it, so the invariant is enforced rather than documented."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_consent_security.py (new)",
+    "/app/backend/tests/test_choice_flow.py (new)"
+  ],
+  "success_rate": {"backend": "100% (30/30 pytest)", "frontend": "100% (all consent + choice flows passed)"},
+  "seed_data_creation": "Transient TEST_-prefixed patients/slots/transactions created and deleted; priority passes purged. Seeded waitlist verified back at 6 rows (4 consented / 2 not).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Persistent suites: /app/backend/tests/backend_test.py (16), test_consent_security.py (12), test_choice_flow.py (2). Run with `cd /app/backend && python -m pytest tests/ -q` (pytest.ini forces xdist loadscope - do NOT add -n/-p flags, they error). Broadcast counts must be asserted relative to non-TEST_ seeded rows, otherwise parallel workers make them flaky (test_broadcast_seeded_slot already does this). mock-pay requires a JSON body {\"fireWebhook\": true} and returns the txId under webhookResponse.transactionId. Clean up TEST_ patients + priority_passes after runs or clinic stats/pricing drift.",
+  "rca_of_the_issue": "No defect found. The iteration-2 forgery vector is closed at two levels: AddPatientBody no longer declares consentText/consentGivenAt (values dropped before the service layer) and the consent route declares no body at all; both write paths call render_consent_text(clinic.name) and datetime.now(timezone.utc) server-side."
+}

@@ -120,11 +120,16 @@ async def list_waitlist(clinic_id: str):
 
 
 class AddPatientBody(BaseModel):
+    """Request body for adding a patient to the waitlist.
+
+    NOTE: `consentText` and `consentGivenAt` are intentionally NOT accepted.
+    Both are set server-side (rendered from the clinic name, timestamped by
+    the server). Any client-supplied values are ignored.
+    """
     name: str
     phone: str
     notificationPreference: str = "whatsapp"
     consentGiven: bool = False
-    consentText: Optional[str] = None
 
 
 @router.post("/{clinic_id}/waitlist")
@@ -138,17 +143,15 @@ async def add_to_waitlist(clinic_id: str, payload: AddPatientBody):
         phone=payload.phone,
         notification_preference=payload.notificationPreference,
         consent_given=payload.consentGiven,
-        consent_text=payload.consentText,
     )
 
 
-class ConsentBody(BaseModel):
-    consentText: str
-
-
 @router.post("/waitlist/{entry_id}/consent")
-async def record_waitlist_consent(entry_id: str, payload: ConsentBody):
-    return await record_consent(entry_id, payload.consentText)
+async def record_waitlist_consent(entry_id: str):
+    """Record consent for an existing entry. No body — the text is rendered
+    server-side from the clinic's name, and the timestamp comes from the
+    server. Client-supplied text is intentionally not accepted."""
+    return await record_consent(entry_id)
 
 
 @router.delete("/waitlist/{entry_id}")

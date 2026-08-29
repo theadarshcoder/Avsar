@@ -31,7 +31,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
         setBusy(true);
         setError(null);
         try {
-            await recordConsent(entry.id, consentText);
+            await recordConsent(entry.id);
             setShowConsent(false);
             setConfirming(false);
             onChanged?.();
