@@ -7,10 +7,12 @@ No auth in Phase 1: endpoints are keyed by clinicId.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+import os
+import uuid
+from datetime import datetime, timedelta, timezone
 from typing import List, Literal, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel, Field
 
 from database import (
@@ -163,7 +165,7 @@ async def remove_waitlist_entry(entry_id: str):
 def _format_time(dt: datetime) -> str:
     # Present as e.g. "3:00 PM". Do NOT include the date to keep the
     # template short and reflect the "today" wording.
-    return dt.strftime("%-I:%M %p") if hasattr(dt, "strftime") else str(dt)
+    return f"{int(dt.strftime('%I'))}:{dt.strftime('%M %p')}" if hasattr(dt, "strftime") else str(dt)
 
 
 @router.post("/slots/{slot_id}/open", response_model=BroadcastResult)
@@ -424,3 +426,355 @@ async def choose_refund_or_credit(tx_id: str, payload: CancelChoice):
             }},
         )
         return {"choice": "credit", "priorityPass": pp}
+
+
+# ── Subscription & Plan Endpoints ────────────────────────────────────────
+
+class SubscriptionOrderRequest(BaseModel):
+    clinicId: Optional[str] = None
+    clinicName: str
+    phone: str
+    email: str
+    plan: str = "standard"
+    billingInterval: Literal["monthly", "annual"] = "monthly"
+
+
+class SubscriptionConfirmRequest(BaseModel):
+    razorpayOrderId: str
+    razorpayPaymentId: str
+    razorpaySignature: Optional[str] = None
+    clinicId: Optional[str] = None
+    clinicName: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    plan: str = "standard"
+    billingInterval: Literal["monthly", "annual"] = "monthly"
+    eventId: Optional[str] = None
+
+
+class MockSubscriptionPayRequest(BaseModel):
+    clinicId: Optional[str] = None
+    clinicName: str = "Smile Dental"
+    phone: str = "+919900000001"
+    email: str = "demo@smiledental.in"
+    plan: str = "standard"
+    billingInterval: Literal["monthly", "annual"] = "monthly"
+    simulateFailure: bool = False
+
+
+class TrialRequest(BaseModel):
+    clinicId: Optional[str] = None
+    clinicName: str
+    phone: str
+    email: str
+    standbyAdjustment: int = 400
+    chairs: int = 1
+
+
+class EnterpriseLeadRequest(BaseModel):
+    clinicName: str
+    contactName: str
+    phone: str
+    email: str
+    chairs: int = 1
+    locations: int = 1
+    notes: Optional[str] = None
+
+
+@router.post("/subscribe/order")
+async def create_subscription_order(payload: SubscriptionOrderRequest):
+    """Create a Razorpay order for clinic subscription (Standard Pro plan)."""
+    is_annual = payload.billingInterval == "annual"
+    # Monthly: ₹1,999 | Annual: ₹19,190 (20% discount)
+    amount_rupees = 19190 if is_annual else 1999
+    amount_paise = amount_rupees * 100
+
+    from services.razorpay_service import (
+        PAYMENT_MODE,
+        RAZORPAY_KEY_ID,
+        create_order,
+    )
+
+    receipt = f"sub_{uuid.uuid4().hex[:14]}"
+    order = await create_order(
+        amount_paise=amount_paise,
+        notes={
+            "clinicId": payload.clinicId or "",
+            "clinicName": payload.clinicName,
+            "email": payload.email,
+            "phone": payload.phone,
+            "plan": payload.plan,
+            "billingInterval": payload.billingInterval,
+            "purpose": "clinic_subscription",
+        },
+        receipt=receipt,
+    )
+
+    return {
+        "orderId": order["id"],
+        "amount": amount_paise,
+        "amountRupees": amount_rupees,
+        "currency": order.get("currency", "INR"),
+        "keyId": RAZORPAY_KEY_ID,
+        "paymentMode": PAYMENT_MODE,
+        "plan": payload.plan,
+        "billingInterval": payload.billingInterval,
+        "prefill": {
+            "name": payload.clinicName,
+            "contact": payload.phone,
+            "email": payload.email,
+        },
+        "notes": {
+            "clinicName": payload.clinicName,
+            "plan": payload.plan,
+            "billingInterval": payload.billingInterval,
+        },
+    }
+
+
+@router.post("/subscribe/confirm")
+async def confirm_subscription(payload: SubscriptionConfirmRequest):
+    """Verify signature and idempotently activate clinic subscription."""
+    from services.razorpay_service import (
+        is_mock_mode,
+        verify_payment_signature,
+    )
+    from database import subscription_transactions
+
+    # 1. Verify signature (in real mode)
+    if not is_mock_mode():
+        if not payload.razorpaySignature:
+            raise HTTPException(400, "Missing payment signature")
+        sig_ok = verify_payment_signature({
+            "razorpay_order_id": payload.razorpayOrderId,
+            "razorpay_payment_id": payload.razorpayPaymentId,
+            "razorpay_signature": payload.razorpaySignature,
+        })
+        if not sig_ok:
+            raise HTTPException(401, "Invalid payment signature verification")
+
+    # 2. Idempotency check: don't double process duplicate payment/order
+    existing_txn = await subscription_transactions.find_one(
+        {"$or": [
+            {"razorpayPaymentId": payload.razorpayPaymentId},
+            {"razorpayOrderId": payload.razorpayOrderId},
+        ]},
+        {"_id": 0},
+    )
+    if existing_txn:
+        return {
+            "status": "active",
+            "code": "DUPLICATE_EVENT",
+            "message": "Subscription payment already processed.",
+            "transactionId": existing_txn["id"],
+            "plan": existing_txn.get("plan", "standard"),
+            "billingInterval": existing_txn.get("billingInterval", "monthly"),
+        }
+
+    # 3. Find or create clinic doc
+    clinic_doc = None
+    if payload.clinicId:
+        clinic_doc = await clinics.find_one({"id": payload.clinicId})
+    if not clinic_doc and payload.email:
+        clinic_doc = await clinics.find_one({"email": payload.email.lower().strip()})
+
+    now = datetime.now(timezone.utc)
+    days = 365 if payload.billingInterval == "annual" else 30
+    expires_at = now + timedelta(days=days)
+    amount_rupees = 19190 if payload.billingInterval == "annual" else 1999
+
+    if not clinic_doc:
+        clinic_id = payload.clinicId or str(uuid.uuid4())
+        clinic_doc = {
+            "id": clinic_id,
+            "name": payload.clinicName or "Clinic",
+            "phone": payload.phone or "",
+            "email": payload.email.lower().strip() if payload.email else "",
+            "subscriptionStatus": "active",
+            "subscriptionExpiresAt": expires_at.isoformat(),
+            "hasTrialed": True,
+            "plan": payload.plan,
+            "chairs": 1,
+            "standbyAdjustment": 400,
+            "createdAt": now.isoformat(),
+        }
+        await clinics.insert_one(clinic_doc)
+    else:
+        clinic_id = clinic_doc["id"]
+        await clinics.update_one(
+            {"id": clinic_id},
+            {"$set": {
+                "subscriptionStatus": "active",
+                "subscriptionExpiresAt": expires_at.isoformat(),
+                "hasTrialed": True,
+                "plan": payload.plan,
+            }},
+        )
+
+    txn_id = f"sub_txn_{uuid.uuid4().hex[:14]}"
+    txn_doc = {
+        "id": txn_id,
+        "clinicId": clinic_id,
+        "plan": payload.plan,
+        "billingInterval": payload.billingInterval,
+        "amountRupees": amount_rupees,
+        "razorpayOrderId": payload.razorpayOrderId,
+        "razorpayPaymentId": payload.razorpayPaymentId,
+        "razorpayEventId": payload.eventId,
+        "status": "active",
+        "createdAt": now.isoformat(),
+        "expiresAt": expires_at.isoformat(),
+    }
+    await subscription_transactions.insert_one(txn_doc)
+
+    return {
+        "status": "active",
+        "code": "SUBSCRIPTION_ACTIVATED",
+        "clinicId": clinic_id,
+        "plan": payload.plan,
+        "billingInterval": payload.billingInterval,
+        "amountRupees": amount_rupees,
+        "transactionId": txn_id,
+        "expiresAt": expires_at.isoformat(),
+        "message": f"Successfully activated {payload.plan.title()} plan!",
+    }
+
+
+@router.post("/subscribe/mock-pay")
+async def mock_subscription_pay(
+    payload: MockSubscriptionPayRequest,
+    x_doctro_test_override: Optional[str] = Header(default=None, alias="X-Doctro-Test-Override"),
+):
+    """Gated mock payment handler for subscription testing."""
+    from services.razorpay_service import (
+        MOCK_OVERRIDE_TOKEN,
+        PAYMENT_MODE,
+        is_mock_mode,
+    )
+
+    env_override = os.environ.get("MOCK_OVERRIDE_TOKEN", "") or MOCK_OVERRIDE_TOKEN
+    header_ok = bool(env_override) and (x_doctro_test_override == env_override)
+
+    if not is_mock_mode() and not header_ok:
+        raise HTTPException(
+            403,
+            {
+                "code": "MOCK_DISABLED",
+                "message": (
+                    f"PAYMENT_MODE={PAYMENT_MODE}: mock subscription payment is disabled. "
+                    "Set PAYMENT_MODE=mock or send the X-Doctro-Test-Override header."
+                ),
+            },
+        )
+
+    if payload.simulateFailure:
+        return {
+            "status": "failed",
+            "code": "PAYMENT_FAILED",
+            "message": "Payment was declined by the bank (Simulated card failure).",
+        }
+
+    mock_order_id = f"mock_sub_order_{uuid.uuid4().hex[:12]}"
+    mock_payment_id = f"mock_sub_pay_{uuid.uuid4().hex[:12]}"
+
+    confirm_req = SubscriptionConfirmRequest(
+        razorpayOrderId=mock_order_id,
+        razorpayPaymentId=mock_payment_id,
+        razorpaySignature="mock_sig_ok",
+        clinicId=payload.clinicId,
+        clinicName=payload.clinicName,
+        phone=payload.phone,
+        email=payload.email,
+        plan=payload.plan,
+        billingInterval=payload.billingInterval,
+    )
+    return await confirm_subscription(confirm_req)
+
+
+@router.post("/subscribe/trial")
+async def start_free_trial(payload: TrialRequest):
+    """Activate 14-day free trial with trial deduplication / abuse prevention."""
+    email_clean = payload.email.lower().strip()
+    phone_clean = payload.phone.strip()
+
+    # Abuse prevention check: look up if email or phone already used a trial
+    existing = await clinics.find_one({
+        "$or": [
+            {"email": email_clean},
+            {"phone": phone_clean},
+        ]
+    })
+
+    if existing and (existing.get("hasTrialed") or existing.get("subscriptionStatus") in ("trial", "active", "expired")):
+        raise HTTPException(
+            409,
+            {
+                "code": "TRIAL_ALREADY_USED",
+                "message": "This email or phone number has already used a 14-day free trial. Please log in or upgrade to the Standard plan.",
+            },
+        )
+
+    now = datetime.now(timezone.utc)
+    expires_at = now + timedelta(days=14)
+
+    if existing:
+        clinic_id = existing["id"]
+        await clinics.update_one(
+            {"id": clinic_id},
+            {"$set": {
+                "subscriptionStatus": "trial",
+                "subscriptionExpiresAt": expires_at.isoformat(),
+                "trialSlotLimit": 10,
+                "hasTrialed": True,
+            }},
+        )
+        updated = await clinics.find_one({"id": clinic_id}, {"_id": 0})
+        return {
+            "status": "trial",
+            "code": "TRIAL_ACTIVATED",
+            "clinic": updated,
+            "expiresAt": expires_at.isoformat(),
+            "message": "14-Day Free Trial activated successfully!",
+        }
+
+    # Brand new clinic
+    clinic_id = payload.clinicId or str(uuid.uuid4())
+    doc = {
+        "id": clinic_id,
+        "name": payload.clinicName.strip(),
+        "phone": phone_clean,
+        "email": email_clean,
+        "subscriptionStatus": "trial",
+        "subscriptionExpiresAt": expires_at.isoformat(),
+        "chairs": payload.chairs,
+        "standbyAdjustment": payload.standbyAdjustment,
+        "trialSlotLimit": 10,
+        "hasTrialed": True,
+        "createdAt": now.isoformat(),
+    }
+    await clinics.insert_one(doc)
+    return {
+        "status": "trial",
+        "code": "TRIAL_ACTIVATED",
+        "clinic": {k: v for k, v in doc.items() if k != "_id"},
+        "expiresAt": expires_at.isoformat(),
+        "message": "14-Day Free Trial activated successfully!",
+    }
+
+
+@router.post("/enterprise-lead")
+async def submit_enterprise_lead(payload: EnterpriseLeadRequest):
+    """Save an enterprise inquiry for custom multi-clinic deployments."""
+    from database import enterprise_leads
+
+    lead_doc = payload.model_dump()
+    lead_doc["id"] = f"lead_{uuid.uuid4().hex[:12]}"
+    lead_doc["createdAt"] = datetime.now(timezone.utc).isoformat()
+    lead_doc["status"] = "new"
+    await enterprise_leads.insert_one(lead_doc)
+
+    return {
+        "status": "received",
+        "id": lead_doc["id"],
+        "message": "Thank you! Our enterprise solutions team will reach out within 24 hours.",
+    }

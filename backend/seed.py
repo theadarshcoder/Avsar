@@ -64,8 +64,18 @@ CONSENT_TEXT = render_consent_text("Smile Dental, Indiranagar")
 
 
 async def _upsert_clinic() -> str:
+    from services.auth_service import hash_password
+
     existing = await clinics.find_one({"id": CLINIC_ID})
     if existing:
+        if not existing.get("passwordHash"):
+            await clinics.update_one(
+                {"id": CLINIC_ID},
+                {"$set": {
+                    "email": "demo@smiledental.in",
+                    "passwordHash": hash_password("password123"),
+                }},
+            )
         logger.info("Clinic already exists (id=%s)", CLINIC_ID)
         return CLINIC_ID
     clinic = Clinic(
@@ -77,10 +87,12 @@ async def _upsert_clinic() -> str:
     )
     doc = clinic.model_dump()
     doc["id"] = CLINIC_ID
+    doc["email"] = "demo@smiledental.in"
+    doc["passwordHash"] = hash_password("password123")
     doc["createdAt"] = clinic.createdAt.isoformat()
     doc["subscriptionExpiresAt"] = None
     await clinics.insert_one(doc)
-    logger.info("Clinic inserted (id=%s)", CLINIC_ID)
+    logger.info("Clinic inserted with login credentials (id=%s)", CLINIC_ID)
     return CLINIC_ID
 
 
