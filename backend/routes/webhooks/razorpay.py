@@ -41,7 +41,7 @@ router = APIRouter(prefix="/webhooks/razorpay", tags=["webhooks"])
 def _format_time(dt) -> str:
     if isinstance(dt, str):
         dt = datetime.fromisoformat(dt.replace("Z", "+00:00"))
-    return dt.strftime("%-I:%M %p")
+    return f"{int(dt.strftime('%I'))}:{dt.strftime('%M %p')}"
 
 
 async def process_webhook_event(event: dict, *, event_id: Optional[str] = None) -> dict:
@@ -193,11 +193,20 @@ async def process_webhook_event(event: dict, *, event_id: Optional[str] = None) 
             clinic_id=clinic["id"],
             slot_id=slot["id"],
         )
+        # Record successful confirmation on the transaction.
+        await transactions.update_one(
+            {"id": winning["id"]},
+            {"$set": {"confirmationSent": True, "confirmationError": None}},
+        )
     except Exception as exc:  # noqa: BLE001
         confirmation_error = str(exc)
         logger.warning("Confirmation send failed for txn=%s: %s", winning["id"], exc)
-        await slots.update_one(
-            {"id": tok["slotId"]}, {"$set": {"status": SlotStatus.LOCKED.value}}
+        # Record the failure on the transaction — but NEVER revert
+        # slot.status. The slot is BOOKED because the payment succeeded;
+        # a notification hiccup must not undo that.
+        await transactions.update_one(
+            {"id": winning["id"]},
+            {"$set": {"confirmationSent": False, "confirmationError": confirmation_error}},
         )
 
     return {

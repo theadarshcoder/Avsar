@@ -113,21 +113,36 @@ async def create_refund(payment_id: str, amount_paise: int) -> dict:
     return refund
 
 
-# ── webhook signature ───────────────────────────────────────────────────
-def verify_webhook_signature(raw_body: bytes, signature: Optional[str]) -> bool:
-    """Return True on match; False on any failure. Uses the SDK utility so
-    the algorithm exactly mirrors production.
+# ── payment & webhook signatures ────────────────────────────────────────
+def verify_payment_signature(params: dict) -> bool:
+    """Return True on match; False on any failure. Verifies client checkout
+    callback signature (razorpay_order_id, razorpay_payment_id, razorpay_signature).
     """
+    if is_mock_mode():
+        return True
+    try:
+        _client().utility.verify_payment_signature(params)
+        return True
+    except Exception as exc:
+        logger.warning("Razorpay payment signature verification failed: %s", exc)
+        return False
+
+
+def verify_webhook_signature(body: bytes | str, signature: Optional[str]) -> bool:
+    """Verify Razorpay webhook signature (HMAC-SHA256)."""
     if not signature or not RAZORPAY_WEBHOOK_SECRET:
         return False
+    if is_mock_mode():
+        return True
     try:
-        # The SDK raises on mismatch and returns True on success.
+        payload_str = body.decode("utf-8") if isinstance(body, bytes) else str(body)
         _client().utility.verify_webhook_signature(
-            raw_body.decode("utf-8"),
+            payload_str,
             signature,
             RAZORPAY_WEBHOOK_SECRET,
         )
         return True
-    except Exception as exc:  # razorpay.errors.SignatureVerificationError
+    except Exception as exc:
         logger.warning("Razorpay webhook signature verification failed: %s", exc)
         return False
+
