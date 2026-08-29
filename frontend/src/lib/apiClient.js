@@ -31,6 +31,21 @@ export const getClinicStatsToday = (clinicId) =>
 export const getSlot = (slotId) =>
     client.get(`/slots/${slotId}`).then((r) => r.data);
 
+// ── waitlist ────────────────────────────────────────────────────────────
+export const listWaitlist = (clinicId) =>
+    client.get(`/clinics/${clinicId}/waitlist`).then((r) => r.data);
+
+export const addToWaitlist = (clinicId, body) =>
+    client.post(`/clinics/${clinicId}/waitlist`, body).then((r) => r.data);
+
+export const recordConsent = (entryId, consentText) =>
+    client
+        .post(`/clinics/waitlist/${entryId}/consent`, { consentText })
+        .then((r) => r.data);
+
+export const removeWaitlistEntry = (entryId) =>
+    client.delete(`/clinics/waitlist/${entryId}`).then((r) => r.data);
+
 // ── transactions / choice ───────────────────────────────────────────────
 export const getTransaction = (txId) =>
     client.get(`/clinics/transactions/${txId}`).then((r) => r.data);

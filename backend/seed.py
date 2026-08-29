@@ -59,8 +59,8 @@ PATIENT_SPECS = [
 ]
 
 CONSENT_TEXT = (
-    "I consent to receive WhatsApp notifications about available last-minute "
-    "dental appointment slots from Smile Dental, Indiranagar."
+    "I agree to receive WhatsApp notifications about last-minute appointment "
+    "openings at Smile Dental, Indiranagar. No prices will be included in messages."
 )
 
 

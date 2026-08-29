@@ -29,6 +29,12 @@ from services.notification_service import (
     render_standby_body,
     send_whatsapp_message,
 )
+from services.waitlist_service import (
+    add_patient_with_consent,
+    list_enriched,
+    record_consent,
+    remove_entry,
+)
 from config import checkout_link
 
 logger = logging.getLogger(__name__)
@@ -110,8 +116,45 @@ async def create_slot(clinic_id: str, payload: SlotCreate):
 
 @router.get("/{clinic_id}/waitlist")
 async def list_waitlist(clinic_id: str):
-    docs = await waitlist_entries.find({"clinicId": clinic_id}, {"_id": 0}).to_list(500)
-    return docs
+    return await list_enriched(clinic_id)
+
+
+class AddPatientBody(BaseModel):
+    name: str
+    phone: str
+    notificationPreference: str = "whatsapp"
+    consentGiven: bool = False
+    consentText: Optional[str] = None
+
+
+@router.post("/{clinic_id}/waitlist")
+async def add_to_waitlist(clinic_id: str, payload: AddPatientBody):
+    clinic = await clinics.find_one({"id": clinic_id})
+    if not clinic:
+        raise HTTPException(404, "Clinic not found")
+    return await add_patient_with_consent(
+        clinic_id=clinic_id,
+        name=payload.name,
+        phone=payload.phone,
+        notification_preference=payload.notificationPreference,
+        consent_given=payload.consentGiven,
+        consent_text=payload.consentText,
+    )
+
+
+class ConsentBody(BaseModel):
+    consentText: str
+
+
+@router.post("/waitlist/{entry_id}/consent")
+async def record_waitlist_consent(entry_id: str, payload: ConsentBody):
+    return await record_consent(entry_id, payload.consentText)
+
+
+@router.delete("/waitlist/{entry_id}")
+async def remove_waitlist_entry(entry_id: str):
+    await remove_entry(entry_id)
+    return {"deleted": entry_id}
 
 
 def _format_time(dt: datetime) -> str:

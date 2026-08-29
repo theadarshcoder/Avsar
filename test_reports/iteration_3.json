@@ -1,0 +1,26 @@
+{
+  "summary": "Fix-cycle verification for the waitlist re-add defect. Backend: re-seeded (seed.py --reset) and extended /app/backend/tests/backend_test.py with 3 new tests (TestReAddAfterRemove x2, TestSeededConsentCopy x1) -> 16/16 pass. Verified add -> remove -> re-add same phone now returns 200 (previously permanent 409), new entry has a fresh id, consentGivenAt=null, consentText=null (no backfill even when the prior entry was consented), and the operator's new name ('Priya M. Second attempt') is reflected in GET. Regression: live duplicate still 409 with the exact message and unchanged row counts; seeded waitlist still 4 consented + 2 non-consented; POST /api/clinics/slots/slot_today_1000/open returned sent=3, failed=1 (+919812340000 hook), skippedNonConsented=2, consentedPatients=4; booked slot open still 409; no-price-token and consent-gate tests still green. Cosmetic fix confirmed: all 4 seeded consented rows now carry the exact lib/consent.js copy. Frontend: full Playwright E2E on the public preview dashboard — add Priya (NO CONSENT badge, 'Add without consent' label, counts 4/3), live duplicate shows add-patient-error with the backend 409 message, two-step remove works, re-add with same phone succeeds with no error and a new row + NO CONSENT badge, cleanup restored counts to 4/2. DB left freshly seeded state with Priya rows removed.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "remove_entry() still leaves the orphan Patient doc; that is now harmless because the duplicate guard checks waitlist membership, but the patients collection will accumulate dead rows over time — consider a cleanup/soft-delete later.",
+    "Reusing the Patient doc renames it in place (patients.update_one $set name). Historic sent_messages / transactions that join on patientId will retroactively display the NEW name. Acceptable for the demo, but if audit fidelity matters, snapshot the name on the message/transaction instead.",
+    "Duplicate guard queries waitlist_entries by {patientId, clinicId} only — correct here since Patient is clinic-scoped by phone; keep that invariant in mind if patients ever become global."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100% (16/16)", "frontend": "100% (add/duplicate-409/remove/re-add flow)"},
+  "seed_data_creation": "python /app/backend/seed.py --reset run twice; backend suite uses its own isolated 'TEST_Waitlist Clinic'. Priya Menon (+919876543210) was added/removed in both API and UI tests and removed at the end, so the seeded clinic is back to 4 consented + 2 non-consented with slot_today_1000/1130/1630 scheduled and slot_today_1500 booked.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 2's only defect (re-add after remove -> permanent 409) is fixed and covered by TestReAddAfterRemove in /app/backend/tests/backend_test.py. Note the previously-passing duplicate-409 case was NOT changed to expect 200 — it still asserts 409 for a LIVE duplicate, which is correct; new tests cover the post-removal re-add path. Broadcasting consumes scheduled seeded slots, so re-run `python /app/backend/seed.py --reset` before repeating UI/broadcast flows. Suite is safe to re-run repeatedly.",
+  "rca_of_the_issue": "Previous RCA (duplicate guard on the patients collection while remove_entry deleted only the waitlist entry) is resolved: add_patient_with_consent now 409s only when an active WaitlistEntry exists for that (patientId, clinicId) and otherwise reuses the stale Patient doc while creating a brand-new entry with null consent fields."
+}

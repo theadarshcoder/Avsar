@@ -4,6 +4,7 @@ import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import CalendarGrid from "../components/dashboard/CalendarGrid";
 import RevenueTicker from "../components/dashboard/RevenueTicker";
+import WaitlistPanel from "../components/waitlist/WaitlistPanel";
 import { useSlotStatus } from "../hooks/useSlotStatus";
 import {
     getClinic,
@@ -137,6 +138,8 @@ export default function Dashboard() {
                     />
                 </div>
             </section>
+
+            <WaitlistPanel clinicId={clinicId} clinicName={clinic?.name} />
 
             {outbox && (
                 <section

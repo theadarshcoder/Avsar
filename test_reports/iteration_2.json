@@ -1,0 +1,31 @@
+{
+  "summary": "Independent verification of the WAITLIST MANAGEMENT + CONSENT CAPTURE phase. Backend: new pytest suite /app/backend/tests/backend_test.py (13 tests, 13 passed) covering seeded waitlist shape/enrichment, add-with/without-consent, server-side consentGivenAt, duplicate-phone 409, validation 400s, 404s, double-consent 409, remove, broadcast consent gate (non-consented skipped, consented gets exactly 1, removed gets 0), 0000 failure-isolation hook, no money tokens in message bodies, and the seeded 4-consented/2-skipped/3-sent/1-failed regression. Frontend: full Playwright E2E on the public preview URL — all 9 requested scenarios PASSED (panel counts '4 consented'/'2 without consent', honest NO CONSENT badges, unchecked-by-default checkbox, 'Add without consent' label, zero messages before consent, exact consent copy match on inline panel and in stored consentText, server ISO timestamp, duplicate-phone error with unchanged counts, two-step remove with cancel path, zero messages after removal, copy-safety scan clean, broadcast stats 4/2/3/1 after re-seed). DB re-seeded (seed.py --reset) at the end so demo slots are fresh.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "DELETE /api/clinics/waitlist/{entryId} + POST /api/clinics/{clinicId}/waitlist", "issue": "remove_entry() deletes only the WaitlistEntry and leaves the orphan Patient doc, while the duplicate check in add_patient_with_consent() queries the patients collection. Result: a removed patient can NEVER be re-added with the same phone — POST returns 409 'A patient with this phone number is already on this clinic's waitlist' even though they are not on the waitlist (reproduced: removed Priya +919876543210, re-add -> 409 while waitlist has 6 rows). Fix: check waitlist_entries (join on phone) for the duplicate, or reuse/soft-clean the orphan patient."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Waitlist panel (rows)", "issues": ["Cosmetic/data-only: seeded rows display the OLD consent copy ('I consent to receive WhatsApp notifications about available last-minute dental appointment slots from Smile Dental, Indiranagar.') while consent.js generates the new copy. Historic records showing verbatim stored text is correct behaviour, but the demo looks inconsistent — consider aligning seed.py text with lib/consent.js."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": ["Fix duplicate-phone check so a removed waitlist patient can be re-added (currently permanent 409 due to orphan Patient doc)", "Optional: align seed.py consent text with lib/consent.js copy for demo consistency"],
+  "critical_code_review_comments": [
+    "Broadcast query in routes/clinics.py open_slot_and_broadcast is unchanged ({consentGivenAt: {$ne: None}}) — verified by behaviour: non-consented/removed patients get zero sent_messages and skippedNonConsented is computed as total - consented.",
+    "consentGivenAt is set exclusively in waitlist_service._now_iso() — captured browser POST bodies contain no timestamp field (verified via request interception on both add and record-consent calls).",
+    "list_enriched does N+1 patient lookups per row (fine at demo scale; consider $lookup if the waitlist grows).",
+    "All waitlist endpoints project {_id: 0} / strip _id — no ObjectId leakage observed."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "100% (9/9 scenarios)"},
+  "seed_data_creation": "Backend tests create an isolated 'TEST_Waitlist Clinic' with TEST_ patients and their own slots (so seeded demo slots are not consumed). UI test added/consented/removed 'Priya Menon' (+919876543210) on the seeded clinic. Final state: `python /app/backend/seed.py --reset` was re-run, so seeded clinic is clean (4 consented + 2 non-consented, slot_today_1000/1130/1630 scheduled). TEST_ clinic data remains in DB but is isolated.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Waitlist phase fully verified end-to-end. Broadcasting consumes scheduled slots (slot_today_1000/1130/1630) — re-run `python /app/backend/seed.py --reset` before repeating UI flows. Backend regression suite: `cd /app/backend && python -m pytest tests/backend_test.py -v` (creates its own clinic/slots, safe to re-run repeatedly). Only open defect: orphan Patient doc after waitlist removal blocks re-adding the same phone.",
+  "rca_of_the_issue": "Re-add 409 RCA: services/waitlist_service.remove_entry only deletes from waitlist_entries; add_patient_with_consent's duplicate guard queries patients by (clinicId, phone), so the surviving patient record permanently blocks re-registration and the 409 message is factually wrong."
+}
