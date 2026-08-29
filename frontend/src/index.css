@@ -2,114 +2,122 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    /* doctro palette — flat section fills, no gradients anywhere */
+    --doctro-lavender: #E3DBFB;
+    --doctro-teal: #B8E4DE;
+    --doctro-peach: #FBDBC6;
+    --doctro-pale-yellow: #FFF0B8;
+    --doctro-cream: #F5EFE1;
+    --doctro-ink: #101014;
+    --doctro-line: #E5E1D8;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
 body {
     margin: 0;
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    color: var(--doctro-ink);
+    background: #FFFFFF;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+.font-serif {
+    font-family: "Lora", ui-serif, Georgia, serif;
+    font-feature-settings: "liga", "kern";
 }
 
-@layer base {
-    :root {
-        --background: 0 0% 100%;
-        --foreground: 0 0% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 0 0% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 3.9%;
-        --primary: 0 0% 9%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 0 0% 96.1%;
-        --secondary-foreground: 0 0% 9%;
-        --muted: 0 0% 96.1%;
-        --muted-foreground: 0 0% 45.1%;
-        --accent: 0 0% 96.1%;
-        --accent-foreground: 0 0% 9%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 89.8%;
-        --input: 0 0% 89.8%;
-        --ring: 0 0% 3.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;
-    }
-    .dark {
-        --background: 0 0% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 0 0% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 0 0% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 0 0% 9%;
-        --secondary: 0 0% 14.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 0 0% 14.9%;
-        --muted-foreground: 0 0% 63.9%;
-        --accent: 0 0% 14.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 14.9%;
-        --input: 0 0% 14.9%;
-        --ring: 0 0% 83.1%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
-    }
+.font-body {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
+.section-bg-lavender { background-color: var(--doctro-lavender); }
+.section-bg-teal { background-color: var(--doctro-teal); }
+.section-bg-peach { background-color: var(--doctro-peach); }
+.section-bg-yellow { background-color: var(--doctro-pale-yellow); }
+.section-bg-cream { background-color: var(--doctro-cream); }
+.section-bg-ink { background-color: var(--doctro-ink); color: #F5EFE1; }
+
+/* Both refund + credit buttons must be pixel-identical size. */
+.doctro-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    min-width: 220px;
+    padding: 0 28px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    border: 1px solid transparent;
 }
 
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
+.doctro-pill:hover { transform: translateY(-1px); }
+.doctro-pill:active { transform: translateY(0); }
+.doctro-pill:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
+.doctro-pill-primary {
+    background: var(--doctro-ink);
+    color: #FFFFFF;
+}
+.doctro-pill-primary:hover { background: #26262c; }
+
+.doctro-pill-secondary {
+    background: var(--doctro-cream);
+    color: var(--doctro-ink);
+    border-color: rgba(16, 16, 20, 0.08);
+}
+.doctro-pill-secondary:hover { background: #EDE6D5; }
+
+.doctro-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(16, 16, 20, 0.06);
+    padding: 24px;
+    border: 1px solid rgba(16, 16, 20, 0.04);
+}
+
+/* Rounded, full-width sections with ~24px corner radius as required. */
+.doctro-section {
+    border-radius: 24px;
+    padding: 72px 48px;
+    margin: 24px;
+}
+
+@media (max-width: 700px) {
+    .doctro-section { padding: 48px 20px; margin: 12px; border-radius: 20px; }
+    .doctro-pill { min-width: 180px; height: 48px; }
+}
+
+/* Slot status colors — distinct, flat, no gradient. */
+.status-scheduled { background: #E5E1D8; color: #2E2A22; }
+.status-open      { background: #FDE58A; color: #4A3A00; }
+.status-locked    { background: #FCD4B6; color: #6A2E00; }
+.status-booked    { background: #B9E6BF; color: #16391B; }
+.status-cancelled { background: #F3B5B5; color: #5A0E0E; }
+
+.mono {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+/* WhatsApp mockup styling */
+.wa-bubble {
+    background: #FFFFFF;
+    padding: 14px 16px;
+    border-radius: 14px 14px 14px 2px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+    max-width: 320px;
+    font-size: 14px;
+    line-height: 1.5;
 }

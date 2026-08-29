@@ -58,6 +58,7 @@ class BroadcastResult(BaseModel):
     sent: int
     failed: int
     failures: List[dict]
+    outbox: List[dict] = []  # per-consented-patient send record (drives the mock outbox UI)
 
 
 @router.post("")
@@ -152,6 +153,7 @@ async def open_slot_and_broadcast(slot_id: str):
     sent_count = 0
     failed_count = 0
     failures: List[dict] = []
+    outbox: List[dict] = []
 
     # Parse start time back to datetime for template rendering.
     start_dt = slot["startTime"]
@@ -186,6 +188,15 @@ async def open_slot_and_broadcast(slot_id: str):
                 slot_id=slot_id,
             )
             sent_count += 1
+            outbox.append({
+                "patientId": patient["id"],
+                "patientName": patient["name"],
+                "phone": patient["phone"],
+                "token": tok.token,
+                "checkoutLink": link,
+                "status": "sent",
+                "error": None,
+            })
             # Clear stale error on success.
             await waitlist_entries.update_one(
                 {"id": entry["id"]}, {"$set": {"lastNotificationError": None}}
@@ -195,6 +206,15 @@ async def open_slot_and_broadcast(slot_id: str):
             failures.append(
                 {"waitlistId": entry["id"], "phone": patient["phone"], "error": str(exc)}
             )
+            outbox.append({
+                "patientId": patient["id"],
+                "patientName": patient["name"],
+                "phone": patient["phone"],
+                "token": tok.token,
+                "checkoutLink": link,
+                "status": "failed",
+                "error": str(exc),
+            })
             await waitlist_entries.update_one(
                 {"id": entry["id"]}, {"$set": {"lastNotificationError": str(exc)}}
             )
@@ -215,7 +235,72 @@ async def open_slot_and_broadcast(slot_id: str):
         sent=sent_count,
         failed=failed_count,
         failures=failures,
+        outbox=outbox,
     )
+
+
+@router.get("/{clinic_id}/stats/today")
+async def clinic_stats_today(clinic_id: str):
+    """Sum of totalPaid across today's WON standby transactions for this clinic."""
+    start_of_day = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    q = {
+        "clinicId": clinic_id,
+        "lockOutcome": "won",
+        "createdAt": {"$gte": start_of_day.isoformat()},
+    }
+    docs = await transactions.find(q, {"_id": 0}).to_list(500)
+    total = sum(int(t.get("totalPaid", 0)) for t in docs)
+    return {
+        "clinicId": clinic_id,
+        "todayRevenue": total,
+        "bookedCount": len(docs),
+    }
+
+
+@router.get("/slots/{slot_id}/outbox")
+async def slot_outbox(slot_id: str):
+    """Reload-friendly outbox for a slot: joins sent_messages + checkout_tokens.
+
+    This is the "Mock WhatsApp outbox" surface for the dashboard so the demo
+    driver can still click through after refreshing the page.
+    """
+    from database import sent_messages
+    slot = await slots.find_one({"id": slot_id}, {"_id": 0})
+    if not slot:
+        raise HTTPException(404, "Slot not found")
+    msgs = await sent_messages.find(
+        {"slotId": slot_id, "templateName": "standby_open_slot"}, {"_id": 0}
+    ).sort("sentAt", 1).to_list(500)
+    toks = await checkout_tokens.find({"slotId": slot_id}, {"_id": 0}).to_list(500)
+    tok_by_patient = {t["patientId"]: t["token"] for t in toks}
+
+    out: List[dict] = []
+    for m in msgs:
+        pid = m.get("patientId")
+        patient = await patients.find_one({"id": pid}, {"_id": 0}) if pid else None
+        token = tok_by_patient.get(pid)
+        out.append({
+            "patientId": pid,
+            "patientName": patient["name"] if patient else None,
+            "phone": m.get("toPhone"),
+            "token": token,
+            "checkoutLink": checkout_link(token) if token else None,
+            "status": m.get("status"),
+            "error": m.get("error"),
+            "sentAt": m.get("sentAt"),
+        })
+    return {"slot": slot, "outbox": out}
+
+
+@router.get("/transactions/{tx_id}")
+async def get_transaction(tx_id: str):
+    txn = await transactions.find_one({"id": tx_id}, {"_id": 0})
+    if not txn:
+        raise HTTPException(404, "Transaction not found")
+    slot = await slots.find_one({"id": txn["slotId"]}, {"_id": 0})
+    patient = await patients.find_one({"id": txn["patientId"]}, {"_id": 0})
+    clinic = await clinics.find_one({"id": txn["clinicId"]}, {"_id": 0})
+    return {"transaction": txn, "slot": slot, "patient": patient, "clinic": clinic}
 
 
 class CancelChoice(BaseModel):

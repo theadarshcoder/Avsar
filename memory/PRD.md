@@ -3,76 +3,82 @@
 ## Original problem statement (verbatim summary)
 Web app for dental clinics in India that fills last-minute cancellations by
 notifying a consented waitlist over WhatsApp and running a locked,
-single-winner checkout. Phase 1 = backend only. Stack: React (Phase 2) +
-FastAPI + MongoDB.
+single-winner checkout. Phase-1 = backend only. Phase-2 = React frontend.
+Stack: React + FastAPI + MongoDB.
 
-## Non-negotiable business rules (must never break)
+## Non-negotiable business rules
 1. **No price in WhatsApp templates** — ever.
-2. **No percentage fees** — clinic pays flat subscription, patient pays a flat ₹50 handling fee (constant rupees).
-3. **Consent gate** — a `WaitlistEntry` must have a non-null `consentGivenAt` to receive any standby notification. Enforced at the query level.
+2. **No percentage fees** — flat monthly subscription, flat ₹50 handling fee.
+3. **Consent gate** — `consentGivenAt` non-null required for any notification (enforced in the query).
 4. **Cancel-after-book** — patient must be offered BOTH refund AND credit. Never auto-convert.
 
-## User personas
-- **Clinic operator**: opens cancelled slots, cancels booked slots, watches broadcasts fan out.
-- **Consented patient**: receives standby WhatsApp, opens link, sees price, pays; either wins or gets refund.
-- **Non-consented patient**: never notified. Silent.
+## Personas
+- Clinic operator: opens cancelled slots, cancels booked slots, watches broadcasts.
+- Consented patient: gets WhatsApp, opens link, pays; wins or auto-refunded.
+- Non-consented patient: never notified.
 
-## Architecture (Phase 1)
-```
-/app/backend/
-├── server.py               FastAPI entry, mounts /api router, ensures indexes
-├── config.py               FRONTEND_URL, HANDLING_FEE (50), TTL, webhook secret
-├── database.py             Motor client + collection refs + index setup
-├── seed.py                 Idempotent seed (--reset for wipe)
-├── acceptance_test.py      Runs all 4 mandated acceptance checks
-├── models/                 Clinic, Patient, WaitlistEntry, Slot, Transaction,
-│                           PriorityPass, CheckoutToken
-├── services/               pricing, notification (WhatsApp MOCK),
-│                           slot_lock (atomic find_one_and_update), ledger
-└── routes/
-    ├── clinics.py          create/list/open-slot (broadcast), cancel-booked, choice
-    ├── slots.py            read-only slot inspection
-    ├── checkout.py         GET checkout by token, POST /mock-pay
-    └── webhooks/
-        ├── razorpay.py     HMAC-verified webhook; shared process_webhook_event
-        └── whatsapp.py     Inbound mock stub
-```
+## Architecture
+
+### Backend (Phase 1 — done)
+`server.py`, `config.py`, `database.py`, `seed.py`, `acceptance_test.py`.
+Models: Clinic, Patient, WaitlistEntry, Slot, Transaction, PriorityPass, CheckoutToken.
+Services: pricing, notification (WhatsApp MOCK, phone-0000 fail hook), slot_lock
+(single atomic find_one_and_update), ledger (refund + priority pass).
+Routes under `/api`: clinics (create/list/open-slot/broadcast/cancel-booked/choice/stats/outbox/transaction),
+slots (inspection), checkout (GET + `/mock-pay`), webhooks/razorpay (HMAC), webhooks/whatsapp (stub).
+
+### Frontend (Phase 2 — done)
+`src/App.js` routes: `/`, `/dashboard/:clinicId`, `/checkout/:slotToken`,
+`/confirmation/:bookingId`, `/choice/:transactionId`.
+Components: `Nav`, `Footer`, `roi/{SliderGroup, BleedOutputBox}`,
+`dashboard/{CalendarGrid, RevenueTicker, SlotStatusBadge}`,
+`checkout/{UrgencyBanner, PriceBreakdown, RefundOrCreditChoice}`,
+`mockups/{VacancyMockup, WhatsAppMockup, CheckoutMockup}`,
+`hooks/useSlotStatus`, `lib/apiClient` (all API calls through this — zero business logic outside it).
+
+Design system: serif = Lora (headlines) + italic Lora (footnotes); body = Inter.
+Flat section colors (lavender, teal, peach, pale yellow, cream, near-black), no gradients.
+Rounded pill nav with visible margin. Two-tone pill buttons (black primary / cream secondary, identical size).
 
 ## What's implemented (2026-02-01)
-- All 7 Mongo models with sensible defaults, no ObjectId leakage.
-- **Unique index** on `transactions.razorpayEventId` → race-safe idempotency.
-- **Atomic slot lock** via single `find_one_and_update({id, status:"open", startTime:>now}, {$set:...})` — no read-then-write.
-- **Broadcast** filters consent at the query level; failure isolation records `lastNotificationError` and continues.
-- **WhatsApp MOCK** logs every attempt to `sent_messages`. Phones ending in `0000` deterministically fail (test hook).
-- **Pricing**: `standby = standard - standbyAdjustment + 50`, PriorityPass amount deducted, floored at 0.
-- **Razorpay MOCK** with real HMAC-SHA256 signature verification structure.
-- **Webhook flow**: idempotency → atomic lock → transaction+redeem-pass+booked+confirmation OR refund with distinct code (`SLOT_JUST_TAKEN` vs `SLOT_EXPIRED`).
-- **Cancel-booked**: exposes the transaction; explicit refund/credit choice required.
-- **PriorityPass**: issued from credit choice (`amount = totalPaid`, TTL 14 days), auto-applied at next checkout at same clinic, redeemed inside the winning lock flow.
-- **Acceptance test** run in-process (`python acceptance_test.py`): all 4 checks green (broadcast/consent/failure-isolation, duplicate-eventId, concurrency race with asyncio.gather, expired slot).
-- **OpenAPI** exposed at `/api/openapi.json` (17 paths).
 
-## Prioritized backlog
+Backend
+- All 7 Mongo models. Unique index on `transactions.razorpayEventId`.
+- Atomic slot lock (`find_one_and_update` with `status:"open" AND startTime:>now`).
+- Broadcast filters consent at the query level; failure isolation via `lastNotificationError`.
+- WhatsApp MOCK logs every attempt; phones ending `0000` deterministically fail.
+- Pricing: `subtotal = standard - standbyAdjustment + ₹50`, PriorityPass floored at 0.
+- Razorpay MOCK with real HMAC-SHA256 signature verification.
+- Idempotency → atomic lock → txn+redeem-pass+booked+confirmation OR refund with distinct code.
+- Cancel-booked returns transaction; explicit refund/credit choice required (409 on double-choice).
+- PriorityPass 14-day TTL, auto-applied at next checkout, redeemed inside winning lock.
+- Acceptance script: broadcast/consent/failure-isolation, duplicate-eventId, concurrency race, expired slot — all green.
 
-### P0 (Phase 2 — Frontend)
-- Clinic dashboard: today's slots, "cancel/open" per slot, live broadcast result panel.
-- Waitlist management: add/remove patient, capture consent (consentText + timestamp).
-- Checkout page at `/checkout/{token}`: shows only price on this page; refund/credit selector on cancelled bookings.
-- Owner login (see P1 auth) once we move off "no-auth by clinicId".
+Frontend
+- Homepage: hero, ROI calculator (three sliders + live math + verbatim footnote), three explainer sections with product-UI mockups (built as CSS/SVG — guarantees zero price leak in the WhatsApp mockup), pricing section (₹1,999/mo AND ₹50 handling as two separate line items), compliance section, near-black footer.
+- Dashboard: today's slots, cancel-scheduled fires broadcast, teal Mock WhatsApp outbox with per-patient status + per-patient checkout link, cancel-booked opens the choice page link, `RevenueTicker` polls stats every 5s.
+- Checkout: `UrgencyBanner` (truthful countdown from real `startTime`), `PriceBreakdown` (renders exactly what backend returns), pay + simulate-failure buttons, distinct screens for BOOKED / SLOT_JUST_TAKEN / SLOT_EXPIRED / PAYMENT_FAILED.
+- Confirmation: appointment + amount + transaction id + WhatsApp note (labeled mock).
+- Choice: identical-size pill buttons (measured 220×52), no default, `Confirm your choice` gated on a selection, credit → shows pass id + expiry, refund → shows refund id, 409 → "already made" state.
 
-### P1 (still backend)
-- Auth: pick between JWT custom auth and Emergent Google Auth (currently open by `clinicId`).
-- Rate-limit `/mock-pay` per token; enforce single active checkout token per (slot, patient).
+## Backlog
+
+### P0 (still open)
+- Auth: pick JWT custom vs Emergent Google Auth.
+- Swap the four `# MOCK:` seams for real Razorpay + WABA once keys are provided.
 - Retry queue for failed WhatsApp confirmations (currently logged, slot stays `locked`).
-- Real Razorpay + WABA credentials & production signature verification (`# MOCK` sites already flagged).
-- Analytics: slots filled vs offered, average time-to-fill, per-clinic revenue.
+
+### P1
+- Waitlist management UI: add/remove patient with consent capture (consentText + timestamp).
+- Analytics: fill-rate per day/week, average time-to-fill, per-doctor breakdown.
+- Rate-limit `/mock-pay` per token; enforce single active checkout token per (slot, patient).
 
 ### P2
 - Multi-clinic operator accounts.
-- SMS fallback provider when WhatsApp delivery fails.
+- SMS fallback provider.
 - Localised template variants (Hindi, Kannada).
 
 ## Next tasks
-1. Build Phase 2 React frontend.
-2. Swap MOCK markers for real integrations once WABA + Razorpay keys are provided.
-3. Add auth per user's choice.
+1. Provide real Razorpay + WABA keys → swap MOCKS.
+2. Decide auth model → implement.
+3. Ship waitlist management UI (P1).
