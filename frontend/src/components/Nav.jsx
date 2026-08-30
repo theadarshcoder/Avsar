@@ -14,6 +14,7 @@ export default function Nav() {
     const isAuthPage =
         location.pathname === "/login" ||
         location.pathname === "/register" ||
+        location.pathname.startsWith("/dashboard") ||
         location.pathname.startsWith("/checkout") ||
         location.pathname.startsWith("/confirmation") ||
         location.pathname.startsWith("/choice");

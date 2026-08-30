@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import CalendarGrid from "../components/dashboard/CalendarGrid";
 import RevenueTicker from "../components/dashboard/RevenueTicker";
