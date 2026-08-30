@@ -1,40 +1,49 @@
 # doctro
 
-> Turn last-minute dental clinic cancellations into recovered standby revenue with automated consent-first WhatsApp waitlists, atomic single-winner checkout, and zero doctor fee cuts.
+An automated standby revenue and cancellation recovery platform that turns last-minute dental chair openings into instant bookings via consent-first WhatsApp waitlists and atomic single-winner checkout.
+
+![version](https://img.shields.io/badge/version-0.1.0-blue)
+![python](https://img.shields.io/badge/python-%3E%3D3.11-yellow?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react&logoColor=black)
+![MongoDB](https://img.shields.io/badge/MongoDB-Motor-47A248?logo=mongodb&logoColor=white)
+![Razorpay](https://img.shields.io/badge/Razorpay-Gateway-0C2340?logo=razorpay&logoColor=white)
+![Tailwind](https://img.shields.io/badge/TailwindCSS-v3-38B2AC?logo=tailwindcss&logoColor=white)
+![tests](https://img.shields.io/badge/tests-37%20passed-brightgreen)
 
 ---
 
 ## Why doctro
 
-Dental clinics operate on tight schedules where an empty chair represents unrecoverable revenue loss. A typical 2-to-4 chair clinic bleeds **₹12,000 to ₹50,000+ every month** due to last-minute cancellations and no-shows occurring within 2 to 4 hours of appointment times.
+Dental practices face severe structural revenue leakage from last-minute appointment cancellations. A standard 2-to-4 chair clinic loses between **₹12,000 and ₹50,000+ each month** when patients cancel within 2 to 4 hours of their scheduled slot.
 
-Traditional solutions create operational bottlenecks:
-- **Manual Staff Outreach**: Front-desk staff spend 20–30 minutes calling waitlisted patients one by one while the chair sits idle.
-- **Awkward Double-Booking**: Broadcasts that lack concurrency controls lead to simultaneous arrivals and frustrated patients.
-- **Aggregator Commission Traps**: Traditional healthcare booking aggregators take **15% to 30%** cuts on consultations, eating clinic margins.
+Manual front-desk operations cannot resolve this problem:
+- **High-Friction Phone Calling**: Staff spend 20–30 minutes calling waitlisted patients sequentially, during which the chair remains idle and unfilled.
+- **Double-Booking Risks**: Broadcast messages without atomic concurrency locks cause multiple patients to arrive at the clinic simultaneously.
+- **Predatory Aggregator Commissions**: Healthcare marketplaces frequently take **15% to 30%** cuts from consultation revenues.
 
-**doctro fixes this with an automated, race-condition-proof standby engine:**
-1. **Instant Broadcast**: When a cancellation occurs, an automated WhatsApp notification is dispatched simultaneously to opted-in waitlist patients.
-2. **Atomic Single-Winner Checkout**: The first patient to confirm locks the slot instantly in an atomic database transaction.
-3. **Automated Instant Refunds**: Any patient who attempts payment in the same second receives an immediate, automated refund with zero staff intervention.
-4. **Self-Serve Priority Passes**: If a clinic cancels a confirmed standby patient, the patient can choose an instant bank refund or a 14-day automated priority pass credit.
-5. **Zero Commission Economics**: Doctro operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby patient. **Doctro takes 0% cut of doctor consultation fees.**
+**doctro provides an automated, race-condition-proof solution:**
+1. **Instant Broadcast**: When a cancellation is flagged, an automated WhatsApp alert is dispatched immediately to opted-in waitlist patients.
+2. **Atomic Single-Winner Checkout**: The first patient to confirm locks the slot instantly in an atomic database operation (`status: "available" → "booked"`).
+3. **Automated Instant Refunds**: Any patient who completes checkout in the same second receives an immediate, automated gateway refund with zero manual staff reconciliation.
+4. **Self-Serve Priority Passes**: If a clinic cancels a confirmed standby patient, the patient can choose between an instant bank refund or an automated 14-day priority pass credit.
+5. **Zero Commission Economics**: Doctro operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby patient. **Doctro takes 0% commission on doctor consultation fees.**
 
 ---
 
 ## Tech Stack
 
-- **Backend Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.11+ async API engine)
-- **ASGI Web Server**: [Uvicorn](https://www.uvicorn.org/)
-- **Database & Storage**: [MongoDB](https://www.mongodb.com/) via [Motor](https://motor.readthedocs.io/) async driver & [PyMongo](https://pymongo.readthedocs.io/)
-- **Data Validation & Schemas**: [Pydantic v2](https://docs.pydantic.dev/)
+- **Backend API**: [FastAPI 0.110.0](https://fastapi.tiangolo.com/) (Python 3.11+, Async ASGI Engine)
+- **ASGI Web Server**: [Uvicorn 0.28.0](https://www.uvicorn.org/)
+- **Database & ODM**: [MongoDB](https://www.mongodb.com/) via [Motor 3.3.2](https://motor.readthedocs.io/) & [PyMongo 4.6.2](https://pymongo.readthedocs.io/)
+- **Data Validation & Serialization**: [Pydantic v2](https://docs.pydantic.dev/)
 - **Payment Gateway & Security**: [Razorpay Orders & Webhooks API](https://razorpay.com/docs/) with HMAC-SHA256 signature verification & idempotency handling
-- **Frontend Framework**: [React 18](https://react.dev/) with [React Router v6](https://reactrouter.com/)
-- **Styling & Design System**: [Tailwind CSS](https://tailwindcss.com/) with custom DOCTRO editorial token palette
-- **Animations & Micro-interactions**: [Framer Motion](https://www.framer.com/motion/)
-- **Icons & Visuals**: [Lucide React](https://lucide.dev/)
-- **HTTP Client**: [Axios](https://axios-http.com/) (frontend) & [HTTPX](https://www.python-httpx.org/) (backend)
-- **Testing & Quality**: [Pytest](https://docs.pytest.org/), `pytest-asyncio`, and local automated payment mocking suites
+- **Frontend UI & State**: [React 18.2.0](https://react.dev/), [React Router DOM 6.22.0](https://reactrouter.com/)
+- **Styling & Design System**: [Tailwind CSS 3.4.1](https://tailwindcss.com/) with custom DOCTRO editorial token palette
+- **Animation & Motion**: [Framer Motion 11.0.0](https://www.framer.com/motion/)
+- **Icons**: [Lucide React 0.344.0](https://lucide.dev/)
+- **HTTP Client**: [Axios 1.6.7](https://axios-http.com/) & [HTTPX 0.27.0](https://www.python-httpx.org/)
+- **Testing**: [Pytest 9.0.2](https://docs.pytest.org/), `pytest-asyncio`, `pytest-cov`
 
 ---
 
@@ -58,7 +67,8 @@ npm install
 
 ### 2. Configure Environment Variables
 
-Create `.env` in `backend/`:
+Create a `.env` file in `backend/`:
+
 ```env
 # MongoDB Connection
 MONGO_URI="mongodb://127.0.0.1:27017"
@@ -79,7 +89,8 @@ RAZORPAY_WEBHOOK_SECRET="your_webhook_secret_here"
 MOCK_OVERRIDE_TOKEN="doctro"
 ```
 
-Create `.env` in `frontend/`:
+Create a `.env` file in `frontend/`:
+
 ```env
 REACT_APP_API_URL="http://localhost:8000/api"
 ```
@@ -87,6 +98,7 @@ REACT_APP_API_URL="http://localhost:8000/api"
 ### 3. Seed Demo Data
 
 Populate demo dental clinics, doctors, standby slots, and consent-verified waitlist entries:
+
 ```bash
 cd backend
 python seed.py
@@ -110,25 +122,31 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## Usage Examples
+## Usage Example
 
-### 1. Create a Standby Slot Broadcast & Booking Request
+### Create a Standby Slot Broadcast Programmatically via the Internal API:
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/clinics/clinic_smile_dental_indiranagar/slots \
-  -H "Content-Type: application/json" \
-  -d '{
-    "doctorName": "Dr. Anjali Menon",
-    "doctorSpecialty": "Orthodontics & General Dentistry",
-    "chairNumber": 1,
-    "startTime": "2026-08-30T15:30:00Z",
-    "endTime": "2026-08-30T16:15:00Z",
-    "originalFee": 1200,
-    "standbyFee": 800
-  }'
+```javascript
+const response = await fetch("http://127.0.0.1:8000/api/clinics/clinic_smile_dental_indiranagar/slots", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    doctorName: "Dr. Anjali Menon",
+    doctorSpecialty: "Orthodontics & General Dentistry",
+    chairNumber: 1,
+    startTime: "2026-08-30T15:30:00Z",
+    endTime: "2026-08-30T16:15:00Z",
+    originalFee: 1200,
+    standbyFee: 800
+  })
+});
+
+const slotData = await response.json();
+console.log(slotData);
 ```
 
-**Expected Response Structure:**
+### Expected Output Structure:
+
 ```json
 {
   "slot": {
@@ -136,8 +154,10 @@ curl -X POST http://127.0.0.1:8000/api/clinics/clinic_smile_dental_indiranagar/s
     "clinicId": "clinic_smile_dental_indiranagar",
     "doctorName": "Dr. Anjali Menon",
     "doctorSpecialty": "Orthodontics & General Dentistry",
+    "chairNumber": 1,
     "startTime": "2026-08-30T15:30:00Z",
     "endTime": "2026-08-30T16:15:00Z",
+    "originalFee": 1200,
     "standbyFee": 800,
     "handlingFee": 50,
     "status": "broadcasting",
@@ -148,32 +168,9 @@ curl -X POST http://127.0.0.1:8000/api/clinics/clinic_smile_dental_indiranagar/s
 }
 ```
 
-### 2. Standby Priority Price Calculation with Credit Pass Auto-Floor
-
-```bash
-curl -X GET http://127.0.0.1:8000/api/checkout/stby_tok_9a8b7c6d5e4f/price?phone=%2B919900000001
-```
-
-**Expected Response Structure:**
-```json
-{
-  "doctorFee": 800,
-  "handlingFee": 50,
-  "creditDiscount": 400,
-  "totalPayable": 450,
-  "creditApplied": {
-    "passId": "pass_cr_883921",
-    "initialAmount": 400,
-    "usedAmount": 400,
-    "remainingBalance": 0
-  },
-  "commissionNotice": "0% clinic commission deduction. Clinic receives 100% of doctor fee."
-}
-```
-
 ---
 
-## Architecture & Engineering Highlights
+## Architecture
 
 ```
                        ┌──────────────────────────────────────────────┐
@@ -203,43 +200,31 @@ curl -X GET http://127.0.0.1:8000/api/checkout/stby_tok_9a8b7c6d5e4f/price?phone
                        └──────────────────────┘└──────────────────────┘
 ```
 
-### 1. Single-Winner Atomic Concurrency Lock
-When multiple waitlisted patients open the checkout link simultaneously, DOCTRO executes an atomic state transition (`findOneAndUpdate` with pre-condition `status: "available"`). The winning transaction locks the slot instantly, and any concurrent payer is automatically refunded with zero staff intervention.
-
-### 2. Production Mock Payment Gating
-Mock checkout endpoints are protected in live environments (`PAYMENT_MODE=razorpay`). Requests return `403 MOCK_DISABLED` unless an explicit `X-Doctro-Test-Override` token header is provided, ensuring demo controls cannot cause unauthorized revenue leakages.
-
-### 3. Compliance & Consent-First Architecture
-In strict adherence to medical privacy and advertising guidelines:
-- **Price-Free WhatsApp Templates**: Broadcasts include doctor name, specialty, slot time, and secure checkout URL — never marketing prices or discounts.
-- **Server-Enforced Consent Logs**: Patient waitlist additions require explicit consent checkboxes; consent timestamps (`consentGivenAt`) are generated strictly on the server.
-
-### 4. Idempotent Webhook & Payment Reconciliation
-All payment and subscription confirmation endpoints verify unique cryptographic signatures (`razorpay_signature`) and enforce deduplication via unique sparse database indexes (`razorpayEventId` and `razorpayPaymentId`), returning `DUPLICATE_EVENT` to prevent duplicate charges or double activations.
-
 ---
 
-## Key Features
+## Features
 
-- **Interactive Standby Revenue Calculator**: Dynamic visual simulation of monthly cancellation bleed and ROI recovery projections.
-- **Full-Screen Desktop Subscription Gateway**: Executive 2-column web checkout for clinic monthly (₹1,999/mo) and annual (₹19,190/yr with 20% savings) plans.
-- **14-Day Free Access Engine**: Instant trial onboarding with phone/email abuse deduplication (`409 TRIAL_ALREADY_USED`).
-- **Patient Self-Serve Choice Portal**: Transparent interface allowing patients to pick between an immediate bank refund or a 14-day priority pass credit if a clinic cancels.
-- **Real-Time Clinic Dashboard**: Live metrics tracking recovered standby revenue, chair vacancy logs, and WhatsApp outbox delivery states.
-- **Pricing FAQ & Feature Comparison Matrix**: Expandable accordion detailing handling fee mechanics, atomic locking guarantees, and compliance rules.
+- **Automated Standby Broadcast Engine**: Instantly dispatches price-free WhatsApp alerts to opted-in waitlists when slots open.
+- **Single-Winner Atomic Concurrency Lock**: Eliminates double-booking via database-level race condition protection.
+- **Zero Commission Guarantee**: Flat subscription model ensuring clinics keep 100% of their consultation fees.
+- **Full-Screen Desktop Subscription Checkout**: Executive 2-column web checkout for Monthly (₹1,999/mo) and Annual (₹19,190/yr - Save 20%) plans.
+- **14-Day Free Access System**: Instant trial onboarding with phone and email duplicate abuse prevention.
+- **Patient Refund & Credit Choice Portal**: Self-serve portal allowing patients to choose between immediate refunds or 14-day priority pass credits.
+- **Interactive Bleed ROI Calculator**: Real-time slider calculation illustrating monthly revenue bleed vs. recovery potential.
+- **Live Operations Dashboard & Delivery Outbox**: Comprehensive tracking of recovered revenue, chair statuses, and WhatsApp notification states.
+- **Production Mock Payment Gating**: Strict token override protection preventing unauthorized mock activations in production.
 
 ---
 
 ## Automated Test Suite
 
-Run the full local unit test suite covering payment gateways, signature verification, atomic locking, trial deduplication, and mock gating:
+Execute the local test suite covering payment gateways, signature verification, atomic locking, trial deduplication, and mock gating:
 
 ```bash
 cd backend
 python -m pytest tests/test_payment_gateway_local.py -v
 ```
 
-**Results:**
 ```
 ============================= 37 passed in 0.56s =============================
 ```
@@ -248,7 +233,7 @@ python -m pytest tests/test_payment_gateway_local.py -v
 
 ## Contributing
 
-Contributions, bug reports, and feature proposals are welcome. Please open an issue or submit a pull request with test coverage for any architectural modifications.
+Contributions are welcome. Please open an issue or submit a pull request with unit test coverage for any proposed modifications.
 
 ---
 
