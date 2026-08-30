@@ -46,10 +46,7 @@ export default function Home() {
                         Turn last-minute cancellations into instant standby revenue.
                     </h1>
                     <p className="mt-6 text-base sm:text-lg max-w-2xl opacity-80">
-                        When a customer cancels, Avsar notifies your consented waitlist over
-                        WhatsApp and runs a locked, single-winner checkout. One paying
-                        customer replaces the empty slot, automatically. No calls, no
-                        double-bookings, no percentage cuts.
+                        When a customer cancels, Avsar automatically texts your waitlist via WhatsApp to offer them the open spot. The first person to book claims it instantly. Keep your schedule full without making phone calls or paying heavy commissions.
                     </p>
                     <div className="mt-8 flex gap-4 flex-wrap">
                         <button
@@ -102,25 +99,25 @@ export default function Home() {
                 <ExplainerSection
                     tone="lavender"
                     order="left"
-                    kicker="Step 1 · Flag the vacancy"
-                    title="The moment a slot opens up, Avsar flags it."
-                    body="You cancel a slot in one tap, or your scheduling software tells us. Avsar doesn't need a percentage of the fee. It just needs to know when a slot is idle."
+                    kicker="Step 1 · Mark the opening"
+                    title="Instantly free up a cancelled slot."
+                    body="When a customer cancels, just tap a button to mark the time slot as available. Avsar immediately gets to work filling that empty spot so you don't lose money."
                     mockup={<VacancyMockup />}
                 />
                 <ExplainerSection
                     tone="teal"
                     order="right"
-                    kicker="Step 2 · Notify the waitlist"
-                    title="A WhatsApp message goes only to customers who opted in."
-                    body="Non-consented customers are skipped at the query level, not just hidden in the UI. The message never contains a price, a discount, or a standby rate. Only the slot, the professional, and a link to the priority page."
+                    kicker="Step 2 · Message your waitlist"
+                    title="Automatic alerts sent via WhatsApp."
+                    body="Avsar sends a friendly WhatsApp message to your waitlist letting them know a spot just opened up. We only message customers who have asked to be notified, keeping everything professional and spam-free."
                     mockup={<WhatsAppMockup />}
                 />
                 <ExplainerSection
                     tone="peach"
                     order="left"
-                    kicker="Step 3 · Locked, single-winner checkout"
-                    title="One atomic operation. One winner. Everyone else is refunded."
-                    body="Two customers tapping pay at the same second? Only one is locked in. The other receives a message that the slot was just taken, and their payment is automatically refunded. No manual reconciliation."
+                    kicker="Step 3 · Secure the booking"
+                    title="First to book gets the spot."
+                    body="When multiple customers try to claim the spot, Avsar ensures only the first person gets it. Anyone who misses out is instantly notified and refunded. No double-bookings and no extra work for your staff."
                     mockup={<CheckoutMockup />}
                 />
             </div>
@@ -163,7 +160,7 @@ export default function Home() {
             >
                 <div className="max-w-5xl mx-auto">
                     <div className="text-xs uppercase tracking-[0.25em] opacity-60">
-                        Design choices, not legal guarantees
+                        Built for trust and transparency
                     </div>
                     <h2 className="font-serif text-3xl sm:text-4xl mt-2 mb-8">
                         Three product choices we made on purpose.
@@ -172,17 +169,17 @@ export default function Home() {
                         <ComplianceCard
                             testid="compliance-1"
                             title="No prices in WhatsApp"
-                            body="Templates never include a price, discount, or standby rate. Pricing is visible only on the checkout page after a patient taps the link."
+                            body="Messages only show the available time and date. Customers see pricing details only when they click the secure booking link."
                         />
                         <ComplianceCard
                             testid="compliance-2"
                             title="Flat subscription"
-                            body="We charge a flat monthly fee, not a percentage of your service. What your business earns from a slot is your business's revenue."
+                            body="We charge a flat monthly fee instead of taking a cut of your earnings. You keep 100% of your service revenue."
                         />
                         <ComplianceCard
                             testid="compliance-3"
-                            title="Consent at booking"
-                            body="A customer must have a timestamped consent record to receive any standby message. Enforced at the database query, not at the UI."
+                            title="Opt-in only messaging"
+                            body="We ensure messages are only sent to customers who explicitly asked to be on your waitlist, protecting your business's reputation."
                         />
                     </div>
                 </div>
