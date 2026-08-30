@@ -65,7 +65,6 @@ export default function Choice() {
 
     return (
         <div>
-            <Nav />
             <section
                 className="doctro-section section-bg-peach"
                 style={{ marginTop: 12 }}

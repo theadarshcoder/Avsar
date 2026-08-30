@@ -17,7 +17,6 @@ export default function Confirmation() {
 
     return (
         <div>
-            <Nav />
             <section
                 className="doctro-section"
                 style={{ background: "#FFFFFF", marginTop: 12 }}

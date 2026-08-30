@@ -1,4 +1,19 @@
-/* App-specific styling. Most global styling lives in index.css. */
+/* App-specific styling with ambient top gradient matching Craft.do aesthetic */
 .App {
     min-height: 100%;
+    position: relative;
+    background-color: #FFFFFF;
+}
+
+/* Ethereal background gradient mesh at the top for frosted glass navbar */
+.App::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 480px;
+    background: radial-gradient(circle at 50% -20%, rgba(186, 230, 253, 0.45) 0%, rgba(233, 213, 255, 0.35) 40%, rgba(254, 240, 138, 0.15) 75%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
 }
