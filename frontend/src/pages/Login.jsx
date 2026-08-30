@@ -49,8 +49,8 @@ export default function Login() {
     };
 
     const handleQuickLogin = async () => {
-        const demoEmail = "demo@acmecenter.in";
-        const demoPass = "password123";
+        const demoEmail = "test@avsar.in";
+        const demoPass = "test1234";
         setEmail(demoEmail);
         setPassword(demoPass);
         setLoading(true);
