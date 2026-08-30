@@ -40,6 +40,7 @@ CLINIC_KEY_PHONE = "+919900000001"  # used as the natural key for idempotency
 # Fixed IDs so seed reruns are stable and the tester's notes remain valid.
 CLINIC_ID = "clinic_smile_dental_indiranagar"
 PATIENT_IDS = {
+    "p0": "patient_test_recipient",
     "p1": "patient_aarav",
     "p2": "patient_bhavna",
     "p3": "patient_chirag",
@@ -50,6 +51,7 @@ PATIENT_IDS = {
 
 
 PATIENT_SPECS = [
+    ("p0", "Adarsh (Test Recipient)", "+919250543490", True),
     ("p1", "Aarav Rao", "+919812345671", True),
     ("p2", "Bhavna Iyer", "+919812345672", True),
     ("p3", "Chirag Kapoor", "+919812345673", True),

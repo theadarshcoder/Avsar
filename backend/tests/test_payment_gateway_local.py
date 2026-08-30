@@ -522,7 +522,8 @@ class TestNotificationService:
 
     @pytest.mark.asyncio
     async def test_send_success_normal_phone(self):
-        with patch("services.notification_service.sent_messages") as mock_msgs:
+        with patch("services.notification_service.sent_messages") as mock_msgs, \
+             patch("services.notification_service.is_mock_mode", return_value=True):
             mock_msgs.insert_one = AsyncMock()
             from services.notification_service import send_whatsapp_message
 
@@ -534,6 +535,25 @@ class TestNotificationService:
             )
 
             assert msg_id.startswith("mock_msg_")
+            mock_msgs.insert_one.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_send_twilio_transport_success(self):
+        with patch("services.notification_service.sent_messages") as mock_msgs, \
+             patch("services.notification_service.is_mock_mode", return_value=False), \
+             patch("services.notification_service._send_via_twilio", return_value="SM_twilio_test_sid") as mock_twilio:
+            mock_msgs.insert_one = AsyncMock()
+            from services.notification_service import send_whatsapp_message
+
+            msg_id = await send_whatsapp_message(
+                "+919250543490",
+                "Test body for Twilio",
+                template_name="test",
+                patient_id="p1",
+            )
+
+            assert msg_id == "SM_twilio_test_sid"
+            mock_twilio.assert_called_once()
             mock_msgs.insert_one.assert_called_once()
 
 
