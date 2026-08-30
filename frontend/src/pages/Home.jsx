@@ -46,7 +46,7 @@ export default function Home() {
                         Turn Empty Slots Into New Bookings.
                     </h1>
                     <p className="mt-6 text-base sm:text-lg max-w-2xl opacity-80">
-                        When a customer cancels, Avsar automatically texts your waitlist via WhatsApp to offer them the open spot. The first person to book claims it instantly. Keep your schedule full without making phone calls or paying heavy commissions.
+                        Avsar quickly alerts waiting customers and helps turn the empty slot into a new booking.
                     </p>
                     <div className="mt-8 flex gap-4 flex-wrap">
                         <button
