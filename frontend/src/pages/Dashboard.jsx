@@ -82,8 +82,6 @@ export default function Dashboard() {
 
     return (
         <div>
-            <Nav />
-
             <section
                 className="doctro-section section-bg-yellow"
                 data-testid="dashboard-header"
@@ -93,13 +91,23 @@ export default function Dashboard() {
                     <div className="text-xs uppercase tracking-[0.25em] opacity-70">
                         Clinic dashboard · phase-1 demo
                     </div>
-                    <h1 className="font-serif text-4xl sm:text-5xl mt-2 mb-3">
-                        {clinic?.name || "…"}
-                    </h1>
+                    <div className="flex items-center justify-between flex-wrap gap-4 mt-2 mb-3">
+                        <h1 className="font-serif text-4xl sm:text-5xl">
+                            {clinic?.name || "…"}
+                        </h1>
+                        <button
+                            onClick={() => {
+                                localStorage.removeItem("doctro_clinic_token");
+                                localStorage.removeItem("doctro_clinic");
+                                window.location.href = "/login";
+                            }}
+                            className="text-xs font-semibold uppercase tracking-wider text-neutral-600 hover:text-black bg-black/[0.04] hover:bg-black/[0.08] px-3.5 py-1.5 rounded-full transition-all"
+                        >
+                            Sign out
+                        </button>
+                    </div>
                     <p className="opacity-80 max-w-xl">
-                        No auth in this build — the dashboard is open by <code>clinicId</code>.
-                        Cancel a scheduled slot to fire the mock WhatsApp broadcast, then use
-                        the outbox below to click through as a patient.
+                        Authenticated clinic session. Open or cancel a scheduled slot to trigger waitlist notifications and view live standby revenue.
                     </p>
                     <div className="mt-6 max-w-md">
                         <RevenueTicker clinicId={clinicId} refreshKey={refreshKey} />
