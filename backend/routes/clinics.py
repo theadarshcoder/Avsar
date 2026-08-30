@@ -226,6 +226,11 @@ async def open_slot_and_broadcast(slot_id: str):
         link = checkout_link(tok.token)
 
         body = render_standby_body(time_str, slot["doctorName"], link)
+        content_vars = {
+            "1": "Today",
+            "2": f"{time_str} with {slot['doctorName']}",
+            "3": f"Priority status: {link}",
+        }
         try:
             await send_whatsapp_message(
                 to_phone=patient["phone"],
@@ -234,6 +239,7 @@ async def open_slot_and_broadcast(slot_id: str):
                 patient_id=patient["id"],
                 clinic_id=slot["clinicId"],
                 slot_id=slot_id,
+                content_variables=content_vars,
             )
             sent_count += 1
             outbox.append({
