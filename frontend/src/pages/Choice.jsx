@@ -15,7 +15,31 @@ export default function Choice() {
     useEffect(() => {
         let alive = true;
         getTransaction(transactionId)
-            .then((d) => alive && setData(d))
+            .then((d) => {
+                if (!alive) return;
+                setData(d);
+                // If the choice has already been resolved (refund initiated
+                // or priority pass issued), reflect that state on load
+                // instead of showing the picker again.
+                const t = d?.transaction || {};
+                if (t.refundStatus) {
+                    setOutcome({
+                        choice: "refund",
+                        result: { refundId: t.refundId, amount: t.refundAmount || t.totalPaid },
+                    });
+                } else if (t.creditIssuedPassId) {
+                    setOutcome({
+                        choice: "credit",
+                        result: {
+                            priorityPass: {
+                                id: t.creditIssuedPassId,
+                                amount: t.totalPaid,
+                                expiresAt: t.creditIssuedPassExpiresAt || null,
+                            },
+                        },
+                    });
+                }
+            })
             .catch((e) => alive && setError(e?.response?.data?.detail || String(e)));
         return () => {
             alive = false;

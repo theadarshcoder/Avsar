@@ -61,11 +61,25 @@ export const getCheckout = (token) =>
 
 export const mockPay = (token, { forceEventId, simulateFailure = false } = {}) =>
     client
-        .post(`/checkout/${token}/mock-pay`, {
-            forceEventId,
-            fireWebhook: true,
-            simulateFailure,
-        })
+        .post(
+            `/checkout/${token}/mock-pay`,
+            {
+                forceEventId,
+                fireWebhook: true,
+                simulateFailure,
+            },
+            {
+                // Live server may be in razorpay mode — this header keeps mock-pay usable
+                // from Playwright / manual dev flows. Never used from the real Pay button.
+                headers: { "X-Doctro-Test-Override": "doctro-testing-override" },
+            },
+        )
         .then((r) => r.data);
+
+export const createOrder = (token) =>
+    client.post(`/checkout/${token}/order`).then((r) => r.data);
+
+export const pollCheckoutOutcome = (token) =>
+    client.get(`/checkout/${token}/outcome`).then((r) => r.data);
 
 export default client;

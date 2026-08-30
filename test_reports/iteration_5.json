@@ -1,0 +1,52 @@
+{
+  "summary": "Iteration 5 — verified the REAL Razorpay TEST-MODE integration end to end. Added /app/backend/tests/test_razorpay_integration.py (14 new pytest cases). Backend: real order creation (order_TVm... , amount 85000 paise, keyId rzp_test_TVmATZZ0WzElAa, paymentMode=razorpay), gateway-side order notes independently fetched via SDK order.fetch and confirmed to carry slotId/patientId/clinicId/checkoutToken, receipt truncated to 31 chars, SLOT_NOT_OPEN 409 + SLOT_EXPIRED 410 refusals, webhook 401 on wrong/missing signature (no txn created), 200 + SLOT_JUST_TAKEN + refundStatus=initiated on correctly-signed payload for an already-booked slot, DUPLICATE_EVENT idempotency by X-Razorpay-Event-Id (no 2nd txn), notes-only correlation (no top-level checkoutToken) -> BOOKED, poll endpoint pending/booked/lost_race/expired transitions, mock-pay 403 MOCK_DISABLED without/with wrong override header and 200 with the correct one. Full suite: 41/42 pytest green + acceptance_test.py green (4 consented/2 skipped/3 sent/1 failed, duplicate ack, race -> 1 BOOKED + 1 SLOT_JUST_TAKEN + 1 confirmation + loser refund initiated, SLOT_EXPIRED). Frontend: window.Razorpay===function, banner 'Payments powered by Razorpay (test mode).', label 'Pay ₹850', POST /order fires with real order id, live Razorpay Test-Mode modal iframe (api.razorpay.com/v1/checkout/*) opens, Simulate-payment-failure button correctly HIDDEN. Regressions: /choice pills measured exactly 220x52 both, choice->priority-pass issuance works, dashboard cancel&broadcast + outbox + FAILED badge OK, confirmation page OK, homepage ROI math correct (8/wk x ₹2,000 x 4 = ₹64,000; 80% = ₹51,200). ONE CRITICAL frontend crash found (see frontend_issues).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/checkout/{token}/order", "issue": "Response body `notes` omits `checkoutToken` (it substitutes `doctorName`), contradicting the spec 'notes.checkoutToken == token'. Gateway-side order notes DO include checkoutToken, so webhook correlation is unaffected — cosmetic/API-contract deviation only. Covered by failing test test_order_response_notes_include_checkout_token."},
+      {"endpoint": "POST /api/checkout/{token}/order", "issue": "When an unredeemed priority pass exceeds the slot total the endpoint returns 400 ZERO_TOTAL, but GET /api/checkout/{token} still reports available=true with total 0, so the UI renders a payable 'Pay ₹0' button that can never succeed. Needs a zero-amount state on the GET payload (or free-booking support)."},
+      {"endpoint": "pytest tests/backend_test.py::TestReAddAfterRemove::test_add_remove_readd_same_phone_seeded_clinic", "issue": "Flaky (~50% failure rate, 1 of 2 full-suite runs) — passes in isolation; likely shared-seed-clinic waitlist state across xdist workers. Not a product bug but makes the suite non-deterministic."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Checkout.jsx (openRazorpay catch / runMock catch)", "issue": "CRITICAL: page CRASHES with 'Objects are not valid as a React child (found: object with keys {code, message})' when POST /order returns a structured error detail. setRetryError(e?.response?.data?.detail) stores the object and it is rendered raw at `{retryError}`. Reproduced 100%: /checkout/<token-with-priority-pass> -> click 'Pay ₹0' -> React unmounts (dev overlay shown; production users would see a blank page). Same crash path applies to 409 SLOT_NOT_OPEN and 410 SLOT_EXPIRED order errors, i.e. the normal lost-race retry flow. Fix: render detail.message (the runMock handler already does this - reuse that normalisation).", "selector": "[data-testid=\"btn-pay-now\"] / [data-testid=\"checkout-failed-msg\"]", "priority": "CRITICAL"},
+      {"component": "Footer", "issue": "Stale copy 'Phase-1 demo build — WhatsApp + Razorpay are MOCKED.' shown on every page while PAYMENT_MODE=razorpay (real test-mode gateway). Contradicts the checkout banner.", "selector": "footer", "priority": "MEDIUM"},
+      {"component": "Choice page", "issue": "After a choice is confirmed, reloading /choice/{txnId} shows the picker again instead of the already-resolved state; the 'already made' message only appears after a second submit (409). Should reflect resolved state on load.", "selector": "[data-testid=\"choice-*\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "Razorpay modal dismiss -> inline retry state", "issue": "NOT verified: on the token used for the dismiss test the order call returned 400 ZERO_TOTAL and the page crashed (bug above) before the modal became visible. Re-test ondismiss/retry after the crash fix.", "affected_selectors": ["[data-testid=\"checkout-failed-msg\"]"]},
+      {"flow": "handler -> pollCheckoutOutcome -> /confirmation", "issue": "Client polling after a real captured payment could not be exercised (real card entry intentionally not attempted). Backend GET /outcome transitions were verified directly (pending -> booked/lost_race/expired) and mock-pay booking navigates to /confirmation correctly.", "affected_selectors": ["[data-testid=\"checkout-confirming-msg\"]"]}
+    ],
+    "design_issues": [
+      {"screen": "Checkout (zero-total)", "issues": ["'Pay ₹0' primary CTA is offered for a fully priority-pass-covered slot even though the backend rejects it"]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_razorpay_integration.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "CRITICAL: normalise API error details in Checkout.jsx before setting retryError/fatalError (use detail.message when detail is an object) — currently any 400/409/410 from /order white-screens the checkout page.",
+    "Handle the zero-total (priority-pass-covers-all) case in the UI/GET payload instead of showing a dead 'Pay ₹0' button.",
+    "Include checkoutToken in the POST /order response notes (or update the spec) for contract parity with gateway notes.",
+    "Update the footer copy — Razorpay is real test mode now, only WhatsApp is mocked.",
+    "Render the already-resolved state on /choice reload.",
+    "Stabilise TestReAddAfterRemove (isolate waitlist fixtures per worker/clinic)."
+  ],
+  "critical_code_review_comments": [
+    "Checkout.jsx line ~166: `setRetryError(e?.response?.data?.detail || String(e))` stores a dict; line ~260 renders `{retryError}` directly → React child crash. The runMock catch already normalises the same shape — extract one helper and use it in both.",
+    "Checkout.jsx line ~39 has the same latent hazard for fatalError (saved by String() but yields '[object Object]').",
+    "checkout.py /order returns HTTPException(409/410/400, {dict}) — FastAPI nests it under `detail`; document this shape or return a typed error model so clients don't have to guess.",
+    "razorpay_service.create_refund short-circuits to a mock refund for payment ids starting with 'pay_test'/'mock_pay_' — safe for tests, but ensure real Razorpay test payment ids (pay_XXXX) never collide with that prefix check."
+  ],
+  "updated_files": ["/app/backend/tests/test_razorpay_integration.py"],
+  "success_rate": {"backend": "97% (41/42 pytest; only the response-notes contract test fails)", "frontend": "85% (all razorpay-mode UI assertions pass; 1 critical crash on order error path)"},
+  "seed_data_creation": "python /app/backend/seed.py --reset run before each suite. Test-only slots created via POST /api/clinics/{clinicId}/slots (Dr. Past/Notes/Gate/Gate2/UI Test/Dismiss) plus one PriorityPass issued to patient_aarav during the /choice regression — re-run seed --reset to clear before further UI testing.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "No auth in this build; MOCK_OVERRIDE_TOKEN=doctro-testing-override sent via X-Doctro-Test-Override for mock-pay.",
+  "context_for_next_testing_agent": "New suite: /app/backend/tests/test_razorpay_integration.py (real Razorpay order + webhook signature/idempotency/notes-correlation + mock-pay gating). Razorpay test API is reachable from this container (order.create/order.fetch verified). PAYMENT_MODE left as 'razorpay' — do not change. After the Checkout.jsx error-normalisation fix, re-test: (a) click Pay on a token whose slot is already booked → expect inline 'checkout-failed-msg', no React crash; (b) Razorpay modal ondismiss → retry state; (c) zero-total/priority-pass token behaviour. Always run seed.py --reset first: a leftover PriorityPass for patient_aarav makes the first outbox token zero-total.",
+  "rca_of_the_issue": "Root cause of the critical crash: backend order/checkout endpoints raise HTTPException with a dict body ({code,message}); FastAPI serialises it to {'detail': {...}}. Checkout.jsx's openRazorpay catch assigns that object to the retryError state and JSX renders it directly, which React rejects ('Objects are not valid as a React child'), unmounting the page. Reproduction: seed --reset → book/cancel a booked slot → pick priority pass for patient_aarav → broadcast a new slot → open that patient's /checkout → click Pay (order returns 400 ZERO_TOTAL) → page crashes. Mitigation: normalise `detail` to `detail.message` (or JSON.stringify) before setState, exactly as runMock() already does."
+}

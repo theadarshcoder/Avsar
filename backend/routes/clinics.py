@@ -416,6 +416,11 @@ async def choose_refund_or_credit(tx_id: str, payload: CancelChoice):
             source_transaction_id=tx_id,
         )
         await transactions.update_one(
-            {"id": tx_id}, {"$set": {"creditIssuedPassId": pp["id"]}}
+            {"id": tx_id},
+            {"$set": {
+                "creditIssuedPassId": pp["id"],
+                "creditIssuedPassAmount": pp["amount"],
+                "creditIssuedPassExpiresAt": pp["expiresAt"],
+            }},
         )
         return {"choice": "credit", "priorityPass": pp}

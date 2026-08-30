@@ -13,7 +13,11 @@ CLINIC_ID = "clinic_smile_dental_indiranagar"
 @pytest.fixture(scope="module")
 def api():
     s = requests.Session()
-    s.headers.update({"Content-Type": "application/json"})
+    s.headers.update({
+        "Content-Type": "application/json",
+        # Live server may be in PAYMENT_MODE=razorpay; mock-pay requires this.
+        "X-Doctro-Test-Override": os.environ.get("MOCK_OVERRIDE_TOKEN", "doctro-testing-override"),
+    })
     return s
 
 

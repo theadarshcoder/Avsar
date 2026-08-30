@@ -1,0 +1,41 @@
+{
+  "summary": "Iteration-6 fix verification (backend + frontend). ALL 4 fixes from iteration 5 VERIFIED FIXED. (1) CRITICAL Checkout.jsx crash: reproduced both structured-error paths (400 ZERO_TOTAL via a fully-covering PriorityPass, and 409 SLOT_NOT_OPEN triggered while the checkout page was already mounted) — page stays alive, no pageerror, [data-testid=checkout-failed-msg] renders a human string ('This slot is fully covered by a priority pass...' / 'Slot is not open.'), no '[object Object]' and no raw JSON. (2) /order response notes.checkoutToken == URL token verified programmatically and via browser network capture (order_TVmeQTxh7gtR81, amount 145000 paise). (3) Footer: no 'Razorpay are MOCKED', contains 'Razorpay is real (test mode)'. (4) /choice reload renders resolved-state card (choice-refund-done and choice-credit-done) with picker gone, no Invalid Date/undefined, verified in two independent transactions. Regressions green: pytest 48/48 after seed --reset (42 pre-existing + 6 new), acceptance_test.py all [OK] (4 consented/2 skipped/3 sent/1 failed +919812340000, duplicate-eventId ack, single-winner race with 1 confirmation + loser refund initiated, SLOT_EXPIRED). Happy razorpay path: window.Razorpay is a function, real order id, api.razorpay.com/v1/checkout iframe opens with Test Mode badge, simulate-failure button hidden, banner 'Payments powered by Razorpay (test mode).'. Mock-pay gating: 403 MOCK_DISABLED without header, 200 with override. Dashboard 'Cancel & broadcast' (btn-cancel-scheduled-*) and 'Cancel booking' (btn-cancel-booked-*) flows work end-to-end (4 outbox links, 1 failed send shown; choice link surfaced).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/checkout/{token}/mock-pay + POST /api/clinics/transactions/{txId}/choice", "issue": "A zero-total booking is allowed through mock-pay (real /order correctly blocks it with ZERO_TOTAL), producing a transaction with totalPaid=0. The /choice page then reads 'Please pick how you'd like your \u20b90 back' and issues either a \u20b90 refund or a \u20b90 PriorityPass. Suggest rejecting choice/refund/credit on totalPaid==0 or blocking zero-total mock bookings."},
+      {"endpoint": "services/pricing_service.compute_price", "issue": "PriorityPass overage is silently forfeited: a \u20b91250 pass applied to a \u20b9750 subtotal consumes the whole pass (\u20b9500 value lost) with no UI/API messaging. Also a \u20b90 pass is still matched as 'active', so GET /checkout returns priorityPassId set with priorityPassAmount=0 — contract inconsistency (UI hides the row via amount>0)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration6_fixes.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/test_razorpay_integration.py",
+    "/app/backend/tests/test_choice_flow.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Optional (business): decide behaviour for zero-total transactions — refund/credit of \u20b90 is currently offered on the /choice page.",
+    "Optional (business): handle PriorityPass overage (partial redemption or explicit 'remaining credit forfeited' copy) and stop minting/matching \u20b90 passes.",
+    "Test hygiene (not product): make the existing pytest suite idempotent — tests/test_razorpay_integration.py hardcodes seeded slots slot_today_1000/1130/1630 and backend_test.py::TestSeededWaitlist asserts an exact global waitlist shape, so the suite only passes on a freshly reseeded DB (a second consecutive run gives 2 failed + 3 errors). This is the true root cause of iteration-5's 'flaky TestReAddAfterRemove'.",
+    "Defensive: Choice.jsx still does setError(e?.response?.data?.detail) (lines 43/59/61); today those details are plain strings, but reuse the humanError() normaliser there to be crash/[object Object]-proof if a structured detail is ever added."
+  ],
+  "critical_code_review_comments": [
+    "humanError() in Checkout.jsx is correct and covers all three setState paths (initial load, openRazorpay catch, runMock catch); recommend hoisting it into src/lib/apiClient.js (or a shared util) and using it in Choice.jsx too rather than duplicating the pattern.",
+    "Any test that mints a PriorityPass for a seeded patient invalidates the fixed-amount assertions in test_razorpay_integration.py (assert d['amount'] == 85000). I added a pass_cleanup fixture to my new test file; test_choice_flow.py::test_credit_choice still leaks a pass."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration6_fixes.py (new: order notes contract, structured /order 409+404 details, mock-pay gating 403/200, choice-reload persistence fields + PriorityPass cleanup fixture)"
+  ],
+  "success_rate": {"backend": "100% (48/48 pytest on fresh seed; acceptance_test all OK)", "frontend": "100% (all 4 fixes + happy razorpay + dashboard flows verified)"},
+  "seed_data_creation": "Used python /app/backend/seed.py --reset repeatedly; created TEST_Dr* slots and PriorityPass credits during scenario building. DB left in a freshly reseeded state with pytest 48/48 green.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration-6 fixes all verified; no open product defects. Repro recipes: ZERO_TOTAL crash path = mint a PriorityPass (book -> cancel-booked -> credit) for a patient, then broadcast a low-price slot (standardPrice 300) so total=0 and click btn-pay-now; 409 SLOT_NOT_OPEN path = load a victim checkout page, then mock-pay a sibling token via page.evaluate fetch with header X-Doctro-Test-Override: doctro-testing-override, then click btn-pay-now. ALWAYS run `python /app/backend/seed.py --reset` immediately before pytest — the pre-existing suite is state-coupled (hardcoded slot_today_* ids + exact waitlist-shape assertion) and fails on consecutive runs. Choice picker needs submit-refund/submit-credit followed by confirm-choice (two clicks).",
+  "rca_of_the_issue": "Iteration-5 CRITICAL: FastAPI raises HTTPException(status, {code, message}), so axios delivered a dict at e.response.data.detail which was passed straight into setState and rendered as a React child -> white screen. Fix (humanError) now unwraps .message for object details, falls back to JSON/string, and is applied to all three setState paths; verified live on 400 ZERO_TOTAL and 409 SLOT_NOT_OPEN. Iteration-5's 'flaky test' RCA: the suite is not idempotent — hardcoded seeded slot ids get consumed and PriorityPasses minted by choice tests change pricing for later order tests, so re-runs without seed --reset fail; environmental/test-design, not a product bug."
+}

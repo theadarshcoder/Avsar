@@ -41,7 +41,7 @@ export default function Footer() {
             </div>
             <div className="max-w-6xl mx-auto mt-14 pt-6 border-t border-white/10 text-xs opacity-60 flex flex-wrap gap-4 justify-between">
                 <span>© {new Date().getFullYear()} doctro. Built for Indian dental clinics.</span>
-                <span>Phase-1 demo build — WhatsApp + Razorpay are MOCKED.</span>
+                <span>Phase-1 demo build — WhatsApp is MOCKED; Razorpay is real (test mode).</span>
             </div>
         </footer>
     );

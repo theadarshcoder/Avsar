@@ -34,6 +34,8 @@ for line in FRONTEND_ENV.splitlines():
         BASE = line.split("=", 1)[1].strip().strip('"').rstrip("/")
 API = f"{BASE}/api"
 print(f"[info] Using API base: {API}")
+# Server may be running in razorpay mode; the mock-pay endpoint is gated behind this header.
+OVERRIDE_HEADERS = {"X-Doctro-Test-Override": "doctro-testing-override"}
 
 CLINIC_ID = "clinic_smile_dental_indiranagar"
 SLOT_BROADCAST = "slot_today_1000"    # used for broadcast + concurrency
@@ -68,7 +70,8 @@ async def get_json(c: httpx.AsyncClient, url: str) -> dict:
 
 
 async def post_json(c: httpx.AsyncClient, url: str, body: dict | None = None) -> dict:
-    r = await c.post(url, json=body or {})
+    headers = OVERRIDE_HEADERS if url.endswith("/mock-pay") else None
+    r = await c.post(url, json=body or {}, headers=headers)
     r.raise_for_status()
     return r.json()
 

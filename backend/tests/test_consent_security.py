@@ -27,7 +27,10 @@ EXPECTED = (
 @pytest.fixture(scope="module")
 def api():
     s = requests.Session()
-    s.headers.update({"Content-Type": "application/json"})
+    s.headers.update({
+        "Content-Type": "application/json",
+        "X-Doctro-Test-Override": os.environ.get("MOCK_OVERRIDE_TOKEN", "doctro-testing-override"),
+    })
     return s
 
 

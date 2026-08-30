@@ -1,4 +1,9 @@
-"""Refunds & credit issuance for cancelled-after-booking flows."""
+"""Refunds & credit issuance for cancelled-after-booking flows.
+
+Refunds route through `services.razorpay_service.create_refund`, which
+respects PAYMENT_MODE. API failures are caught here — a webhook that
+initiates a refund must NEVER crash because the gateway hiccupped.
+"""
 from __future__ import annotations
 
 import logging
@@ -7,20 +12,54 @@ from datetime import datetime, timedelta, timezone
 
 from config import PRIORITY_PASS_TTL_DAYS
 from database import priority_passes, transactions
+from services.razorpay_service import create_refund
 
 logger = logging.getLogger(__name__)
 
 
-# MOCK: replace with Razorpay Refunds API.
 async def initiate_refund(transaction_id: str, amount: int) -> str:
-    """Mark a transaction's refund as initiated. Returns a mock refund id."""
-    refund_id = f"mock_rfnd_{uuid.uuid4().hex[:12]}"
-    await transactions.update_one(
-        {"id": transaction_id},
-        {"$set": {"refundStatus": "initiated", "refundId": refund_id, "refundAmount": amount}},
-    )
-    logger.info("MOCK refund initiated for txn=%s amount=%s", transaction_id, amount)
-    return refund_id
+    """Kick off a refund for the given transaction.
+
+    Returns the refund id on success. On API failure, records a retryable
+    state (`refundStatus="initiated"`, `refundError=<msg>`) and returns a
+    sentinel string so the webhook can still respond. Amount is stored in
+    rupees on the transaction but Razorpay wants paise.
+    """
+    txn = await transactions.find_one({"id": transaction_id}, {"_id": 0})
+    if not txn:
+        raise ValueError(f"transaction {transaction_id} not found for refund")
+
+    payment_id = txn.get("razorpayPaymentId") or ""
+    amount_paise = int(amount) * 100
+
+    try:
+        refund = await create_refund(payment_id, amount_paise)
+        refund_id = refund.get("id") or f"rfnd_unknown_{uuid.uuid4().hex[:10]}"
+        await transactions.update_one(
+            {"id": transaction_id},
+            {"$set": {
+                "refundStatus": "initiated",
+                "refundId": refund_id,
+                "refundAmount": amount,
+                "refundError": None,
+            }},
+        )
+        logger.info(
+            "Refund initiated txn=%s payment=%s amount=%s refund=%s",
+            transaction_id, payment_id, amount, refund_id,
+        )
+        return refund_id
+    except Exception as exc:  # noqa: BLE001
+        # Never crash the webhook — mark retryable and move on.
+        logger.exception("Refund API failure for txn=%s payment=%s", transaction_id, payment_id)
+        await transactions.update_one(
+            {"id": transaction_id},
+            {"$set": {
+                "refundStatus": "initiated",  # still initiated from doctro's perspective
+                "refundError": str(exc),
+            }},
+        )
+        return "refund_pending_retry"
 
 
 async def issue_priority_pass(
