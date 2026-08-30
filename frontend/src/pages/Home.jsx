@@ -43,7 +43,7 @@ export default function Home() {
                         data-testid="hero-headline"
                         className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight"
                     >
-                        Turn last-minute cancellations into instant standby revenue.
+                        Turn Empty Slots Into New Bookings.
                     </h1>
                     <p className="mt-6 text-base sm:text-lg max-w-2xl opacity-80">
                         When a customer cancels, Avsar automatically texts your waitlist via WhatsApp to offer them the open spot. The first person to book claims it instantly. Keep your schedule full without making phone calls or paying heavy commissions.
