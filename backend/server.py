@@ -62,10 +62,22 @@ app.include_router(api_router)
 app.include_router(razorpay_router)
 app.include_router(whatsapp_router)
 
+_cors_raw = os.environ.get("CORS_ORIGINS", "")
+if _cors_raw:
+    _origins = [o.strip() for o in _cors_raw.split(",") if o.strip()]
+else:
+    _origins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://avsar-frontend.vercel.app",
+        "https://avsar.vercel.app",
+    ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get("CORS_ORIGINS", "*").split(","),
+    allow_origins=_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_methods=["*"],
     allow_headers=["*"],
 )
