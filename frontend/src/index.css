@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-    /* doctro palette — flat section fills, no gradients anywhere */
-    --doctro-lavender: #E3DBFB;
-    --doctro-teal: #B8E4DE;
-    --doctro-peach: #FBDBC6;
-    --doctro-pale-yellow: #FFF0B8;
-    --doctro-cream: #F5EFE1;
-    --doctro-ink: #101014;
-    --doctro-line: #E5E1D8;
+    /* avsar palette — flat section fills, no gradients anywhere */
+    --avsar-lavender: #E3DBFB;
+    --avsar-teal: #B8E4DE;
+    --avsar-peach: #FBDBC6;
+    --avsar-pale-yellow: #FFF0B8;
+    --avsar-cream: #F5EFE1;
+    --avsar-ink: #101014;
+    --avsar-line: #E5E1D8;
 }
 
 html,
@@ -22,7 +22,7 @@ body,
 body {
     margin: 0;
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-    color: var(--doctro-ink);
+    color: var(--avsar-ink);
     background: #FFFFFF;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -37,15 +37,15 @@ body {
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-.section-bg-lavender { background-color: var(--doctro-lavender); }
-.section-bg-teal { background-color: var(--doctro-teal); }
-.section-bg-peach { background-color: var(--doctro-peach); }
-.section-bg-yellow { background-color: var(--doctro-pale-yellow); }
-.section-bg-cream { background-color: var(--doctro-cream); }
-.section-bg-ink { background-color: var(--doctro-ink); color: #F5EFE1; }
+.section-bg-lavender { background-color: var(--avsar-lavender); }
+.section-bg-teal { background-color: var(--avsar-teal); }
+.section-bg-peach { background-color: var(--avsar-peach); }
+.section-bg-yellow { background-color: var(--avsar-pale-yellow); }
+.section-bg-cream { background-color: var(--avsar-cream); }
+.section-bg-ink { background-color: var(--avsar-ink); color: #F5EFE1; }
 
 /* Both refund + credit buttons must be pixel-identical size. */
-.doctro-pill {
+.avsar-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -65,7 +65,7 @@ body {
 /* FIXED width variant — width does NOT flex with label. Used on the
    refund/credit choice buttons so equal-size holds regardless of future
    copy edits. */
-.doctro-pill-fixed {
+.avsar-pill-fixed {
     width: 220px;
     min-width: 220px;
     max-width: 220px;
@@ -75,24 +75,24 @@ body {
     text-overflow: ellipsis;
 }
 
-.doctro-pill:hover { transform: translateY(-1px); }
-.doctro-pill:active { transform: translateY(0); }
-.doctro-pill:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.avsar-pill:hover { transform: translateY(-1px); }
+.avsar-pill:active { transform: translateY(0); }
+.avsar-pill:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-.doctro-pill-primary {
-    background: var(--doctro-ink);
+.avsar-pill-primary {
+    background: var(--avsar-ink);
     color: #FFFFFF;
 }
-.doctro-pill-primary:hover { background: #26262c; }
+.avsar-pill-primary:hover { background: #26262c; }
 
-.doctro-pill-secondary {
-    background: var(--doctro-cream);
-    color: var(--doctro-ink);
+.avsar-pill-secondary {
+    background: var(--avsar-cream);
+    color: var(--avsar-ink);
     border-color: rgba(16, 16, 20, 0.08);
 }
-.doctro-pill-secondary:hover { background: #EDE6D5; }
+.avsar-pill-secondary:hover { background: #EDE6D5; }
 
-.doctro-card {
+.avsar-card {
     background: #FFFFFF;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(16, 16, 20, 0.06);
@@ -101,15 +101,15 @@ body {
 }
 
 /* Rounded, full-width sections with ~24px corner radius as required. */
-.doctro-section {
+.avsar-section {
     border-radius: 24px;
     padding: 72px 48px;
     margin: 24px;
 }
 
 @media (max-width: 700px) {
-    .doctro-section { padding: 48px 20px; margin: 12px; border-radius: 20px; }
-    .doctro-pill { min-width: 180px; height: 48px; }
+    .avsar-section { padding: 48px 20px; margin: 12px; border-radius: 20px; }
+    .avsar-pill { min-width: 180px; height: 48px; }
 }
 
 /* Slot status colors — distinct, flat, no gradient. */

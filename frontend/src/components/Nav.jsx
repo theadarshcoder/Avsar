@@ -182,7 +182,7 @@ export default function Nav() {
                     onClick={(e) => handleItemClick(e, navItems[0])}
                     className="font-serif tracking-tight font-bold text-[22px] sm:text-[24px] text-[#101014] hover:opacity-80 transition-opacity select-none pl-1"
                 >
-                    doctro
+                    Avsar
                 </Link>
 
                 {/* Center Public Section Links with Single Continuous Sliding Pill */}

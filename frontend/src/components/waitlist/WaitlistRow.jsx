@@ -57,7 +57,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
 
     return (
         <div
-            className="doctro-card"
+            className="avsar-card"
             data-testid={`waitlist-row-${entry.id}`}
         >
             <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -82,7 +82,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                         className="text-[10px] font-semibold px-2 py-1 rounded-full status-cancelled"
                         data-testid={`row-consent-status-${entry.id}`}
                     >
-                        NO CONSENT — WILL NEVER BE NOTIFIED
+                        NO CONSENT · WILL NEVER BE NOTIFIED
                     </span>
                 )}
             </div>
@@ -119,7 +119,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
             {showConsent && !consented && (
                 <div
                     className="mt-4 rounded-2xl p-4 border border-[rgba(16,16,20,0.1)]"
-                    style={{ background: "var(--doctro-cream)" }}
+                    style={{ background: "var(--avsar-cream)" }}
                     data-testid={`consent-panel-${entry.id}`}
                 >
                     <div className="text-sm font-semibold">Record explicit consent</div>
@@ -135,7 +135,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                             data-testid={`consent-panel-check-${entry.id}`}
                             checked={confirming}
                             onChange={(e) => setConfirming(e.target.checked)}
-                            className="mt-1 w-4 h-4 accent-[var(--doctro-ink)]"
+                            className="mt-1 w-4 h-4 accent-[var(--avsar-ink)]"
                         />
                         <span className="text-xs">
                             The patient just confirmed the statement above to me.
@@ -146,7 +146,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                             data-testid={`btn-consent-confirm-${entry.id}`}
                             disabled={!confirming || busy}
                             onClick={submitConsent}
-                            className="doctro-pill doctro-pill-primary"
+                            className="avsar-pill avsar-pill-primary"
                             style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                         >
                             {busy ? "Saving…" : "Save consent"}
@@ -158,7 +158,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                                 setShowConsent(false);
                                 setConfirming(false);
                             }}
-                            className="doctro-pill doctro-pill-secondary"
+                            className="avsar-pill avsar-pill-secondary"
                             style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                         >
                             Cancel
@@ -172,7 +172,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                     <button
                         data-testid={`btn-record-consent-${entry.id}`}
                         onClick={() => setShowConsent(true)}
-                        className="doctro-pill doctro-pill-primary"
+                        className="avsar-pill avsar-pill-primary"
                         style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                     >
                         Record consent
@@ -182,7 +182,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                     <button
                         data-testid={`btn-remove-${entry.id}`}
                         onClick={() => setConfirmRemove(true)}
-                        className="doctro-pill doctro-pill-secondary"
+                        className="avsar-pill avsar-pill-secondary"
                         style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                     >
                         Remove
@@ -193,7 +193,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                             data-testid={`btn-remove-confirm-${entry.id}`}
                             disabled={busy}
                             onClick={doRemove}
-                            className="doctro-pill doctro-pill-primary"
+                            className="avsar-pill avsar-pill-primary"
                             style={{
                                 height: 40, minWidth: 0, padding: "0 20px", fontSize: 13,
                                 background: "#5A0E0E",
@@ -205,7 +205,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                             data-testid={`btn-remove-cancel-${entry.id}`}
                             disabled={busy}
                             onClick={() => setConfirmRemove(false)}
-                            className="doctro-pill doctro-pill-secondary"
+                            className="avsar-pill avsar-pill-secondary"
                             style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                         >
                             Cancel

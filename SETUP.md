@@ -1,4 +1,4 @@
-# Doctro — Local Setup
+# avsar — Local Setup
 
 Follow these steps to run the project from a fresh clone.
 

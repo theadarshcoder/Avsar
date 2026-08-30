@@ -34,7 +34,7 @@ def api():
     s = requests.Session()
     s.headers.update({
         "Content-Type": "application/json",
-        "X-Doctro-Test-Override": os.environ.get("MOCK_OVERRIDE_TOKEN", "doctro-testing-override"),
+        "X-avsar-Test-Override": os.environ.get("MOCK_OVERRIDE_TOKEN", "avsar-testing-override"),
     })
     return s
 

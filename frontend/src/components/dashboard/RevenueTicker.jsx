@@ -23,7 +23,7 @@ export default function RevenueTicker({ clinicId, refreshKey }) {
     }, [clinicId, refreshKey]);
 
     return (
-        <div className="doctro-card" data-testid="revenue-ticker">
+        <div className="avsar-card" data-testid="revenue-ticker">
             <div className="text-xs uppercase tracking-widest opacity-60">
                 Standby revenue recovered today
             </div>

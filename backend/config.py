@@ -1,4 +1,4 @@
-"""Global configuration constants for doctro Phase 1 backend."""
+"""Global configuration constants for avsar Phase 1 backend."""
 from __future__ import annotations
 
 import os
@@ -21,7 +21,7 @@ PRIORITY_PASS_TTL_DAYS: int = 14
 
 # Mock webhook secret. In production, real Razorpay secret comes from dashboard.
 RAZORPAY_WEBHOOK_SECRET: str = os.environ.get(
-    "RAZORPAY_WEBHOOK_SECRET", "mock_webhook_secret_doctro_phase1"
+    "RAZORPAY_WEBHOOK_SECRET", "mock_webhook_secret_avsar_phase1"
 )
 
 

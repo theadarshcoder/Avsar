@@ -29,9 +29,9 @@ export default function Home() {
 
     return (
         <div>
-            {/* ── Hero ────────────────────────────────────────────────── */}
+            {/* Hero*/}
             <section
-                className="doctro-section"
+                className="avsar-section"
                 style={{ background: "#FFFFFF", marginTop: 12 }}
                 data-testid="hero"
             >
@@ -46,8 +46,8 @@ export default function Home() {
                         Turn last-minute clinic cancellations into instant standby revenue.
                     </h1>
                     <p className="mt-6 text-base sm:text-lg max-w-2xl opacity-80">
-                        When a patient cancels, doctro notifies your consented waitlist over
-                        WhatsApp and runs a locked, single-winner checkout — so one paying
+                        When a patient cancels, Avsar notifies your consented waitlist over
+                        WhatsApp and runs a locked, single-winner checkout. One paying
                         patient replaces the empty chair, automatically. No calls, no
                         double-bookings, no percentage cuts.
                     </p>
@@ -55,26 +55,26 @@ export default function Home() {
                         <button
                             data-testid="hero-cta-roi"
                             onClick={scrollToRoi}
-                            className="doctro-pill doctro-pill-primary"
+                            className="avsar-pill avsar-pill-primary"
                         >
                             See what cancellations cost you
                         </button>
                         <a
-                            data-testid="hero-cta-demo"
-                            href="/dashboard/clinic_smile_dental_indiranagar"
-                            className="doctro-pill doctro-pill-secondary"
+                            data-testid="hero-cta-login"
+                            href="/login"
+                            className="avsar-pill avsar-pill-secondary"
                         >
-                            Open the demo dashboard
+                            Clinic login
                         </a>
                     </div>
                 </div>
             </section>
 
-            {/* ── ROI Calculator ─────────────────────────────────────── */}
+            {/* ROI Calculator*/}
             <section
                 id="roi"
                 ref={roiRef}
-                className="doctro-section section-bg-cream"
+                className="avsar-section section-bg-cream"
                 data-testid="roi-section"
             >
                 <div className="max-w-5xl mx-auto">
@@ -97,14 +97,14 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* ── How it works — 3 mockups ───────────────────────────── */}
+            {/* How it works: 3 mockups */}
             <div id="how">
                 <ExplainerSection
                     tone="lavender"
                     order="left"
                     kicker="Step 1 · Flag the vacancy"
-                    title="The moment a chair opens up, doctro flags it."
-                    body="You cancel a slot in one tap — or your scheduling software tells us. Doctro doesn't need a percentage of the fee. It just needs to know when a chair is idle."
+                    title="The moment a chair opens up, Avsar flags it."
+                    body="You cancel a slot in one tap, or your scheduling software tells us. Avsar doesn't need a percentage of the fee. It just needs to know when a chair is idle."
                     mockup={<VacancyMockup />}
                 />
                 <ExplainerSection
@@ -112,7 +112,7 @@ export default function Home() {
                     order="right"
                     kicker="Step 2 · Notify the waitlist"
                     title="A WhatsApp message goes only to patients who opted in."
-                    body="Non-consented patients are skipped at the query level, not just hidden in the UI. And the message never contains a price, a discount, or a standby rate — only the slot, the doctor, and a link to the priority page."
+                    body="Non-consented patients are skipped at the query level, not just hidden in the UI. The message never contains a price, a discount, or a standby rate. Only the slot, the doctor, and a link to the priority page."
                     mockup={<WhatsAppMockup />}
                 />
                 <ExplainerSection
@@ -120,14 +120,13 @@ export default function Home() {
                     order="left"
                     kicker="Step 3 · Locked, single-winner checkout"
                     title="One atomic operation. One winner. Everyone else is refunded."
-                    body="Two patients tapping pay at the same second? Only one is locked in. The other gets a clear message — 'this slot was just taken' — and their money is automatically refunded. No manual reconciliation."
+                    body="Two patients tapping pay at the same second? Only one is locked in. The other receives a message that the slot was just taken, and their payment is automatically refunded. No manual reconciliation."
                     mockup={<CheckoutMockup />}
                 />
             </div>
 
-            {/* ── Dashboard preview strip ───────────────────────────── */}
             <section
-                className="doctro-section section-bg-yellow"
+                className="avsar-section section-bg-yellow"
                 data-testid="preview-section"
             >
                 <div className="max-w-5xl mx-auto">
@@ -143,22 +142,22 @@ export default function Home() {
                         see who was notified.
                     </p>
                     <a
-                        href="/dashboard/clinic_smile_dental_indiranagar"
-                        className="doctro-pill doctro-pill-primary"
-                        data-testid="cta-open-demo-dashboard"
+                        href="/login"
+                        className="avsar-pill avsar-pill-primary"
+                        data-testid="cta-clinic-login"
                     >
-                        Open the demo dashboard
+                        Log in to your clinic dashboard
                     </a>
                 </div>
             </section>
 
-            {/* ── Pricing ───────────────────────────────────────────── */}
+            {/* Pricing*/}
             <PricingSection />
 
-            {/* ── Compliance ────────────────────────────────────────── */}
+            {/* Compliance*/}
             <section
                 id="compliance"
-                className="doctro-section"
+                className="avsar-section"
                 style={{ background: "#FFFFFF" }}
                 data-testid="compliance-section"
             >
@@ -183,7 +182,7 @@ export default function Home() {
                         <ComplianceCard
                             testid="compliance-3"
                             title="Consent at booking"
-                            body="A patient must have a timestamped consent record to receive any standby message. Enforced at the database query — not at the UI."
+                            body="A patient must have a timestamped consent record to receive any standby message. Enforced at the database query, not at the UI."
                         />
                     </div>
                 </div>
@@ -203,7 +202,7 @@ function ExplainerSection({ tone, order, kicker, title, body, mockup }) {
     const reverse = order === "right";
     return (
         <section
-            className={`doctro-section ${bgClass}`}
+            className={`avsar-section ${bgClass}`}
             data-testid={`explainer-${tone}`}
         >
             <div
@@ -232,7 +231,7 @@ function PricingCard({ testid, name, perMonth, handling, limit, features, highli
     return (
         <div
             data-testid={testid}
-            className={`doctro-card ${highlight ? "ring-1 ring-[var(--doctro-ink)]" : ""}`}
+            className={`avsar-card ${highlight ? "ring-1 ring-[var(--avsar-ink)]" : ""}`}
         >
             <div className="text-sm font-semibold opacity-70">{name}</div>
             <div className="mt-3">
@@ -259,7 +258,7 @@ function PricingCard({ testid, name, perMonth, handling, limit, features, highli
             <ul className="mt-4 space-y-2 text-sm opacity-85">
                 {features.map((f) => (
                     <li key={f} className="flex items-start gap-2">
-                        <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-[var(--doctro-ink)]" />
+                        <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-[var(--avsar-ink)]" />
                         <span>{f}</span>
                     </li>
                 ))}
@@ -270,7 +269,7 @@ function PricingCard({ testid, name, perMonth, handling, limit, features, highli
 
 function ComplianceCard({ testid, title, body }) {
     return (
-        <div data-testid={testid} className="doctro-card">
+        <div data-testid={testid} className="avsar-card">
             <div className="text-2xl mb-2 font-serif">{title}</div>
             <p className="text-sm opacity-80">{body}</p>
         </div>

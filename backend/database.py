@@ -1,4 +1,4 @@
-"""MongoDB connection + collection accessors for doctro backend."""
+"""MongoDB connection + collection accessors for avsar backend."""
 from __future__ import annotations
 
 import os

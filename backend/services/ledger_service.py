@@ -55,7 +55,7 @@ async def initiate_refund(transaction_id: str, amount: int) -> str:
         await transactions.update_one(
             {"id": transaction_id},
             {"$set": {
-                "refundStatus": "initiated",  # still initiated from doctro's perspective
+                "refundStatus": "initiated",  # still initiated from avsar's perspective
                 "refundError": str(exc),
             }},
         )

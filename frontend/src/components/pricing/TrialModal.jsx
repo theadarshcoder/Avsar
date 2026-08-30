@@ -56,7 +56,7 @@ export default function TrialModal({ isOpen, onClose }) {
             data-testid="trial-fullscreen-modal"
         >
             {/* Top Navigation Bar */}
-            <div className="border-b border-[var(--doctro-line)] px-6 sm:px-12 py-4 flex items-center justify-between bg-white shrink-0">
+            <div className="border-b border-[var(--avsar-line)] px-6 sm:px-12 py-4 flex items-center justify-between bg-white shrink-0">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onClose}
@@ -64,16 +64,16 @@ export default function TrialModal({ isOpen, onClose }) {
                     >
                         <ArrowLeft className="w-4 h-4" /> Back to pricing
                     </button>
-                    <span className="text-[var(--doctro-line)]">|</span>
+                    <span className="text-[var(--avsar-line)]">|</span>
                     <span className="font-serif font-bold text-lg text-[#101014] tracking-tight">
-                        doctro<span className="font-sans font-normal text-xs opacity-60 ml-2">free trial</span>
+                        avsar<span className="font-sans font-normal text-xs opacity-60 ml-2">free trial</span>
                     </span>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onClose}
-                        className="w-9 h-9 rounded-full bg-[var(--doctro-cream)] hover:bg-[#EDE6D5] text-[#101014] flex items-center justify-center transition-colors shrink-0"
+                        className="w-9 h-9 rounded-full bg-[var(--avsar-cream)] hover:bg-[#EDE6D5] text-[#101014] flex items-center justify-center transition-colors shrink-0"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -99,7 +99,7 @@ export default function TrialModal({ isOpen, onClose }) {
                             <div className="pt-4 flex justify-center">
                                 <a
                                     href={`/dashboard/${successData?.clinic?.id || "clinic_smile_dental_indiranagar"}`}
-                                    className="doctro-pill doctro-pill-primary"
+                                    className="avsar-pill avsar-pill-primary"
                                     style={{ textDecoration: "none", height: 50, fontSize: 15, padding: "0 32px" }}
                                 >
                                     Open Demo Dashboard <ArrowRight className="w-4 h-4 ml-1 inline" />
@@ -133,7 +133,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                                 required
                                                 value={clinicName}
                                                 onChange={(e) => setClinicName(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--doctro-line)] focus:outline-none focus:border-[var(--doctro-ink)] text-sm font-body"
+                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
                                                 placeholder="Smile Dental Indiranagar"
                                             />
                                         </div>
@@ -146,7 +146,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                                 required
                                                 value={doctorName}
                                                 onChange={(e) => setDoctorName(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--doctro-line)] focus:outline-none focus:border-[var(--doctro-ink)] text-sm font-body"
+                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
                                                 placeholder="Dr. Anjali Menon"
                                             />
                                         </div>
@@ -159,7 +159,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                                 required
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--doctro-line)] focus:outline-none focus:border-[var(--doctro-ink)] text-sm font-body"
+                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
                                                 placeholder="demo@smiledental.in"
                                             />
                                         </div>
@@ -172,7 +172,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                                 required
                                                 value={phone}
                                                 onChange={(e) => setPhone(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--doctro-line)] focus:outline-none focus:border-[var(--doctro-ink)] text-sm font-body mono"
+                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body mono"
                                                 placeholder="+919900000001"
                                             />
                                         </div>
@@ -192,7 +192,7 @@ export default function TrialModal({ isOpen, onClose }) {
 
                             {/* Right Side (5 Cols) */}
                             <div className="lg:col-span-5">
-                                <div className="doctro-card bg-[var(--doctro-cream)] p-7 sm:p-8 space-y-6 shadow-xl border border-[var(--doctro-line)] rounded-3xl">
+                                <div className="avsar-card bg-[var(--avsar-cream)] p-7 sm:p-8 space-y-6 shadow-xl border border-[var(--avsar-line)] rounded-3xl">
                                     <div className="text-xs uppercase tracking-[0.25em] opacity-60 font-semibold">
                                         Included In Free Trial
                                     </div>
@@ -216,12 +216,12 @@ export default function TrialModal({ isOpen, onClose }) {
                                         </div>
                                     </div>
 
-                                    <div className="pt-3 border-t border-[var(--doctro-line)]">
+                                    <div className="pt-3 border-t border-[var(--avsar-line)]">
                                         <button
                                             type="submit"
                                             disabled={loading}
                                             data-testid="btn-submit-trial"
-                                            className="doctro-pill doctro-pill-primary w-full"
+                                            className="avsar-pill avsar-pill-primary w-full"
                                             style={{ height: 52, fontSize: 16 }}
                                         >
                                             {loading ? "Activating Trial…" : "Start 14-Day Free Trial"}

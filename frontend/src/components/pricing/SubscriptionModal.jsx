@@ -57,7 +57,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                 order_id: order.orderId,
                 amount: order.amount,
                 currency: order.currency || "INR",
-                name: "doctro",
+                name: "avsar",
                 description: `Standard Subscription (${isAnnual ? "Annual" : "Monthly"})`,
                 prefill: {
                     name: clinicName,
@@ -149,7 +149,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
             data-testid="subscription-fullscreen-checkout"
         >
             {/* Top Navigation Bar */}
-            <div className="border-b border-[var(--doctro-line)] px-6 sm:px-12 py-4 flex items-center justify-between bg-white shrink-0">
+            <div className="border-b border-[var(--avsar-line)] px-6 sm:px-12 py-4 flex items-center justify-between bg-white shrink-0">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onClose}
@@ -157,9 +157,9 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                     >
                         <ArrowLeft className="w-4 h-4" /> Back to pricing
                     </button>
-                    <span className="text-[var(--doctro-line)]">|</span>
+                    <span className="text-[var(--avsar-line)]">|</span>
                     <span className="font-serif font-bold text-lg text-[#101014] tracking-tight">
-                        doctro<span className="font-sans font-normal text-xs opacity-60 ml-2">checkout</span>
+                        avsar<span className="font-sans font-normal text-xs opacity-60 ml-2">checkout</span>
                     </span>
                 </div>
 
@@ -169,7 +169,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-9 h-9 rounded-full bg-[var(--doctro-cream)] hover:bg-[#EDE6D5] text-[#101014] flex items-center justify-center transition-colors shrink-0"
+                        className="w-9 h-9 rounded-full bg-[var(--avsar-cream)] hover:bg-[#EDE6D5] text-[#101014] flex items-center justify-center transition-colors shrink-0"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -208,8 +208,8 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                             onClick={() => setInterval("monthly")}
                                             className={`p-4 rounded-2xl border text-left transition-all ${
                                                 interval === "monthly"
-                                                    ? "border-[var(--doctro-ink)] bg-[var(--doctro-cream)] text-[#101014] shadow-sm ring-1 ring-[var(--doctro-ink)]"
-                                                    : "border-[var(--doctro-line)] bg-white text-[#101014]/70 hover:border-black/30"
+                                                    ? "border-[var(--avsar-ink)] bg-[var(--avsar-cream)] text-[#101014] shadow-sm ring-1 ring-[var(--avsar-ink)]"
+                                                    : "border-[var(--avsar-line)] bg-white text-[#101014]/70 hover:border-black/30"
                                             }`}
                                         >
                                             <div className="text-xs uppercase tracking-wider opacity-60 font-bold">Monthly Plan</div>
@@ -223,13 +223,13 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                             onClick={() => setInterval("annual")}
                                             className={`p-4 rounded-2xl border text-left transition-all relative ${
                                                 interval === "annual"
-                                                    ? "border-[var(--doctro-ink)] bg-[var(--doctro-cream)] text-[#101014] shadow-sm ring-1 ring-[var(--doctro-ink)]"
-                                                    : "border-[var(--doctro-line)] bg-white text-[#101014]/70 hover:border-black/30"
+                                                    ? "border-[var(--avsar-ink)] bg-[var(--avsar-cream)] text-[#101014] shadow-sm ring-1 ring-[var(--avsar-ink)]"
+                                                    : "border-[var(--avsar-line)] bg-white text-[#101014]/70 hover:border-black/30"
                                             }`}
                                         >
                                             <div className="flex justify-between items-center">
                                                 <span className="text-xs uppercase tracking-wider opacity-60 font-bold">Annual Plan</span>
-                                                <span className="text-[10px] font-bold uppercase bg-[var(--doctro-ink)] text-white px-2 py-0.5 rounded-full">
+                                                <span className="text-[10px] font-bold uppercase bg-[var(--avsar-ink)] text-white px-2 py-0.5 rounded-full">
                                                     Save 20%
                                                 </span>
                                             </div>
@@ -257,7 +257,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                                 type="text"
                                                 value={clinicName}
                                                 onChange={(e) => setClinicName(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--doctro-line)] focus:outline-none focus:border-[var(--doctro-ink)] text-sm font-body"
+                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
                                                 placeholder="Smile Dental Indiranagar"
                                             />
                                         </div>
@@ -269,7 +269,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                                 type="text"
                                                 value={doctorName}
                                                 onChange={(e) => setDoctorName(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--doctro-line)] focus:outline-none focus:border-[var(--doctro-ink)] text-sm font-body"
+                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
                                                 placeholder="Dr. Anjali Menon"
                                             />
                                         </div>
@@ -281,7 +281,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                                 type="email"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--doctro-line)] focus:outline-none focus:border-[var(--doctro-ink)] text-sm font-body"
+                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
                                                 placeholder="demo@smiledental.in"
                                             />
                                         </div>
@@ -293,7 +293,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                                 type="text"
                                                 value={phone}
                                                 onChange={(e) => setPhone(e.target.value)}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--doctro-line)] focus:outline-none focus:border-[var(--doctro-ink)] text-sm font-body mono"
+                                                className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body mono"
                                                 placeholder="+919900000001"
                                             />
                                         </div>
@@ -301,7 +301,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                 </div>
 
                                 {/* Trust & Compliance */}
-                                <div className="pt-3 flex flex-wrap items-center gap-6 text-xs opacity-70 border-t border-[var(--doctro-line)]">
+                                <div className="pt-3 flex flex-wrap items-center gap-6 text-xs opacity-70 border-t border-[var(--avsar-line)]">
                                     <span className="flex items-center gap-1.5">
                                         <Lock className="w-3.5 h-3.5" /> PCI-DSS Level 1 Secure
                                     </span>
@@ -316,7 +316,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
 
                             {/* Right Side: Order Summary & Checkout Card (5 Cols) */}
                             <div className="lg:col-span-5">
-                                <div className="doctro-card bg-[var(--doctro-cream)] p-7 sm:p-8 space-y-6 shadow-xl border border-[var(--doctro-line)] rounded-3xl">
+                                <div className="avsar-card bg-[var(--avsar-cream)] p-7 sm:p-8 space-y-6 shadow-xl border border-[var(--avsar-line)] rounded-3xl">
                                     <div className="text-xs uppercase tracking-[0.25em] opacity-60 font-semibold">
                                         Order Summary
                                     </div>
@@ -338,7 +338,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                             <span>Standby Handling Fee</span>
                                             <span>₹50 flat (billed to patient)</span>
                                         </div>
-                                        <div className="flex justify-between items-center text-xs opacity-75 pb-3 border-b border-[var(--doctro-line)]">
+                                        <div className="flex justify-between items-center text-xs opacity-75 pb-3 border-b border-[var(--avsar-line)]">
                                             <span>Priority Pass Auto-Credits</span>
                                             <span className="font-semibold">Included</span>
                                         </div>
@@ -372,7 +372,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                     {/* Confirming Message */}
                                     {stage === "confirming" && (
                                         <div
-                                            className="p-4 rounded-xl text-xs sm:text-sm bg-[var(--doctro-pale-yellow)]"
+                                            className="p-4 rounded-xl text-xs sm:text-sm bg-[var(--avsar-pale-yellow)]"
                                             data-testid="subscription-confirming-msg"
                                         >
                                             <b>Activating subscription…</b>
@@ -389,7 +389,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                             onClick={handleRazorpay}
                                             disabled={stage === "gateway" || stage === "confirming"}
                                             data-testid="btn-pay-subscription"
-                                            className="doctro-pill doctro-pill-primary w-full"
+                                            className="avsar-pill avsar-pill-primary w-full"
                                             style={{ height: 52, fontSize: 16 }}
                                         >
                                             {stage === "gateway" || stage === "confirming"
@@ -397,13 +397,13 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                                 : `Pay ₹${amountRupees.toLocaleString("en-IN")} with Razorpay`}
                                         </button>
 
-                                        <div className="flex items-center justify-between gap-3 pt-2 border-t border-[var(--doctro-line)]">
+                                        <div className="flex items-center justify-between gap-3 pt-2 border-t border-[var(--avsar-line)]">
                                             <button
                                                 type="button"
                                                 onClick={() => handleMockPay(false)}
                                                 disabled={stage === "gateway" || stage === "confirming"}
                                                 data-testid="btn-mock-sub-pay"
-                                                className="doctro-pill doctro-pill-secondary"
+                                                className="avsar-pill avsar-pill-secondary"
                                                 style={{ height: 36, minWidth: 0, padding: "0 14px", fontSize: 12 }}
                                                 title="Instant 1-Click test activation"
                                             >
@@ -448,7 +448,7 @@ function SuccessView({ data, onClose, interval }) {
                 </p>
             </div>
 
-            <div className="p-6 rounded-3xl bg-[var(--doctro-cream)] space-y-3 text-sm text-left max-w-md mx-auto border border-[var(--doctro-line)] shadow-sm">
+            <div className="p-6 rounded-3xl bg-[var(--avsar-cream)] space-y-3 text-sm text-left max-w-md mx-auto border border-[var(--avsar-line)] shadow-sm">
                 <div className="flex justify-between">
                     <span className="opacity-60">Transaction Reference:</span>
                     <span className="mono font-semibold">{txnId}</span>
@@ -466,7 +466,7 @@ function SuccessView({ data, onClose, interval }) {
             <div className="pt-4 flex justify-center gap-4 flex-wrap">
                 <a
                     href={`/dashboard/${clinicId}`}
-                    className="doctro-pill doctro-pill-primary"
+                    className="avsar-pill avsar-pill-primary"
                     style={{ textDecoration: "none", height: 50, fontSize: 15, padding: "0 28px" }}
                 >
                     Open Clinic Dashboard
@@ -474,7 +474,7 @@ function SuccessView({ data, onClose, interval }) {
                 <button
                     type="button"
                     onClick={onClose}
-                    className="doctro-pill doctro-pill-secondary"
+                    className="avsar-pill avsar-pill-secondary"
                     style={{ minWidth: 120, height: 50, fontSize: 15 }}
                 >
                     Close

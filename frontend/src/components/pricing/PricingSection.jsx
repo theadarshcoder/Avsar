@@ -1,20 +1,40 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import SubscriptionModal from "./SubscriptionModal";
 import TrialModal from "./TrialModal";
 import PricingFaq from "./PricingFaq";
 
 export default function PricingSection({ isStandalone = false }) {
+    const navigate = useNavigate();
     const [billingInterval, setBillingInterval] = useState("monthly"); // monthly | annual
     const [subModalOpen, setSubModalOpen] = useState(false);
     const [trialModalOpen, setTrialModalOpen] = useState(false);
+
+    const isLoggedIn = () => !!localStorage.getItem("avsar_clinic_token");
+
+    const handleSubscribeClick = () => {
+        if (!isLoggedIn()) {
+            navigate("/login?redirect=pricing");
+            return;
+        }
+        setSubModalOpen(true);
+    };
+
+    const handleTrialClick = () => {
+        if (!isLoggedIn()) {
+            navigate("/login?redirect=pricing");
+            return;
+        }
+        setTrialModalOpen(true);
+    };
 
     const isAnnual = billingInterval === "annual";
 
     return (
         <section
             id="pricing"
-            className="doctro-section"
+            className="avsar-section"
             style={{ background: "#FFFFFF" }}
             data-testid="pricing-section"
         >
@@ -31,14 +51,14 @@ export default function PricingSection({ isStandalone = false }) {
                     </div>
 
                     {/* Cadence Toggle */}
-                    <div className="inline-flex items-center p-1 rounded-full bg-[var(--doctro-cream)] border border-black/5 self-start sm:self-auto shrink-0">
+                    <div className="inline-flex items-center p-1 rounded-full bg-[var(--avsar-cream)] border border-black/5 self-start sm:self-auto shrink-0">
                         <button
                             type="button"
                             onClick={() => setBillingInterval("monthly")}
                             data-testid="btn-cadence-monthly"
                             className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                                 !isAnnual
-                                    ? "bg-[var(--doctro-ink)] text-white shadow-sm"
+                                    ? "bg-[var(--avsar-ink)] text-white shadow-sm"
                                     : "text-[#101014]/70 hover:text-[#101014]"
                             }`}
                         >
@@ -50,7 +70,7 @@ export default function PricingSection({ isStandalone = false }) {
                             data-testid="btn-cadence-annual"
                             className={`px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all ${
                                 isAnnual
-                                    ? "bg-[var(--doctro-ink)] text-white shadow-sm"
+                                    ? "bg-[var(--avsar-ink)] text-white shadow-sm"
                                     : "text-[#101014]/70 hover:text-[#101014]"
                             }`}
                         >
@@ -62,12 +82,12 @@ export default function PricingSection({ isStandalone = false }) {
                     </div>
                 </div>
 
-                {/* 2 Authentic DOCTRO Pricing Cards */}
+                {/* 2 Authentic avsar Pricing Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Free Trial Card */}
                     <div
                         data-testid="pricing-trial"
-                        className="doctro-card flex flex-col justify-between"
+                        className="avsar-card flex flex-col justify-between"
                     >
                         <div>
                             <div className="text-sm font-semibold opacity-70">Free trial</div>
@@ -99,19 +119,19 @@ export default function PricingSection({ isStandalone = false }) {
                                     "Locked single-winner checkout",
                                 ].map((f) => (
                                     <li key={f} className="flex items-start gap-2">
-                                        <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-[var(--doctro-ink)]" />
+                                        <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-[var(--avsar-ink)]" />
                                         <span>{f}</span>
                                     </li>
                                 ))}
                             </ul>
                         </div>
 
-                        <div className="mt-6 pt-4 border-t border-[var(--doctro-line)]">
+                        <div className="mt-6 pt-4 border-t border-[var(--avsar-line)]">
                             <button
                                 type="button"
-                                onClick={() => setTrialModalOpen(true)}
+                                onClick={handleTrialClick}
                                 data-testid="btn-plan-trial"
-                                className="doctro-pill doctro-pill-secondary w-full"
+                                className="avsar-pill avsar-pill-secondary w-full"
                             >
                                 Start 14-day free trial
                             </button>
@@ -121,13 +141,13 @@ export default function PricingSection({ isStandalone = false }) {
                     {/* Standard Paid Card */}
                     <div
                         data-testid="pricing-paid"
-                        className="doctro-card ring-1 ring-[var(--doctro-ink)] flex flex-col justify-between"
+                        className="avsar-card ring-1 ring-[var(--avsar-ink)] flex flex-col justify-between"
                     >
                         <div>
                             <div className="flex justify-between items-center">
                                 <div className="text-sm font-semibold opacity-70">Standard</div>
                                 {isAnnual && (
-                                    <span className="text-[11px] font-semibold bg-[var(--doctro-cream)] px-2.5 py-0.5 rounded-full">
+                                    <span className="text-[11px] font-semibold bg-[var(--avsar-cream)] px-2.5 py-0.5 rounded-full">
                                         Save ₹4,798/year
                                     </span>
                                 )}
@@ -161,19 +181,19 @@ export default function PricingSection({ isStandalone = false }) {
                                     "Analytics dashboard",
                                 ].map((f) => (
                                     <li key={f} className="flex items-start gap-2">
-                                        <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-[var(--doctro-ink)]" />
+                                        <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-[var(--avsar-ink)]" />
                                         <span>{f}</span>
                                     </li>
                                 ))}
                             </ul>
                         </div>
 
-                        <div className="mt-6 pt-4 border-t border-[var(--doctro-line)]">
+                        <div className="mt-6 pt-4 border-t border-[var(--avsar-line)]">
                             <button
                                 type="button"
-                                onClick={() => setSubModalOpen(true)}
+                                onClick={handleSubscribeClick}
                                 data-testid="btn-plan-standard"
-                                className="doctro-pill doctro-pill-primary w-full"
+                                className="avsar-pill avsar-pill-primary w-full"
                             >
                                 Subscribe to Standard
                             </button>
@@ -184,7 +204,7 @@ export default function PricingSection({ isStandalone = false }) {
                 {/* Explanatory Footnote */}
                 <p className="text-xs opacity-70 mt-6 italic max-w-2xl">
                     The subscription and the ₹50 handling fee are shown as separate line
-                    items on purpose — we never combine them into a single number, and
+                    items on purpose. We never combine them into a single number, and
                     neither is a percentage of your consultation fee.
                 </p>
 

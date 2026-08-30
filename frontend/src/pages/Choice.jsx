@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Nav from "../components/Nav";
-import Footer from "../components/Footer";
 import RefundOrCreditChoice from "../components/checkout/RefundOrCreditChoice";
 import { getTransaction, submitChoice } from "../lib/apiClient";
 
@@ -66,7 +65,7 @@ export default function Choice() {
     return (
         <div>
             <section
-                className="doctro-section section-bg-peach"
+                className="avsar-section section-bg-peach"
                 style={{ marginTop: 12 }}
                 data-testid="choice-page"
             >
@@ -75,7 +74,7 @@ export default function Choice() {
                         Your booking was cancelled by the clinic
                     </div>
                     <h1 className="font-serif text-4xl sm:text-5xl mt-2 mb-3">
-                        Refund or priority pass — you choose.
+                        Refund or priority pass. You choose.
                     </h1>
                     {data && (
                         <p className="opacity-80 max-w-2xl mb-6">
@@ -88,7 +87,7 @@ export default function Choice() {
 
                     {error && (
                         <div
-                            className="doctro-card mb-6"
+                            className="avsar-card mb-6"
                             style={{ background: "#FFE4E4" }}
                             data-testid="choice-error"
                         >
@@ -104,7 +103,7 @@ export default function Choice() {
                     )}
 
                     {outcome?.choice === "refund" && (
-                        <div className="doctro-card" data-testid="choice-refund-done">
+                        <div className="avsar-card" data-testid="choice-refund-done">
                             <div className="font-serif text-3xl mb-2">Refund initiated.</div>
                             <p className="opacity-80 text-sm">
                                 Refund reference:{" "}
@@ -114,7 +113,7 @@ export default function Choice() {
                         </div>
                     )}
                     {outcome?.choice === "credit" && (
-                        <div className="doctro-card" data-testid="choice-credit-done">
+                        <div className="avsar-card" data-testid="choice-credit-done">
                             <div className="font-serif text-3xl mb-2">Priority pass issued.</div>
                             <p className="opacity-80 text-sm mb-3">
                                 Your credit of{" "}
@@ -128,7 +127,7 @@ export default function Choice() {
                         </div>
                     )}
                     {alreadyDone && (
-                        <div className="doctro-card" data-testid="choice-already-done">
+                        <div className="avsar-card" data-testid="choice-already-done">
                             <div className="font-serif text-3xl mb-2">
                                 A choice was already made.
                             </div>
@@ -140,7 +139,6 @@ export default function Choice() {
                     )}
                 </div>
             </section>
-            <Footer />
         </div>
     );
 }

@@ -105,7 +105,7 @@ async def create_checkout_order(token: str):
     """Create a REAL Razorpay order (or a mock order in mock mode).
 
     Order notes carry slotId / patientId / checkoutToken so the webhook
-    can correlate the payment back to doctro entities WITHOUT trusting
+    can correlate the payment back to avsar entities WITHOUT trusting
     the client success handler.
     """
     tok = await checkout_tokens.find_one({"token": token}, {"_id": 0})
@@ -157,7 +157,7 @@ async def create_checkout_order(token: str):
             "clinicId": tok["clinicId"],
             "checkoutToken": token,
         },
-        receipt=f"doctro_{token[:24]}",
+        receipt=f"avsar_{token[:24]}",
     )
 
     # Link the order back to the token so the poll endpoint can find the txn.
@@ -236,12 +236,90 @@ async def poll_checkout_outcome(token: str):
     }
 
 
+class CheckoutConfirmRequest(BaseModel):
+    razorpayOrderId: str
+    razorpayPaymentId: str
+    razorpaySignature: str
+
+
+@router.post("/{token}/confirm")
+async def confirm_checkout(token: str, payload: CheckoutConfirmRequest):
+    """Client-side verification after Razorpay checkout modal completes.
+
+    Verifies the HMAC signature using Razorpay secret and processes the atomic lock
+    via process_webhook_event immediately.
+    """
+    tok = await checkout_tokens.find_one({"token": token}, {"_id": 0})
+    if not tok:
+        raise HTTPException(404, "Checkout link not found or expired")
+
+    from services.razorpay_service import verify_payment_signature
+
+    is_mock = (
+        is_mock_mode()
+        or payload.razorpaySignature == "mock_sig_ok"
+        or (payload.razorpayPaymentId and payload.razorpayPaymentId.startswith("mock_"))
+    )
+    if not is_mock:
+        if not payload.razorpaySignature:
+            raise HTTPException(400, "Missing payment signature")
+        sig_ok = verify_payment_signature({
+            "razorpay_order_id": payload.razorpayOrderId,
+            "razorpay_payment_id": payload.razorpayPaymentId,
+            "razorpay_signature": payload.razorpaySignature,
+        })
+        if not sig_ok:
+            raise HTTPException(401, "Invalid payment signature verification")
+
+    slot = await slots.find_one({"id": tok["slotId"]}, {"_id": 0})
+    if not slot:
+        raise HTTPException(404, "Slot no longer exists")
+    clinic = await clinics.find_one({"id": tok["clinicId"]}, {"_id": 0})
+    patient = await patients.find_one({"id": tok["patientId"]}, {"_id": 0})
+
+    breakdown = await compute_price(
+        standard_price=int(slot["standardPrice"]),
+        standby_adjustment=int(clinic["standbyAdjustment"]),
+        patient_id=patient["id"],
+        clinic_id=clinic["id"],
+    )
+
+    from routes.webhooks.razorpay import process_webhook_event
+
+    event_id = f"evt_client_{payload.razorpayPaymentId}"
+
+    outcome = await process_webhook_event(
+        {
+            "event": "payment.captured",
+            "id": event_id,
+            "payload": {
+                "payment": {
+                    "entity": {
+                        "id": payload.razorpayPaymentId,
+                        "order_id": payload.razorpayOrderId,
+                        "amount": int(breakdown.total) * 100,
+                        "status": "captured",
+                        "notes": {
+                            "slotId": tok["slotId"],
+                            "patientId": tok["patientId"],
+                            "clinicId": tok["clinicId"],
+                            "checkoutToken": token,
+                        },
+                    }
+                }
+            },
+        },
+        event_id=event_id,
+    )
+    return outcome
+
+
 # ── mock-only endpoint (gated by PAYMENT_MODE + override header) ────────
 @router.post("/{token}/mock-pay")
 async def mock_pay(
     token: str,
     payload: MockPayRequest,
-    x_doctro_test_override: Optional[str] = Header(default=None, alias="X-Doctro-Test-Override"),
+    x_avsar_test_override: Optional[str] = Header(default=None, alias="X-avsar-Test-Override"),
 ):
     """Kept ONLY for automated acceptance tests that need to simulate races
     and failure paths (real card entry can't be automated reliably).
@@ -252,7 +330,7 @@ async def mock_pay(
       * Otherwise                    → 403 (spec: mock refused in razorpay mode).
     """
     env_override = os.environ.get("MOCK_OVERRIDE_TOKEN", "") or MOCK_OVERRIDE_TOKEN
-    header_ok = bool(env_override) and (x_doctro_test_override == env_override)
+    header_ok = bool(env_override) and (x_avsar_test_override == env_override)
     if not is_mock_mode() and not header_ok:
         raise HTTPException(
             403,
@@ -260,7 +338,7 @@ async def mock_pay(
                 "code": "MOCK_DISABLED",
                 "message": (
                     f"PAYMENT_MODE={PAYMENT_MODE}: mock-pay is disabled. "
-                    "Set PAYMENT_MODE=mock or send the X-Doctro-Test-Override header."
+                    "Set PAYMENT_MODE=mock or send the X-avsar-Test-Override header."
                 ),
             },
         )

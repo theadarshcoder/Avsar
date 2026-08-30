@@ -7,7 +7,7 @@ export default function PriceBreakdown({ breakdown }) {
     const fmt = (n) => `₹${Number(n).toLocaleString("en-IN")}`;
     const hasPass = Number(breakdown.priorityPassAmount) > 0;
     return (
-        <div className="doctro-card" data-testid="price-breakdown">
+        <div className="avsar-card" data-testid="price-breakdown">
             <div className="text-xs uppercase tracking-widest opacity-60 mb-4">
                 Price breakdown
             </div>

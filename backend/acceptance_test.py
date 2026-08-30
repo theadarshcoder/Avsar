@@ -1,4 +1,4 @@
-"""Acceptance test for doctro Phase 1 backend.
+"""Acceptance test for avsar Phase 1 backend.
 
 Runs the FOUR mandatory checks from the problem statement against the
 LIVE backend URL (REACT_APP_BACKEND_URL from /app/frontend/.env):
@@ -35,7 +35,7 @@ for line in FRONTEND_ENV.splitlines():
 API = f"{BASE}/api"
 print(f"[info] Using API base: {API}")
 # Server may be running in razorpay mode; the mock-pay endpoint is gated behind this header.
-OVERRIDE_HEADERS = {"X-Doctro-Test-Override": "doctro-testing-override"}
+OVERRIDE_HEADERS = {"X-avsar-Test-Override": "avsar-testing-override"}
 
 CLINIC_ID = "clinic_smile_dental_indiranagar"
 SLOT_BROADCAST = "slot_today_1000"    # used for broadcast + concurrency

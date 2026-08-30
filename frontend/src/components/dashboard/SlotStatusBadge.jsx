@@ -1,6 +1,6 @@
 const LABEL = {
     scheduled: "Scheduled",
-    open: "Open — broadcasted",
+    open: "Open · Broadcast sent",
     locked: "Locked",
     booked: "Booked",
     cancelled_by_clinic: "Cancelled",

@@ -1,4 +1,4 @@
-"""Idempotent seed script for doctro Phase 1.
+"""Idempotent seed script for avsar Phase 1.
 
 Creates:
   * 1 demo clinic ("Smile Dental, Indiranagar", standbyAdjustment=400)
@@ -175,7 +175,7 @@ async def _upsert_slots() -> None:
 async def main(*, reset: bool = False) -> None:
     await ensure_indexes()
     if reset:
-        logger.warning("RESET mode — dropping doctro collections")
+        logger.warning("RESET mode — dropping avsar collections")
         for c in (
             clinics,
             patients,

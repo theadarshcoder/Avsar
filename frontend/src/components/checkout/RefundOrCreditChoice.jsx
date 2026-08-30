@@ -1,6 +1,6 @@
 /**
  * Refund vs Credit choice — the two options MUST be identical in size and
- * prominence. Both use `.doctro-pill` (identical dimensions). One is filled
+ * prominence. Both use `.avsar-pill` (identical dimensions). One is filled
  * black, the other filled cream. No pre-selection, no default.
  */
 import { useState } from "react";
@@ -22,10 +22,10 @@ export default function RefundOrCreditChoice({ amount, onSubmit, disabled }) {
     const fmt = (n) => `₹${Number(n).toLocaleString("en-IN")}`;
 
     return (
-        <div className="doctro-card" data-testid="refund-or-credit">
+        <div className="avsar-card" data-testid="refund-or-credit">
             <div className="mb-6">
                 <div className="text-xs uppercase tracking-widest opacity-60">
-                    Choose one — you must pick
+                    Make a selection
                 </div>
                 <div className="font-serif text-2xl mt-2">
                     How would you like to receive your {fmt(amount)}?
@@ -59,10 +59,10 @@ export default function RefundOrCreditChoice({ amount, onSubmit, disabled }) {
                     onClick={() => {
                         setSelected("refund");
                     }}
-                    className={`doctro-pill doctro-pill-fixed ${
+                    className={`avsar-pill avsar-pill-fixed ${
                         selected === "refund"
-                            ? "doctro-pill-primary"
-                            : "doctro-pill-secondary"
+                            ? "avsar-pill-primary"
+                            : "avsar-pill-secondary"
                     }`}
                     disabled={disabled || busy}
                 >
@@ -73,10 +73,10 @@ export default function RefundOrCreditChoice({ amount, onSubmit, disabled }) {
                     onClick={() => {
                         setSelected("credit");
                     }}
-                    className={`doctro-pill doctro-pill-fixed ${
+                    className={`avsar-pill avsar-pill-fixed ${
                         selected === "credit"
-                            ? "doctro-pill-primary"
-                            : "doctro-pill-secondary"
+                            ? "avsar-pill-primary"
+                            : "avsar-pill-secondary"
                     }`}
                     disabled={disabled || busy}
                 >
@@ -89,7 +89,7 @@ export default function RefundOrCreditChoice({ amount, onSubmit, disabled }) {
                     data-testid="confirm-choice"
                     onClick={submit}
                     disabled={!selected || busy || disabled}
-                    className="doctro-pill doctro-pill-primary"
+                    className="avsar-pill avsar-pill-primary"
                 >
                     {busy ? "Working…" : selected ? `Confirm ${selected === "refund" ? "refund" : "priority pass"}` : "Confirm your choice"}
                 </button>
@@ -110,7 +110,7 @@ function OptionCard({ testid, active, onSelect, title, body }) {
             onClick={onSelect}
             className={`text-left rounded-2xl p-6 transition-colors border ${
                 active
-                    ? "bg-[var(--doctro-cream)] border-[var(--doctro-ink)]"
+                    ? "bg-[var(--avsar-cream)] border-[var(--avsar-ink)]"
                     : "bg-white border-[rgba(16,16,20,0.08)] hover:border-[rgba(16,16,20,0.25)]"
             }`}
         >

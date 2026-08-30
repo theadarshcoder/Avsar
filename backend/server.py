@@ -1,4 +1,4 @@
-"""FastAPI entrypoint for doctro Phase 1.
+"""FastAPI entrypoint for avsar Phase 1.
 
 Wires all routers under /api and creates required MongoDB indexes at startup.
 """
@@ -27,10 +27,10 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
-logger = logging.getLogger("doctro")
+logger = logging.getLogger("avsar")
 
 app = FastAPI(
-    title="doctro",
+    title="avsar",
     version="0.1.0",
     description="Standby-slot filler for dental clinics — Phase 1 backend.",
     openapi_url="/api/openapi.json",
@@ -43,7 +43,7 @@ api_router = APIRouter(prefix="/api")
 
 @api_router.get("/")
 async def root():
-    return {"service": "doctro", "phase": 1, "status": "ok"}
+    return {"service": "avsar", "phase": 1, "status": "ok"}
 
 
 @api_router.get("/health")
@@ -59,6 +59,8 @@ api_router.include_router(razorpay_router)
 api_router.include_router(whatsapp_router)
 
 app.include_router(api_router)
+app.include_router(razorpay_router)
+app.include_router(whatsapp_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -72,7 +74,7 @@ app.add_middleware(
 @app.on_event("startup")
 async def _startup():
     await ensure_indexes()
-    logger.info("doctro backend ready — indexes ensured")
+    logger.info("avsar backend ready — indexes ensured")
 
 
 @app.on_event("shutdown")

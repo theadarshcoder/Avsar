@@ -1,5 +1,4 @@
 import Nav from "../components/Nav";
-import Footer from "../components/Footer";
 import PricingSection from "../components/pricing/PricingSection";
 
 export default function PricingPage() {
@@ -8,7 +7,6 @@ export default function PricingPage() {
             <div className="flex-1 pt-6">
                 <PricingSection isStandalone />
             </div>
-            <Footer />
         </div>
     );
 }

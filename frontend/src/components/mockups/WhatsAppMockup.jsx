@@ -14,7 +14,7 @@ export default function WhatsAppMockup() {
                 </div>
                 <div className="text-white">
                     <div className="text-sm font-semibold">Smile Dental, Indiranagar</div>
-                    <div className="text-[11px] opacity-60">online · via doctro</div>
+                    <div className="text-[11px] opacity-60">online · via avsar</div>
                 </div>
             </div>
             <div className="pt-5 pb-2">
@@ -27,7 +27,7 @@ export default function WhatsAppMockup() {
                     <b>3:00 PM</b> today with <b>Dr. Anjali Menon</b>. Review your
                     priority status here:
                     <div className="text-[13px] mt-1 text-[#128C7E] underline break-all">
-                        doctro.in/checkout/…
+                        avsar.in/checkout/…
                     </div>
                 </div>
                 <div className="mt-2 text-[10px] text-white/50 pl-1">

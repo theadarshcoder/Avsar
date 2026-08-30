@@ -30,7 +30,7 @@ WEBHOOK_SECRET = _benv.get("RAZORPAY_WEBHOOK_SECRET")
 OVERRIDE = _benv.get("MOCK_OVERRIDE_TOKEN")
 CLINIC = "clinic_smile_dental_indiranagar"
 
-OVERRIDE_HEADERS = {"X-Doctro-Test-Override": OVERRIDE}
+OVERRIDE_HEADERS = {"X-avsar-Test-Override": OVERRIDE}
 
 
 def sign(body: bytes, secret: str) -> str:
@@ -355,7 +355,7 @@ class TestMockPayGating:
         r = api.post(
             f"{API}/checkout/{token}/mock-pay",
             json={},
-            headers={"X-Doctro-Test-Override": "nope"},
+            headers={"X-avsar-Test-Override": "nope"},
         )
         assert r.status_code == 403, r.text
         assert r.json()["detail"]["code"] == "MOCK_DISABLED"

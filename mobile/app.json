@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.emergent.doctrobackend.d0rb84"
+      "bundleIdentifier": "com.emergent.avsarbackend.d0rb84"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.emergent.doctrobackend.d0rb84"
+      "package": "com.emergent.avsarbackend.d0rb84"
     },
     "web": {
       "bundler": "metro",

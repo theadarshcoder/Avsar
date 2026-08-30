@@ -10,7 +10,7 @@ export default function PricingFaq() {
         },
         {
             q: "Do you take any percentage cuts from our doctor consultations?",
-            a: "Never. Doctro operates strictly as a flat monthly subscription. Whether a consultation is ₹800 or ₹15,000, Doctro takes 0% cut. What your clinic earns from a slot is your clinic's business.",
+            a: "Never. avsar operates strictly as a flat monthly subscription. Whether a consultation is ₹800 or ₹15,000, avsar takes 0% cut. What your clinic earns from a slot is your clinic's business.",
         },
         {
             q: "How does the single-winner atomic checkout lock work?",
@@ -37,7 +37,7 @@ export default function PricingFaq() {
     };
 
     return (
-        <div className="mt-20 pt-16 border-t border-[var(--doctro-line)]" data-testid="pricing-faq-section">
+        <div className="mt-20 pt-16 border-t border-[var(--avsar-line)]" data-testid="pricing-faq-section">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-10">
                     <div className="text-xs uppercase tracking-[0.25em] opacity-60">
@@ -47,7 +47,7 @@ export default function PricingFaq() {
                         Clear answers on pricing, fees, and locking.
                     </h2>
                     <p className="text-sm opacity-80 max-w-xl">
-                        Everything dental clinic owners and practice managers ask about how Doctro charges and operates.
+                        Everything dental clinic owners and practice managers ask about how avsar charges and operates.
                     </p>
                 </div>
 
@@ -57,8 +57,8 @@ export default function PricingFaq() {
                         return (
                             <div
                                 key={faq.q}
-                                className={`doctro-card transition-all duration-200 cursor-pointer ${
-                                    isOpen ? "ring-1 ring-[var(--doctro-ink)]" : "hover:border-black/15"
+                                className={`avsar-card transition-all duration-200 cursor-pointer ${
+                                    isOpen ? "ring-1 ring-[var(--avsar-ink)]" : "hover:border-black/15"
                                 }`}
                                 onClick={() => toggle(idx)}
                                 style={{ padding: "20px 24px" }}
@@ -67,7 +67,7 @@ export default function PricingFaq() {
                                     <div className="font-serif text-xl sm:text-2xl text-[#101014] select-none">
                                         {faq.q}
                                     </div>
-                                    <div className="w-8 h-8 rounded-full bg-[var(--doctro-cream)] flex items-center justify-center shrink-0 text-[#101014]">
+                                    <div className="w-8 h-8 rounded-full bg-[var(--avsar-cream)] flex items-center justify-center shrink-0 text-[#101014]">
                                         {isOpen ? (
                                             <Minus className="w-4 h-4 stroke-[2.5]" />
                                         ) : (
@@ -84,7 +84,7 @@ export default function PricingFaq() {
                                             transition={{ duration: 0.2 }}
                                             className="overflow-hidden"
                                         >
-                                            <p className="mt-4 pt-4 border-t border-[var(--doctro-line)] text-sm opacity-80 leading-relaxed text-[#101014]">
+                                            <p className="mt-4 pt-4 border-t border-[var(--avsar-line)] text-sm opacity-80 leading-relaxed text-[#101014]">
                                                 {faq.a}
                                             </p>
                                         </motion.div>

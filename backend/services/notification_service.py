@@ -1,12 +1,11 @@
 """WhatsApp notification service supporting Twilio and Mock modes.
 
 Rules enforced here:
-  * Never include price/discount/standby rate in any template.
-  * A test hook: phone numbers ending in "0000" simulate a send failure
-    so failure-isolation can be verified.
-  * All sends (success or failure) are logged to the `sent_messages` collection.
-  * `NOTIFICATION_MODE` selects between `twilio` and `mock` transport.
-  * Keeps transport isolated from template logic so Meta/WABA can be swapped later.
+  - Price, discount, and standby rate values are never included in any template.
+  - Phone numbers ending in '0000' are treated as a test hook that simulates a send failure.
+  - All sends (success or failure) are logged to the sent_messages collection.
+  - NOTIFICATION_MODE environment variable selects between twilio and mock transport.
+  - Transport logic is isolated from template logic for easy provider swaps.
 """
 from __future__ import annotations
 
@@ -68,7 +67,7 @@ async def _send_via_twilio(
     """Send WhatsApp message using Twilio Messages REST API via async httpx."""
     if not (TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN):
         raise NotificationError(
-            "Twilio credentials missing — set TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN."
+            "Twilio credentials missing. Set TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN."
         )
 
     from_number = _format_whatsapp_number(TWILIO_WHATSAPP_FROM)

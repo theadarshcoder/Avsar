@@ -31,12 +31,12 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 # Set required env vars BEFORE any backend imports touch os.environ / dotenv
 # ──────────────────────────────────────────────────────────────────────────────
 os.environ.setdefault("MONGO_URL", "mongodb://localhost:27017")
-os.environ.setdefault("DB_NAME", "doctro_test")
+os.environ.setdefault("DB_NAME", "avsar_test")
 os.environ.setdefault("PAYMENT_MODE", "mock")
 os.environ.setdefault("RAZORPAY_KEY_ID", "rzp_test_key123")
 os.environ.setdefault("RAZORPAY_KEY_SECRET", "test_secret_key_456")
 os.environ.setdefault("RAZORPAY_WEBHOOK_SECRET", "whsec_test_123")
-os.environ.setdefault("MOCK_OVERRIDE_TOKEN", "doctro-testing-override")
+os.environ.setdefault("MOCK_OVERRIDE_TOKEN", "avsar-testing-override")
 os.environ.setdefault("FRONTEND_URL", "http://localhost:3000")
 os.environ.setdefault("HANDLING_FEE", "50")
 
@@ -194,7 +194,7 @@ class TestRazorpayService:
         order = await create_order(
             amount_paise=85000,
             notes={"slotId": "s1", "patientId": "p1"},
-            receipt="doctro_test123",
+            receipt="avsar_test123",
         )
 
         assert order["id"].startswith("order_MOCK_")
@@ -481,7 +481,7 @@ class TestPaymentMode:
     def test_mock_override_token_set(self):
         from services.razorpay_service import MOCK_OVERRIDE_TOKEN
 
-        assert MOCK_OVERRIDE_TOKEN == "doctro-testing-override"
+        assert MOCK_OVERRIDE_TOKEN == "avsar-testing-override"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -823,7 +823,7 @@ class TestSubscriptionFlow:
         # In production mode (PAYMENT_MODE=razorpay) without override header -> MUST 403
         with patch("services.razorpay_service.PAYMENT_MODE", "razorpay"), \
              patch("services.razorpay_service.is_mock_mode", return_value=False), \
-             patch("os.environ.get", return_value="doctro-testing-override"):
+             patch("os.environ.get", return_value="avsar-testing-override"):
 
             payload = MockSubscriptionPayRequest(
                 clinicName="Smile Pro",
@@ -832,13 +832,13 @@ class TestSubscriptionFlow:
             )
 
             with pytest.raises(HTTPException) as exc_info:
-                await mock_subscription_pay(payload, x_doctro_test_override=None)
+                await mock_subscription_pay(payload, x_avsar_test_override=None)
             assert exc_info.value.status_code == 403
             assert exc_info.value.detail["code"] == "MOCK_DISABLED"
 
             # With valid override header -> Allowed
             with patch("routes.clinics.confirm_subscription", AsyncMock(return_value={"status": "active", "code": "SUBSCRIPTION_ACTIVATED"})):
-                res = await mock_subscription_pay(payload, x_doctro_test_override="doctro-testing-override")
+                res = await mock_subscription_pay(payload, x_avsar_test_override="avsar-testing-override")
                 assert res["status"] == "active"
 
     @pytest.mark.asyncio
@@ -853,7 +853,7 @@ class TestSubscriptionFlow:
                     email="test@fail.in",
                     simulateFailure=True,
                 ),
-                x_doctro_test_override="doctro-testing-override",
+                x_avsar_test_override="avsar-testing-override",
             )
             assert res["status"] == "failed"
             assert res["code"] == "PAYMENT_FAILED"

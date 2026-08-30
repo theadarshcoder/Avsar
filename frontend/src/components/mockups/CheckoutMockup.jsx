@@ -33,7 +33,7 @@ export default function CheckoutMockup() {
             <div className="border-t border-[rgba(16,16,20,0.1)] my-2"></div>
             <Row label="You pay today" value="₹1,450" bold big />
             <div className="mt-4">
-                <div className="doctro-pill doctro-pill-primary w-full" style={{ minWidth: 0 }}>
+                <div className="avsar-pill avsar-pill-primary w-full" style={{ minWidth: 0 }}>
                     Confirm & pay
                 </div>
             </div>

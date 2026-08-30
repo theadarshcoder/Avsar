@@ -32,7 +32,7 @@ export default function UrgencyBanner({ startTime, doctorName }) {
     return (
         <div
             data-testid="urgency-banner"
-            className="doctro-card"
+            className="avsar-card"
             style={{ background: "#FFF6E5", borderColor: "rgba(103,74,0,0.15)" }}
         >
             <div className="flex items-start gap-4 flex-wrap">
@@ -57,7 +57,7 @@ export default function UrgencyBanner({ startTime, doctorName }) {
                 </div>
             </div>
             <p className="text-sm opacity-80 mt-4" data-testid="urgency-copy">
-                This slot is offered to multiple standby patients — the first confirmed
+                This slot is offered to multiple standby patients. The first confirmed
                 payment wins. If you aren't the one, your payment is automatically
                 refunded.
             </p>

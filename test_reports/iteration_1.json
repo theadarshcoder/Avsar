@@ -1,5 +1,5 @@
 {
-  "summary": "Frontend-only regression testing of the Checkout error-state split fix (fatalError vs retryError) on doctro. Ran 4 Playwright flows against the public preview URL: (1) simulated payment failure + retry, (2) invalid token fatal screen, (3) happy-path pay, (4) 'slot just taken' screen. All 4 passed. Re-seeded the DB (python /app/backend/seed.py --reset) first because all previously seeded scheduled slots were already consumed (no 'Cancel & broadcast' buttons available).",
+  "summary": "Frontend-only regression testing of the Checkout error-state split fix (fatalError vs retryError) on avsar. Ran 4 Playwright flows against the public preview URL: (1) simulated payment failure + retry, (2) invalid token fatal screen, (3) happy-path pay, (4) 'slot just taken' screen. All 4 passed. Re-seeded the DB (python /app/backend/seed.py --reset) first because all previously seeded scheduled slots were already consumed (no 'Cancel & broadcast' buttons available).",
   "backend_issues": {"critical": [], "minor": []},
   "frontend_issues": {
     "ui_bugs": [],

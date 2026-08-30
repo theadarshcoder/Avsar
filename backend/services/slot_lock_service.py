@@ -1,6 +1,6 @@
 """Atomic slot-locking + confirmation.
 
-This module contains THE core primitive of doctro: a single atomic
+This module contains THE core primitive of avsar: a single atomic
 find_one_and_update that both checks the slot is still open AND flips it
 to locked in one operation. There is intentionally no read-then-write path.
 """

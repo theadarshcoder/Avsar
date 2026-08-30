@@ -1,4 +1,4 @@
-# doctro
+# avsar
 
 An automated standby revenue and cancellation recovery platform that turns last-minute dental chair openings into instant bookings via consent-first WhatsApp waitlists and atomic single-winner checkout.
 
@@ -13,7 +13,7 @@ An automated standby revenue and cancellation recovery platform that turns last-
 
 ---
 
-## Why doctro
+## Why avsar
 
 Dental practices face severe structural revenue leakage from last-minute appointment cancellations. A standard 2-to-4 chair clinic loses between **₹12,000 and ₹50,000+ each month** when patients cancel within 2 to 4 hours of their scheduled slot.
 
@@ -22,12 +22,12 @@ Manual front-desk operations cannot resolve this problem:
 - **Double-Booking Risks**: Broadcast messages without atomic concurrency locks cause multiple patients to arrive at the clinic simultaneously.
 - **Predatory Aggregator Commissions**: Healthcare marketplaces frequently take **15% to 30%** cuts from consultation revenues.
 
-**doctro provides an automated, race-condition-proof solution:**
+**avsar provides an automated, race-condition-proof solution:**
 1. **Instant Broadcast**: When a cancellation is flagged, an automated WhatsApp alert is dispatched immediately to opted-in waitlist patients.
 2. **Atomic Single-Winner Checkout**: The first patient to confirm locks the slot instantly in an atomic database operation (`status: "available" → "booked"`).
 3. **Automated Instant Refunds**: Any patient who completes checkout in the same second receives an immediate, automated gateway refund with zero manual staff reconciliation.
 4. **Self-Serve Priority Passes**: If a clinic cancels a confirmed standby patient, the patient can choose between an instant bank refund or an automated 14-day priority pass credit.
-5. **Zero Commission Economics**: Doctro operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby patient. **Doctro takes 0% commission on doctor consultation fees.**
+5. **Zero Commission Economics**: avsar operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby patient. **avsar takes 0% commission on doctor consultation fees.**
 
 ---
 
@@ -39,7 +39,7 @@ Manual front-desk operations cannot resolve this problem:
 - **Data Validation & Serialization**: [Pydantic v2](https://docs.pydantic.dev/)
 - **Payment Gateway & Security**: [Razorpay Orders & Webhooks API](https://razorpay.com/docs/) with HMAC-SHA256 signature verification & idempotency handling
 - **Frontend UI & State**: [React 18.2.0](https://react.dev/), [React Router DOM 6.22.0](https://reactrouter.com/)
-- **Styling & Design System**: [Tailwind CSS 3.4.1](https://tailwindcss.com/) with custom DOCTRO editorial token palette
+- **Styling & Design System**: [Tailwind CSS 3.4.1](https://tailwindcss.com/) with custom avsar editorial token palette
 - **Animation & Motion**: [Framer Motion 11.0.0](https://www.framer.com/motion/)
 - **Icons**: [Lucide React 0.344.0](https://lucide.dev/)
 - **HTTP Client**: [Axios 1.6.7](https://axios-http.com/) & [HTTPX 0.27.0](https://www.python-httpx.org/)
@@ -53,8 +53,8 @@ Manual front-desk operations cannot resolve this problem:
 
 ```bash
 # Clone the repository
-git clone https://github.com/theadarshcoder/DOCTRO.git
-cd DOCTRO
+git clone https://github.com/theadarshcoder/avsar.git
+cd avsar
 
 # Install Backend Dependencies
 cd backend
@@ -72,7 +72,7 @@ Create a `.env` file in `backend/`:
 ```env
 # MongoDB Connection
 MONGO_URI="mongodb://127.0.0.1:27017"
-DB_NAME="doctro_db"
+DB_NAME="avsar_db"
 
 # Server & CORS Configuration
 FRONTEND_URL="http://localhost:3000"
@@ -86,7 +86,7 @@ RAZORPAY_KEY_SECRET="your_razorpay_secret_here"
 RAZORPAY_WEBHOOK_SECRET="your_webhook_secret_here"
 
 # Test / Mock Gating Token (Required for 1-click test checkout in razorpay mode)
-MOCK_OVERRIDE_TOKEN="doctro"
+MOCK_OVERRIDE_TOKEN="avsar"
 ```
 
 Create a `.env` file in `frontend/`:

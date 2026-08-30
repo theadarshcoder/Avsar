@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import Footer from "../components/Footer";
 import CalendarGrid from "../components/dashboard/CalendarGrid";
 import RevenueTicker from "../components/dashboard/RevenueTicker";
 import WaitlistPanel from "../components/waitlist/WaitlistPanel";
@@ -82,7 +81,7 @@ export default function Dashboard() {
     return (
         <div>
             <section
-                className="doctro-section section-bg-yellow"
+                className="avsar-section section-bg-yellow"
                 data-testid="dashboard-header"
                 style={{ marginTop: 12 }}
             >
@@ -96,8 +95,8 @@ export default function Dashboard() {
                         </h1>
                         <button
                             onClick={() => {
-                                localStorage.removeItem("doctro_clinic_token");
-                                localStorage.removeItem("doctro_clinic");
+                                localStorage.removeItem("avsar_clinic_token");
+                                localStorage.removeItem("avsar_clinic");
                                 window.location.href = "/login";
                             }}
                             className="text-xs font-semibold uppercase tracking-wider text-neutral-600 hover:text-black bg-black/[0.04] hover:bg-black/[0.08] px-3.5 py-1.5 rounded-full transition-all"
@@ -116,7 +115,7 @@ export default function Dashboard() {
 
             {error && (
                 <div
-                    className="doctro-section"
+                    className="avsar-section"
                     style={{ background: "#FFE4E4", padding: "24px 48px", margin: "12px 24px" }}
                     data-testid="dashboard-error"
                 >
@@ -124,14 +123,14 @@ export default function Dashboard() {
                 </div>
             )}
 
-            <section className="doctro-section" style={{ background: "#FFFFFF" }}>
+            <section className="avsar-section" style={{ background: "#FFFFFF" }}>
                 <div className="max-w-6xl mx-auto">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="font-serif text-3xl">Today's slots</h2>
                         <button
                             data-testid="btn-refresh-slots"
                             onClick={() => refresh()}
-                            className="doctro-pill doctro-pill-secondary"
+                            className="avsar-pill avsar-pill-secondary"
                             style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                         >
                             Refresh
@@ -150,7 +149,7 @@ export default function Dashboard() {
 
             {outbox && (
                 <section
-                    className="doctro-section section-bg-teal"
+                    className="avsar-section section-bg-teal"
                     data-testid="outbox-section"
                 >
                     <div className="max-w-6xl mx-auto">
@@ -171,7 +170,7 @@ export default function Dashboard() {
                             patient.
                         </p>
 
-                        <div className="doctro-card mb-6" data-testid="broadcast-summary">
+                        <div className="avsar-card mb-6" data-testid="broadcast-summary">
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <Stat label="Consented" value={outbox.broadcast.consentedPatients} testid="stat-consented" />
                                 <Stat label="Skipped (no consent)" value={outbox.broadcast.skippedNonConsented} testid="stat-skipped" />
@@ -185,7 +184,7 @@ export default function Dashboard() {
                                 <div
                                     key={e.patientId}
                                     data-testid={`outbox-entry-${e.patientId}`}
-                                    className="doctro-card flex flex-col gap-3"
+                                    className="avsar-card flex flex-col gap-3"
                                 >
                                     <div className="flex items-center justify-between">
                                         <div>
@@ -204,14 +203,14 @@ export default function Dashboard() {
                                     </div>
                                     {e.status === "failed" && (
                                         <div className="text-xs opacity-70">
-                                            {e.error} — the broadcast continued for everyone else.
+                                            {e.error}. The broadcast continued for everyone else.
                                         </div>
                                     )}
                                     {e.token && (
                                         <Link
                                             data-testid={`outbox-open-${e.patientId}`}
                                             to={`/checkout/${e.token}`}
-                                            className="doctro-pill doctro-pill-primary"
+                                            className="avsar-pill avsar-pill-primary"
                                             style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                                         >
                                             Open checkout as this patient
@@ -223,7 +222,7 @@ export default function Dashboard() {
 
                         <div className="mt-6 flex gap-3">
                             <button
-                                className="doctro-pill doctro-pill-secondary"
+                                className="avsar-pill avsar-pill-secondary"
                                 onClick={() => reloadOutboxForSlot(outbox.slotId)}
                                 style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                                 data-testid="btn-reload-outbox"
@@ -231,7 +230,7 @@ export default function Dashboard() {
                                 Reload outbox
                             </button>
                             <button
-                                className="doctro-pill doctro-pill-secondary"
+                                className="avsar-pill avsar-pill-secondary"
                                 onClick={() => setOutbox(null)}
                                 style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                                 data-testid="btn-close-outbox"
@@ -244,7 +243,7 @@ export default function Dashboard() {
             )}
 
             {cancellation?.transactionId && (
-                <section className="doctro-section section-bg-peach" data-testid="cancellation-section">
+                <section className="avsar-section section-bg-peach" data-testid="cancellation-section">
                     <div className="max-w-6xl mx-auto">
                         <div className="text-xs uppercase tracking-[0.25em] opacity-70">
                             Booked slot cancelled
@@ -256,15 +255,13 @@ export default function Dashboard() {
                         <Link
                             data-testid="link-open-choice-page"
                             to={`/choice/${cancellation.transactionId}`}
-                            className="doctro-pill doctro-pill-primary"
+                            className="avsar-pill avsar-pill-primary"
                         >
                             Open patient's choice page
                         </Link>
                     </div>
                 </section>
             )}
-
-            <Footer />
         </div>
     );
 }

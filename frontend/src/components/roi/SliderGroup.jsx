@@ -56,7 +56,7 @@ function SliderRow({ testid, label, value, min, max, step, format, onChange }) {
                 value={value}
                 data-testid={testid}
                 onChange={(e) => onChange(Number(e.target.value))}
-                className="w-full accent-[var(--doctro-ink)]"
+                className="w-full accent-[var(--avsar-ink)]"
             />
             <div className="flex justify-between text-[11px] opacity-60 mt-1 mono">
                 <span>{format(min)}</span>

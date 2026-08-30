@@ -11,13 +11,13 @@ from dotenv import dotenv_values
 frontend_env = dotenv_values("/app/frontend/.env")
 BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or frontend_env["REACT_APP_BACKEND_URL"]).rstrip("/")
 CLINIC_ID = "clinic_smile_dental_indiranagar"
-OVERRIDE = os.environ.get("MOCK_OVERRIDE_TOKEN", "doctro-testing-override")
+OVERRIDE = os.environ.get("MOCK_OVERRIDE_TOKEN", "avsar-testing-override")
 
 
 @pytest.fixture(scope="module")
 def api():
     s = requests.Session()
-    s.headers.update({"Content-Type": "application/json", "X-Doctro-Test-Override": OVERRIDE})
+    s.headers.update({"Content-Type": "application/json", "X-avsar-Test-Override": OVERRIDE})
     return s
 
 

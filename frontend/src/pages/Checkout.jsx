@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Nav from "../components/Nav";
-import Footer from "../components/Footer";
 import UrgencyBanner from "../components/checkout/UrgencyBanner";
 import PriceBreakdown from "../components/checkout/PriceBreakdown";
 import {
     createOrder,
+    confirmCheckout,
     getCheckout,
     mockPay,
     pollCheckoutOutcome,
@@ -57,7 +57,7 @@ export default function Checkout() {
     if (fatalError) {
         return (
             <Frame>
-                <div className="doctro-card max-w-xl" data-testid="checkout-error">
+                <div className="avsar-card max-w-xl" data-testid="checkout-error">
                     <div className="font-serif text-2xl mb-2">This checkout link isn't valid.</div>
                     <p className="opacity-80 text-sm">{String(fatalError)}</p>
                 </div>
@@ -82,14 +82,14 @@ export default function Checkout() {
                 <StatusCard
                     testid="checkout-taken"
                     title="This slot was just taken."
-                    body="Another standby patient paid a moment before you. Your payment attempt is being refunded automatically — no action needed."
+                    body="Another standby patient paid a moment before you. Your payment attempt is being refunded automatically. No action needed."
                 />
             </Frame>
         );
     }
 
-    // ── The atomic lock still lives in the WEBHOOK. This client only asks
-    // ── "is the webhook done yet?" and routes on the resolved outcome.
+    // The atomic lock still lives in the WEBHOOK. This client only asks
+    // "is the webhook done yet?" and routes on the resolved outcome.
     const startPolling = () => {
         setStage(STAGE.CONFIRMING);
         setRetryError(null);
@@ -116,7 +116,7 @@ export default function Checkout() {
                     clearInterval(pollTimer.current);
                     setStage(STAGE.FAILED);
                     setRetryError(
-                        "We didn't hear back from the payment gateway. Please try again — the slot is still open."
+                        "We didn't hear back from the payment gateway. Please try again. The slot is still open."
                     );
                 }
             } catch (e) {
@@ -146,21 +146,42 @@ export default function Checkout() {
                 order_id: order.orderId,
                 amount: order.amount,
                 currency: order.currency || "INR",
-                name: "doctro",
+                name: "avsar",
                 description: `${order.notes?.doctorName || "Standby appointment"}`,
                 prefill: order.prefill || {},
                 notes: order.notes || {},
                 theme: { color: "#101014" },
-                handler: () => {
-                    // Do NOT lock from here. The webhook is authoritative.
-                    startPolling();
+                handler: async (response) => {
+                    setStage(STAGE.CONFIRMING);
+                    try {
+                        const outcome = await confirmCheckout(slotToken, {
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpaySignature: response.razorpay_signature,
+                        });
+                        if (outcome?.code === "BOOKED" || outcome?.transactionId) {
+                            nav(`/confirmation/${outcome.transactionId}`);
+                            return;
+                        }
+                        if (outcome?.code === "SLOT_JUST_TAKEN") {
+                            setStage(STAGE.TAKEN);
+                            return;
+                        }
+                        if (outcome?.code === "SLOT_EXPIRED") {
+                            setStage(STAGE.EXPIRED);
+                            return;
+                        }
+                        startPolling();
+                    } catch (err) {
+                        startPolling();
+                    }
                 },
                 modal: {
                     ondismiss: () => {
                         // User closed the modal without completing. Slot stays open.
                         setStage(STAGE.FAILED);
                         setRetryError(
-                            "You closed the payment window before completing. The slot is still open — try again when you're ready."
+                            "You closed the payment window before completing. The slot is still open. Try again when you're ready."
                         );
                     },
                 },
@@ -217,7 +238,7 @@ export default function Checkout() {
                         startTime={data.slot.startTime}
                         doctorName={data.slot.doctorName}
                     />
-                    <div className="doctro-card">
+                    <div className="avsar-card">
                         <div className="text-xs uppercase tracking-widest opacity-60">
                             Patient
                         </div>
@@ -235,7 +256,7 @@ export default function Checkout() {
                     <div className="flex flex-col gap-3">
                         <button
                             data-testid="btn-pay-now"
-                            className="doctro-pill doctro-pill-primary w-full"
+                            className="avsar-pill avsar-pill-primary w-full"
                             onClick={openRazorpay}
                             disabled={payDisabled}
                         >
@@ -248,13 +269,13 @@ export default function Checkout() {
                         {stage === STAGE.CONFIRMING && (
                             <div
                                 className="text-sm rounded-xl p-3"
-                                style={{ background: "var(--doctro-cream)" }}
+                                style={{ background: "var(--avsar-cream)" }}
                                 data-testid="checkout-confirming-msg"
                             >
                                 <b>Payment received.</b>
                                 <div className="opacity-80 mt-1">
                                     Locking your slot with the clinic. This usually takes a couple of
-                                    seconds — please don't close this tab.
+                                    seconds. Please don't close this tab.
                                 </div>
                             </div>
                         )}
@@ -267,17 +288,17 @@ export default function Checkout() {
                                 <b>Payment did not complete.</b>
                                 <div className="opacity-80 mt-1">{retryError}</div>
                                 <div className="opacity-80 mt-1">
-                                    You can try again — this slot is still open.
+                                    You can try again. This slot is still open.
                                 </div>
                             </div>
                         )}
                         {mode === "mock" && (
                             <button
                                 data-testid="btn-simulate-fail"
-                                className="doctro-pill doctro-pill-secondary w-full"
+                                className="avsar-pill avsar-pill-secondary w-full"
                                 onClick={() => runMock({ simulateFailure: true })}
                                 disabled={payDisabled}
-                                title="Demo control — simulate a failed payment webhook."
+                                title="Demo control: simulate a failed payment webhook."
                             >
                                 Simulate payment failure
                             </button>
@@ -285,7 +306,7 @@ export default function Checkout() {
                         <div className="text-[11px] opacity-60 text-center">
                             {mode === "razorpay"
                                 ? "Payments powered by Razorpay (test mode)."
-                                : "Razorpay is MOCKED in this environment — no money moves."}
+                                : "Razorpay is MOCKED in this environment. No money moves."}
                         </div>
                     </div>
                 </div>
@@ -298,7 +319,7 @@ function Frame({ children }) {
     return (
         <div>
             <section
-                className="doctro-section section-bg-peach"
+                className="avsar-section section-bg-peach"
                 style={{ marginTop: 12 }}
                 data-testid="checkout-frame"
             >
@@ -312,19 +333,18 @@ function Frame({ children }) {
                     {children}
                 </div>
             </section>
-            <Footer />
         </div>
     );
 }
 
 function StatusCard({ title, body, testid }) {
     return (
-        <div className="doctro-card max-w-xl" data-testid={testid}>
+        <div className="avsar-card max-w-xl" data-testid={testid}>
             <div className="font-serif text-3xl mb-2">{title}</div>
             <p className="opacity-80 text-sm">{body}</p>
             <a
                 href="/"
-                className="doctro-pill doctro-pill-secondary mt-6"
+                className="avsar-pill avsar-pill-secondary mt-6"
                 style={{ height: 44, minWidth: 0, padding: "0 20px", fontSize: 14 }}
                 data-testid="back-home"
             >

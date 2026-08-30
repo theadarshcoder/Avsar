@@ -1,0 +1,7 @@
+[pyrefly]
+# Exclude scripts and test utilities from type-checking.
+# live_test.py is a one-off runner script; test files are covered by pytest, not pyrefly.
+exclude = [
+    "live_test.py",
+    "tests/**",
+]

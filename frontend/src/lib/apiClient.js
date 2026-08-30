@@ -11,14 +11,14 @@ const client = axios.create({
 
 // Attach Authorization header if clinic token is stored
 client.interceptors.request.use((config) => {
-    const token = localStorage.getItem("doctro_clinic_token");
+    const token = localStorage.getItem("avsar_clinic_token");
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
 });
 
-// ── auth ────────────────────────────────────────────────────────────────
+// auth 
 export const loginClinic = (credentials) =>
     client.post("/auth/login", credentials).then((r) => r.data);
 
@@ -28,7 +28,7 @@ export const registerClinic = (body) =>
 export const getMe = () =>
     client.get("/auth/me").then((r) => r.data);
 
-// ── clinics / slots ─────────────────────────────────────────────────────
+// clinics / slots 
 export const getClinic = (clinicId) =>
     client.get(`/clinics/${clinicId}`).then((r) => r.data);
 
@@ -50,7 +50,7 @@ export const getClinicStatsToday = (clinicId) =>
 export const getSlot = (slotId) =>
     client.get(`/slots/${slotId}`).then((r) => r.data);
 
-// ── waitlist ────────────────────────────────────────────────────────────
+// waitlist 
 export const listWaitlist = (clinicId) =>
     client.get(`/clinics/${clinicId}/waitlist`).then((r) => r.data);
 
@@ -65,7 +65,7 @@ export const recordConsent = (entryId) =>
 export const removeWaitlistEntry = (entryId) =>
     client.delete(`/clinics/waitlist/${entryId}`).then((r) => r.data);
 
-// ── transactions / choice ───────────────────────────────────────────────
+// transactions / choice 
 export const getTransaction = (txId) =>
     client.get(`/clinics/transactions/${txId}`).then((r) => r.data);
 
@@ -74,7 +74,7 @@ export const submitChoice = (txId, choice) =>
         .post(`/clinics/transactions/${txId}/choice`, { choice })
         .then((r) => r.data);
 
-// ── checkout ────────────────────────────────────────────────────────────
+// checkout 
 export const getCheckout = (token) =>
     client.get(`/checkout/${token}`).then((r) => r.data);
 
@@ -88,7 +88,7 @@ export const mockPay = (token, { forceEventId, simulateFailure = false } = {}) =
                 simulateFailure,
             },
             {
-                headers: { "X-Doctro-Test-Override": "doctro-testing-override" },
+                headers: { "X-avsar-Test-Override": "avsar-testing-override" },
             },
         )
         .then((r) => r.data);
@@ -96,10 +96,13 @@ export const mockPay = (token, { forceEventId, simulateFailure = false } = {}) =
 export const createOrder = (token) =>
     client.post(`/checkout/${token}/order`).then((r) => r.data);
 
+export const confirmCheckout = (token, payload) =>
+    client.post(`/checkout/${token}/confirm`, payload).then((r) => r.data);
+
 export const pollCheckoutOutcome = (token) =>
     client.get(`/checkout/${token}/outcome`).then((r) => r.data);
 
-// ── subscriptions & pricing ─────────────────────────────────────────────
+// subscriptions & pricing 
 export const createSubscriptionOrder = (payload) =>
     client.post("/clinics/subscribe/order", payload).then((r) => r.data);
 
@@ -109,7 +112,7 @@ export const confirmSubscription = (payload) =>
 export const mockSubscriptionPay = (payload) =>
     client
         .post("/clinics/subscribe/mock-pay", payload, {
-            headers: { "X-Doctro-Test-Override": "doctro" },
+            headers: { "X-avsar-Test-Override": "avsar" },
         })
         .then((r) => r.data);
 

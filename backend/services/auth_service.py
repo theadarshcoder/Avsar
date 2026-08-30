@@ -24,7 +24,7 @@ JWT_ALGORITHM = "HS256"
 
 
 def _secret() -> str:
-    s = os.environ.get("JWT_SECRET", "doctro_jwt_secret_dev_2026")
+    s = os.environ.get("JWT_SECRET", "avsar_jwt_secret_dev_2026")
     return s
 
 

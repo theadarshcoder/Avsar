@@ -32,7 +32,7 @@ export default function WaitlistPanel({ clinicId, clinicName }) {
 
     return (
         <section
-            className="doctro-section section-bg-lavender"
+            className="avsar-section section-bg-lavender"
             data-testid="waitlist-panel"
         >
             <div className="max-w-6xl mx-auto">
@@ -63,24 +63,28 @@ export default function WaitlistPanel({ clinicId, clinicName }) {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-1 lg:sticky lg:top-4 flex flex-col gap-4">
                         <AddPatientForm
                             clinicId={clinicId}
                             clinicName={clinicName}
                             onAdded={() => load()}
                         />
+
                     </div>
-                    <div className="lg:col-span-2 space-y-4" data-testid="waitlist-list">
+                    <div
+                        className="lg:col-span-2 space-y-4 lg:max-h-[calc(100vh-180px)] lg:overflow-y-auto lg:pr-1"
+                        data-testid="waitlist-list"
+                    >
                         {error && (
                             <div
-                                className="doctro-card"
+                                className="avsar-card"
                                 style={{ background: "#FFE4E4" }}
                             >
                                 {String(error)}
                             </div>
                         )}
                         {entries?.length === 0 && (
-                            <div className="doctro-card" data-testid="waitlist-empty">
+                            <div className="avsar-card" data-testid="waitlist-empty">
                                 No patients on the waitlist yet. Add one on the left.
                             </div>
                         )}

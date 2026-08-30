@@ -14,7 +14,7 @@ function formatTime(iso) {
 export default function CalendarGrid({ slots, onOpenSlot, onCancelBooked, busySlotId }) {
     if (!slots || slots.length === 0) {
         return (
-            <div className="doctro-card" data-testid="calendar-empty">
+            <div className="avsar-card" data-testid="calendar-empty">
                 No slots yet. Seed the demo data or add one.
             </div>
         );
@@ -31,7 +31,7 @@ export default function CalendarGrid({ slots, onOpenSlot, onCancelBooked, busySl
                     <div
                         key={s.id}
                         data-testid={`slot-card-${s.id}`}
-                        className="doctro-card flex flex-col gap-3"
+                        className="avsar-card flex flex-col gap-3"
                     >
                         <div className="flex items-start justify-between">
                             <div>
@@ -53,7 +53,7 @@ export default function CalendarGrid({ slots, onOpenSlot, onCancelBooked, busySl
                                     data-testid={`btn-cancel-scheduled-${s.id}`}
                                     disabled={busy}
                                     onClick={() => onOpenSlot(s)}
-                                    className="doctro-pill doctro-pill-primary"
+                                    className="avsar-pill avsar-pill-primary"
                                     style={{ height: 40, minWidth: 0, padding: "0 16px", fontSize: 13 }}
                                 >
                                     {busy ? "Broadcasting…" : "Cancel & broadcast"}
@@ -72,7 +72,7 @@ export default function CalendarGrid({ slots, onOpenSlot, onCancelBooked, busySl
                                     data-testid={`btn-cancel-booked-${s.id}`}
                                     disabled={busy}
                                     onClick={() => onCancelBooked(s)}
-                                    className="doctro-pill doctro-pill-secondary"
+                                    className="avsar-pill avsar-pill-secondary"
                                     style={{ height: 40, minWidth: 0, padding: "0 16px", fontSize: 13 }}
                                 >
                                     Cancel booking
@@ -80,7 +80,7 @@ export default function CalendarGrid({ slots, onOpenSlot, onCancelBooked, busySl
                             )}
                             {s.status === "cancelled_by_clinic" && (
                                 <span className="text-xs opacity-70">
-                                    Cancelled — patient offered refund or credit
+                                    Cancelled. Patient offered refund or credit.
                                 </span>
                             )}
                         </div>

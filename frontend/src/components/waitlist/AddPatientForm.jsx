@@ -46,7 +46,7 @@ export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
         <form
             data-testid="add-patient-form"
             onSubmit={submit}
-            className="doctro-card space-y-4"
+            className="avsar-card space-y-4"
         >
             <div>
                 <div className="text-xs uppercase tracking-widest opacity-60">
@@ -78,14 +78,14 @@ export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
             <label
                 data-testid="consent-block"
                 className="flex items-start gap-3 rounded-2xl p-4 border border-[rgba(16,16,20,0.1)] cursor-pointer select-none"
-                style={{ background: "var(--doctro-cream)" }}
+                style={{ background: "var(--avsar-cream)" }}
             >
                 <input
                     type="checkbox"
                     data-testid="consent-checkbox"
                     checked={consent}
                     onChange={(e) => setConsent(e.target.checked)}
-                    className="mt-1 w-4 h-4 accent-[var(--doctro-ink)]"
+                    className="mt-1 w-4 h-4 accent-[var(--avsar-ink)]"
                 />
                 <div>
                     <div className="text-sm font-semibold">Explicit consent</div>
@@ -96,7 +96,7 @@ export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
                         {consentText}
                     </div>
                     <div className="text-[11px] opacity-60 mt-2">
-                        Leave this unchecked to add the patient without consent — they
+                        Leave this unchecked to add the patient without consent. They
                         will <b>not</b> receive any standby notifications until they
                         opt in.
                     </div>
@@ -118,12 +118,12 @@ export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
                     type="submit"
                     disabled={busy || !name.trim() || !phone.trim()}
                     data-testid="btn-submit-patient"
-                    className="doctro-pill doctro-pill-primary"
+                    className="avsar-pill avsar-pill-primary"
                 >
                     {busy ? "Adding…" : consent ? "Add with consent" : "Add without consent"}
                 </button>
                 <span className="text-xs opacity-70" data-testid="consent-status-hint">
-                    Consent is {consent ? "ON" : "OFF"} — timestamp comes from the server.
+                    Consent is {consent ? "ON" : "OFF"}. Timestamp comes from the server.
                 </span>
             </div>
         </form>
@@ -143,7 +143,7 @@ function Field({ label, value, onChange, placeholder, testid, required, mono }) 
                 data-testid={testid}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className={`w-full rounded-xl border border-[rgba(16,16,20,0.15)] px-4 py-3 outline-none focus:border-[var(--doctro-ink)] ${
+                className={`w-full rounded-xl border border-[rgba(16,16,20,0.15)] px-4 py-3 outline-none focus:border-[var(--avsar-ink)] ${
                     mono ? "mono" : ""
                 }`}
             />
