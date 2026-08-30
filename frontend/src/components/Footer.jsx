@@ -9,7 +9,7 @@ export default function Footer() {
                 <div>
                     <div className="font-serif text-3xl mb-3">Avsar</div>
                     <p className="text-sm opacity-75 max-w-[240px]">
-                        Standby appointments for dental clinics in India. Consent-first,
+                        Standby appointments for service businesses in India. Consent-first,
                         flat-fee, single-winner checkout.
                     </p>
                 </div>
@@ -25,7 +25,7 @@ export default function Footer() {
                 <FooterCol
                     title="Support"
                     links={[
-                        ["Demo dashboard", "/dashboard/clinic_smile_dental_indiranagar"],
+                        ["Demo dashboard", "/dashboard/clinic_smile_service_indiranagar"],
                         ["Docs (OpenAPI)", "/api/openapi.json"],
                         ["Status", "#"],
                     ]}
@@ -40,7 +40,7 @@ export default function Footer() {
                 </div>
             </div>
             <div className="max-w-6xl mx-auto mt-14 pt-6 border-t border-white/10 text-xs opacity-60 flex flex-wrap gap-4 justify-between">
-                <span>© {new Date().getFullYear()} Avsar. Built for Indian dental clinics.</span>
+                <span>© {new Date().getFullYear()} Avsar. Built for Indian service businesses.</span>
                 <span>Phase-1 demo build. WhatsApp is MOCKED; Razorpay is real (test mode).</span>
             </div>
         </footer>

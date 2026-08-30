@@ -1,5 +1,5 @@
 /**
- * Three-slider group. Live, controlled. No client-side math — the parent
+ * Three-slider group. Live, controlled. No client-side math - the parent
  * receives values and computes what to display.
  */
 export default function SliderGroup({ chairs, hourlyRate, cancellations, onChange }) {

@@ -1,5 +1,5 @@
 /**
- * Truthful urgency banner — no fake countdown timers. If the slot's
+ * Truthful urgency banner - no fake countdown timers. If the slot's
  * startTime is in the future we show how long until it starts. Otherwise
  * we tell the user the slot is expired.
  */

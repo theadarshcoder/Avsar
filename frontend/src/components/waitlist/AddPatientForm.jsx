@@ -8,7 +8,7 @@ import { addToWaitlist } from "../../lib/apiClient";
  *  - The consent text shown is the exact text stored server-side.
  *  - Submitting with checkbox unchecked STILL adds them, but with
  *    consentGivenAt=null. The row will render honestly as
- *    "No consent — will never be notified."
+ *    "No consent - will never be notified."
  */
 export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
     const [name, setName] = useState("");

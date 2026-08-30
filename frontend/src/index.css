@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-    /* avsar palette — flat section fills, no gradients anywhere */
+    /* avsar palette - flat section fills, no gradients anywhere */
     --avsar-lavender: #E3DBFB;
     --avsar-teal: #B8E4DE;
     --avsar-peach: #FBDBC6;
@@ -62,7 +62,7 @@ body {
     border: 1px solid transparent;
 }
 
-/* FIXED width variant — width does NOT flex with label. Used on the
+/* FIXED width variant - width does NOT flex with label. Used on the
    refund/credit choice buttons so equal-size holds regardless of future
    copy edits. */
 .avsar-pill-fixed {
@@ -112,7 +112,7 @@ body {
     .avsar-pill { min-width: 180px; height: 48px; }
 }
 
-/* Slot status colors — distinct, flat, no gradient. */
+/* Slot status colors - distinct, flat, no gradient. */
 .status-scheduled { background: #E5E1D8; color: #2E2A22; }
 .status-open      { background: #FDE58A; color: #4A3A00; }
 .status-locked    { background: #FCD4B6; color: #6A2E00; }

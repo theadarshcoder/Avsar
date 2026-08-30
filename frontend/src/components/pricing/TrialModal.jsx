@@ -4,9 +4,9 @@ import { X, ArrowLeft, ArrowRight, Check, Sparkles, Lock } from "lucide-react";
 import { startFreeTrial } from "../../lib/apiClient";
 
 export default function TrialModal({ isOpen, onClose }) {
-    const [clinicName, setClinicName] = useState("Smile Dental, Indiranagar");
+    const [clinicName, setClinicName] = useState("Smile Service, Indiranagar");
     const [doctorName, setDoctorName] = useState("Dr. Anjali Menon");
-    const [email, setEmail] = useState("demo@smiledental.in");
+    const [email, setEmail] = useState("demo@smileservice.in");
     const [phone, setPhone] = useState("+919900000001");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
@@ -98,7 +98,7 @@ export default function TrialModal({ isOpen, onClose }) {
                             </div>
                             <div className="pt-4 flex justify-center">
                                 <a
-                                    href={`/dashboard/${successData?.clinic?.id || "clinic_smile_dental_indiranagar"}`}
+                                    href={`/dashboard/${successData?.clinic?.id || "clinic_smile_service_indiranagar"}`}
                                     className="avsar-pill avsar-pill-primary"
                                     style={{ textDecoration: "none", height: 50, fontSize: 15, padding: "0 32px" }}
                                 >
@@ -134,7 +134,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                                 value={clinicName}
                                                 onChange={(e) => setClinicName(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="Smile Dental Indiranagar"
+                                                placeholder="Smile Service Indiranagar"
                                             />
                                         </div>
                                         <div>
@@ -160,7 +160,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="demo@smiledental.in"
+                                                placeholder="demo@smileservice.in"
                                             />
                                         </div>
                                         <div>

@@ -37,18 +37,18 @@ export default function Home() {
             >
                 <div className="max-w-5xl mx-auto pt-6">
                     <div className="text-xs uppercase tracking-[0.25em] opacity-60 mb-4">
-                        For dental clinics in India
+                        For service businesses in India
                     </div>
                     <h1
                         data-testid="hero-headline"
                         className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight"
                     >
-                        Turn last-minute clinic cancellations into instant standby revenue.
+                        Turn last-minute cancellations into instant standby revenue.
                     </h1>
                     <p className="mt-6 text-base sm:text-lg max-w-2xl opacity-80">
-                        When a patient cancels, Avsar notifies your consented waitlist over
+                        When a customer cancels, Avsar notifies your consented waitlist over
                         WhatsApp and runs a locked, single-winner checkout. One paying
-                        patient replaces the empty chair, automatically. No calls, no
+                        customer replaces the empty slot, automatically. No calls, no
                         double-bookings, no percentage cuts.
                     </p>
                     <div className="mt-8 flex gap-4 flex-wrap">
@@ -64,7 +64,7 @@ export default function Home() {
                             href="/login"
                             className="avsar-pill avsar-pill-secondary"
                         >
-                            Clinic login
+                            Business login
                         </a>
                     </div>
                 </div>
@@ -79,7 +79,7 @@ export default function Home() {
             >
                 <div className="max-w-5xl mx-auto">
                     <div className="text-xs uppercase tracking-[0.25em] opacity-70">
-                        The cost of an empty chair
+                        The cost of an empty slot
                     </div>
                     <h2 className="font-serif text-3xl sm:text-4xl mt-2 mb-8">
                         What are cancellations costing you every month?
@@ -103,16 +103,16 @@ export default function Home() {
                     tone="lavender"
                     order="left"
                     kicker="Step 1 · Flag the vacancy"
-                    title="The moment a chair opens up, Avsar flags it."
-                    body="You cancel a slot in one tap, or your scheduling software tells us. Avsar doesn't need a percentage of the fee. It just needs to know when a chair is idle."
+                    title="The moment a slot opens up, Avsar flags it."
+                    body="You cancel a slot in one tap, or your scheduling software tells us. Avsar doesn't need a percentage of the fee. It just needs to know when a slot is idle."
                     mockup={<VacancyMockup />}
                 />
                 <ExplainerSection
                     tone="teal"
                     order="right"
                     kicker="Step 2 · Notify the waitlist"
-                    title="A WhatsApp message goes only to patients who opted in."
-                    body="Non-consented patients are skipped at the query level, not just hidden in the UI. The message never contains a price, a discount, or a standby rate. Only the slot, the doctor, and a link to the priority page."
+                    title="A WhatsApp message goes only to customers who opted in."
+                    body="Non-consented customers are skipped at the query level, not just hidden in the UI. The message never contains a price, a discount, or a standby rate. Only the slot, the professional, and a link to the priority page."
                     mockup={<WhatsAppMockup />}
                 />
                 <ExplainerSection
@@ -120,7 +120,7 @@ export default function Home() {
                     order="left"
                     kicker="Step 3 · Locked, single-winner checkout"
                     title="One atomic operation. One winner. Everyone else is refunded."
-                    body="Two patients tapping pay at the same second? Only one is locked in. The other receives a message that the slot was just taken, and their payment is automatically refunded. No manual reconciliation."
+                    body="Two customers tapping pay at the same second? Only one is locked in. The other receives a message that the slot was just taken, and their payment is automatically refunded. No manual reconciliation."
                     mockup={<CheckoutMockup />}
                 />
             </div>
@@ -146,7 +146,7 @@ export default function Home() {
                         className="avsar-pill avsar-pill-primary"
                         data-testid="cta-clinic-login"
                     >
-                        Log in to your clinic dashboard
+                        Log in to your business dashboard
                     </a>
                 </div>
             </section>
@@ -177,12 +177,12 @@ export default function Home() {
                         <ComplianceCard
                             testid="compliance-2"
                             title="Flat subscription"
-                            body="We charge a flat monthly fee, not a percentage of your consultation. What your clinic earns from a slot is your clinic's business."
+                            body="We charge a flat monthly fee, not a percentage of your service. What your business earns from a slot is your business's revenue."
                         />
                         <ComplianceCard
                             testid="compliance-3"
                             title="Consent at booking"
-                            body="A patient must have a timestamped consent record to receive any standby message. Enforced at the database query, not at the UI."
+                            body="A customer must have a timestamped consent record to receive any standby message. Enforced at the database query, not at the UI."
                         />
                     </div>
                 </div>
@@ -251,7 +251,7 @@ function PricingCard({ testid, name, perMonth, handling, limit, features, highli
                     {handling}
                 </div>
                 <div className="text-[11px] opacity-60 mt-1">
-                    charged to the standby patient, not to the clinic
+                    charged to the standby customer, not to the business
                 </div>
             </div>
             <div className="mt-4 text-sm opacity-80">{limit}</div>

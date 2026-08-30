@@ -5,9 +5,9 @@ import { createSubscriptionOrder, confirmSubscription, mockSubscriptionPay } fro
 
 export default function SubscriptionModal({ isOpen, onClose, initialInterval = "monthly" }) {
     const [interval, setInterval] = useState(initialInterval);
-    const [clinicName, setClinicName] = useState("Smile Dental, Indiranagar");
+    const [clinicName, setClinicName] = useState("Smile Service, Indiranagar");
     const [doctorName, setDoctorName] = useState("Dr. Anjali Menon");
-    const [email, setEmail] = useState("demo@smiledental.in");
+    const [email, setEmail] = useState("demo@smileservice.in");
     const [phone, setPhone] = useState("+919900000001");
     const [stage, setStage] = useState("idle"); // idle | gateway | confirming | success | failed
     const [errorMsg, setErrorMsg] = useState(null);
@@ -258,7 +258,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                                 value={clinicName}
                                                 onChange={(e) => setClinicName(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="Smile Dental Indiranagar"
+                                                placeholder="Smile Service Indiranagar"
                                             />
                                         </div>
                                         <div>
@@ -282,7 +282,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="demo@smiledental.in"
+                                                placeholder="demo@smileservice.in"
                                             />
                                         </div>
                                         <div>
@@ -430,7 +430,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
 }
 
 function SuccessView({ data, onClose, interval }) {
-    const clinicId = data?.clinicId || "clinic_smile_dental_indiranagar";
+    const clinicId = data?.clinicId || "clinic_smile_service_indiranagar";
     const txnId = data?.transactionId || "sub_txn_demo";
     const expiresAtFormatted = data?.expiresAt ? new Date(data.expiresAt).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "30 days from now";
 

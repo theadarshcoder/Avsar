@@ -1,5 +1,5 @@
 /**
- * PriceBreakdown — displays EXACTLY what the backend returned. No math
+ * PriceBreakdown - displays EXACTLY what the backend returned. No math
  * client-side. The breakdown object comes from GET /checkout/:token.
  */
 export default function PriceBreakdown({ breakdown }) {

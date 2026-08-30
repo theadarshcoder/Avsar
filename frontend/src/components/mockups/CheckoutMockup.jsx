@@ -1,5 +1,5 @@
 /**
- * Checkout page mockup — this IS the only place a price is shown, both in
+ * Checkout page mockup - this IS the only place a price is shown, both in
  * the real product and in this marketing screenshot. That's the whole point.
  */
 export default function CheckoutMockup() {

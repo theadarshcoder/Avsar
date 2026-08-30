@@ -4,9 +4,9 @@ import { Check, X, Building2, ArrowRight } from "lucide-react";
 import { submitEnterpriseLead } from "../../lib/apiClient";
 
 export default function EnterpriseModal({ isOpen, onClose }) {
-    const [clinicName, setClinicName] = useState("Apollo Dental Care");
+    const [clinicName, setClinicName] = useState("Apollo Service Care");
     const [contactName, setContactName] = useState("Dr. Vikram Malhotra");
-    const [email, setEmail] = useState("admin@apollodental.in");
+    const [email, setEmail] = useState("admin@apolloservice.in");
     const [phone, setPhone] = useState("+919888888888");
     const [chairs, setChairs] = useState(8);
     const [locations, setLocations] = useState(3);

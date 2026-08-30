@@ -1,6 +1,6 @@
 /**
  * WhatsApp message mockup. Body text matches the REAL backend template
- * EXACTLY — no price, no discount, no rupees, no percentages.
+ * EXACTLY - no price, no discount, no rupees, no percentages.
  */
 export default function WhatsAppMockup() {
     return (
@@ -13,7 +13,7 @@ export default function WhatsAppMockup() {
                     S
                 </div>
                 <div className="text-white">
-                    <div className="text-sm font-semibold">Smile Dental, Indiranagar</div>
+                    <div className="text-sm font-semibold">Smile Service, Indiranagar</div>
                     <div className="text-[11px] opacity-60">online · via avsar</div>
                 </div>
             </div>

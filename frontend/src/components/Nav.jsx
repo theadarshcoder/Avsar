@@ -113,7 +113,7 @@ export default function Nav() {
         }
     }, [location.pathname, location.hash]);
 
-    // ScrollSpy — active only when user scrolls manually on the home page
+    // ScrollSpy - active only when user scrolls manually on the home page
     useEffect(() => {
         if (location.pathname !== "/") return;
 

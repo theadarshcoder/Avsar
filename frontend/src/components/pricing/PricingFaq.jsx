@@ -47,7 +47,7 @@ export default function PricingFaq() {
                         Clear answers on pricing, fees, and locking.
                     </h2>
                     <p className="text-sm opacity-80 max-w-xl">
-                        Everything dental clinic owners and practice managers ask about how avsar charges and operates.
+                        Everything business owners and managers ask about how Avsar charges and operates.
                     </p>
                 </div>
 

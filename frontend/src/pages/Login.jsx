@@ -49,7 +49,7 @@ export default function Login() {
     };
 
     const handleQuickLogin = async () => {
-        const demoEmail = "demo@smiledental.in";
+        const demoEmail = "demo@acmecenter.in";
         const demoPass = "password123";
         setEmail(demoEmail);
         setPassword(demoPass);
@@ -234,7 +234,7 @@ export default function Login() {
                             <div style={{ fontSize: 14, marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                 <span style={{ opacity: 0.6 }}>Email</span>
                                 <code style={{ fontWeight: 700, fontSize: 13, background: "#FFFFFF", padding: "4px 10px", borderRadius: 8, border: "1px solid rgba(16,16,20,0.06)" }}>
-                                    demo@smiledental.in
+                                    demo@acmecenter.in
                                 </code>
                             </div>
                             <div style={{ fontSize: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>

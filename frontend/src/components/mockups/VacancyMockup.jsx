@@ -1,5 +1,5 @@
 /**
- * Vacancy flagging mockup — clean product-UI card showing an empty slot
+ * Vacancy flagging mockup - clean product-UI card showing an empty slot
  * being flagged. Pure CSS/SVG, no external image asset needed.
  */
 export default function VacancyMockup() {
@@ -10,7 +10,7 @@ export default function VacancyMockup() {
         >
             <div className="flex items-center justify-between text-xs opacity-60 mb-4">
                 <span>Today · 12 Feb</span>
-                <span className="mono">Smile Dental</span>
+                <span className="mono">Smile Service</span>
             </div>
             {[
                 { t: "10:00 AM", d: "Dr. Anjali", state: "booked" },

@@ -1,5 +1,5 @@
 /**
- * Refund vs Credit choice — the two options MUST be identical in size and
+ * Refund vs Credit choice - the two options MUST be identical in size and
  * prominence. Both use `.avsar-pill` (identical dimensions). One is filled
  * black, the other filled cream. No pre-selection, no default.
  */
@@ -52,7 +52,7 @@ export default function RefundOrCreditChoice({ amount, onSubmit, disabled }) {
                 />
             </div>
 
-            {/* IDENTICALLY SIZED pill buttons — same class, same min-width, same height. */}
+            {/* IDENTICALLY SIZED pill buttons - same class, same min-width, same height. */}
             <div className="flex flex-col md:flex-row gap-4 mt-8">
                 <button
                     data-testid="submit-refund"
