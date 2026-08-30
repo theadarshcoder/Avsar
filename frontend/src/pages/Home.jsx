@@ -6,6 +6,7 @@ import BleedOutputBox from "../components/roi/BleedOutputBox";
 import VacancyMockup from "../components/mockups/VacancyMockup";
 import WhatsAppMockup from "../components/mockups/WhatsAppMockup";
 import CheckoutMockup from "../components/mockups/CheckoutMockup";
+import PricingSection from "../components/pricing/PricingSection";
 
 export default function Home() {
     const [values, setValues] = useState({
@@ -28,8 +29,6 @@ export default function Home() {
 
     return (
         <div>
-            <Nav />
-
             {/* ── Hero ────────────────────────────────────────────────── */}
             <section
                 className="doctro-section"
@@ -154,54 +153,7 @@ export default function Home() {
             </section>
 
             {/* ── Pricing ───────────────────────────────────────────── */}
-            <section
-                id="pricing"
-                className="doctro-section"
-                style={{ background: "#FFFFFF" }}
-                data-testid="pricing-section"
-            >
-                <div className="max-w-5xl mx-auto">
-                    <div className="text-xs uppercase tracking-[0.25em] opacity-60">
-                        Pricing
-                    </div>
-                    <h2 className="font-serif text-3xl sm:text-4xl mt-2 mb-8">
-                        Flat monthly. Flat handling fee. No percentage cuts, ever.
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <PricingCard
-                            testid="pricing-trial"
-                            name="Free trial"
-                            perMonth="₹0"
-                            handling="₹50 flat"
-                            limit="up to 10 standby slots per month"
-                            features={[
-                                "Consent-first waitlist",
-                                "WhatsApp notifications",
-                                "Locked single-winner checkout",
-                            ]}
-                        />
-                        <PricingCard
-                            testid="pricing-paid"
-                            highlight
-                            name="Standard"
-                            perMonth="₹1,999"
-                            handling="₹50 flat"
-                            limit="unlimited standby slots"
-                            features={[
-                                "Everything in Free",
-                                "Priority pass credits (14-day)",
-                                "Refund-or-credit patient flow",
-                                "Analytics dashboard",
-                            ]}
-                        />
-                    </div>
-                    <p className="text-xs opacity-70 mt-6 italic max-w-2xl">
-                        The subscription and the ₹50 handling fee are shown as separate line
-                        items on purpose — we never combine them into a single number, and
-                        neither is a percentage of your consultation fee.
-                    </p>
-                </div>
-            </section>
+            <PricingSection />
 
             {/* ── Compliance ────────────────────────────────────────── */}
             <section
