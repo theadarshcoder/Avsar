@@ -11,13 +11,19 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
 
-_mongo_url = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
-_db_name = os.environ.get("DB_NAME", "avsar")
+_client_kwargs = {
+    "serverSelectionTimeoutMS": 15000,
+    "connectTimeoutMS": 15000,
+    "socketTimeoutMS": 15000,
+}
 
-# Pass CA certificates bundle for secure Atlas TLS connections
-_client_kwargs = {}
 if "mongodb+srv://" in _mongo_url or "tls=true" in _mongo_url.lower() or "ssl=true" in _mongo_url.lower():
-    _client_kwargs["tlsCAFile"] = certifi.where()
+    _client_kwargs["tls"] = True
+    _client_kwargs["tlsAllowInvalidCertificates"] = True
+    try:
+        _client_kwargs["tlsCAFile"] = certifi.where()
+    except Exception:
+        pass
 
 client: AsyncIOMotorClient = AsyncIOMotorClient(_mongo_url, **_client_kwargs)
 db: AsyncIOMotorDatabase = client[_db_name]
