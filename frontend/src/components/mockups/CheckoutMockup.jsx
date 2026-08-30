@@ -25,9 +25,9 @@ export default function CheckoutMockup() {
                 <div className="text-[10px] uppercase tracking-widest opacity-70">
                     Standby appointment
                 </div>
-                <div className="font-serif text-lg mt-0.5">3:00 PM · Dr. Anjali Menon</div>
+                <div className="font-serif text-lg mt-0.5">3:00 PM · Alex Carter</div>
             </div>
-            <Row label="Standard consultation" value="₹1,800" />
+            <Row label="Standard service" value="₹1,800" />
             <Row label="Standby adjustment" value="− ₹400" />
             <Row label="Handling fee" value="+ ₹50" note="flat, not a percentage" />
             <div className="border-t border-[rgba(16,16,20,0.1)] my-2"></div>

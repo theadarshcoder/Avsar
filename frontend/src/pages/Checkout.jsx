@@ -82,7 +82,7 @@ export default function Checkout() {
                 <StatusCard
                     testid="checkout-taken"
                     title="This slot was just taken."
-                    body="Another standby patient paid a moment before you. Your payment attempt is being refunded automatically. No action needed."
+                    body="Another standby customer paid a moment before you. Your payment attempt is being refunded automatically. No action needed."
                 />
             </Frame>
         );
@@ -147,7 +147,7 @@ export default function Checkout() {
                 amount: order.amount,
                 currency: order.currency || "INR",
                 name: "avsar",
-                description: `${order.notes?.doctorName || "Standby appointment"}`,
+                description: `${order.notes?.providerName || "Standby appointment"}`,
                 prefill: order.prefill || {},
                 notes: order.notes || {},
                 theme: { color: "#101014" },
@@ -236,7 +236,7 @@ export default function Checkout() {
                 <div className="md:col-span-3 space-y-6">
                     <UrgencyBanner
                         startTime={data.slot.startTime}
-                        doctorName={data.slot.doctorName}
+                        providerName={data.slot.providerName}
                     />
                     <div className="avsar-card">
                         <div className="text-xs uppercase tracking-widest opacity-60">
@@ -247,7 +247,7 @@ export default function Checkout() {
                         </div>
                         <div className="text-sm opacity-70 mono">{data.patient.phone}</div>
                         <div className="text-xs opacity-60 mt-3">
-                            Clinic: {data.clinic.name}
+                            Business: {data.clinic.name}
                         </div>
                     </div>
                 </div>

@@ -38,7 +38,7 @@ export default function CalendarGrid({ slots, onOpenSlot, onCancelBooked, busySl
                                 <div className="mono text-2xl font-serif">
                                     {formatTime(s.startTime)}
                                 </div>
-                                <div className="text-sm opacity-70">{s.doctorName}</div>
+                                <div className="text-sm opacity-70">{s.providerName}</div>
                             </div>
                             <SlotStatusBadge status={s.status} />
                         </div>
@@ -64,7 +64,7 @@ export default function CalendarGrid({ slots, onOpenSlot, onCancelBooked, busySl
                                     className="text-xs opacity-70"
                                     data-testid={`open-hint-${s.id}`}
                                 >
-                                    Waiting for a standby patient to pay
+                                    Waiting for a standby customer to pay
                                 </span>
                             )}
                             {s.status === "booked" && (
@@ -80,7 +80,7 @@ export default function CalendarGrid({ slots, onOpenSlot, onCancelBooked, busySl
                             )}
                             {s.status === "cancelled_by_clinic" && (
                                 <span className="text-xs opacity-70">
-                                    Cancelled. Patient offered refund or credit.
+                                    Cancelled. Customer offered refund or credit.
                                 </span>
                             )}
                         </div>

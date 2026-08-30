@@ -108,7 +108,7 @@ export default function PricingSection({ isStandalone = false }) {
                                     ₹50 flat
                                 </div>
                                 <div className="text-[11px] opacity-60 mt-1">
-                                    charged to the standby patient, not to the clinic
+                                    charged to the standby customer, not to the clinic
                                 </div>
                             </div>
                             <div className="mt-4 text-sm opacity-80">up to 10 standby slots per month</div>
@@ -169,7 +169,7 @@ export default function PricingSection({ isStandalone = false }) {
                                     ₹50 flat
                                 </div>
                                 <div className="text-[11px] opacity-60 mt-1">
-                                    charged to the standby patient, not to the clinic
+                                    charged to the standby customer, not to the clinic
                                 </div>
                             </div>
                             <div className="mt-4 text-sm opacity-80">unlimited standby slots</div>
@@ -177,7 +177,7 @@ export default function PricingSection({ isStandalone = false }) {
                                 {[
                                     "Everything in Free",
                                     "Priority pass credits (14-day)",
-                                    "Refund-or-credit patient flow",
+                                    "Refund-or-credit customer flow",
                                     "Analytics dashboard",
                                 ].map((f) => (
                                     <li key={f} className="flex items-start gap-2">
@@ -205,7 +205,7 @@ export default function PricingSection({ isStandalone = false }) {
                 <p className="text-xs opacity-70 mt-6 italic max-w-2xl">
                     The subscription and the ₹50 handling fee are shown as separate line
                     items on purpose. We never combine them into a single number, and
-                    neither is a percentage of your consultation fee.
+                    neither is a percentage of your service fee.
                 </p>
 
                 {/* Redesigned Frequent Questions UI */}

@@ -6,15 +6,15 @@ export default function PricingFaq() {
     const faqs = [
         {
             q: "How does the ₹50 handling fee work?",
-            a: "The ₹50 handling fee is charged directly to the standby patient during the priority checkout step. It is never deducted from your clinic or consultation revenue. You receive 100% of your set standby consultation fee.",
+            a: "The ₹50 handling fee is charged directly to the standby customer during the priority checkout step. It is never deducted from your business or service revenue. You receive 100% of your set standby service fee.",
         },
         {
-            q: "Do you take any percentage cuts from our doctor consultations?",
-            a: "Never. avsar operates strictly as a flat monthly subscription. Whether a consultation is ₹800 or ₹15,000, avsar takes 0% cut. What your clinic earns from a slot is your clinic's business.",
+            q: "Do you take any percentage cuts from our sessions?",
+            a: "Never. avsar operates strictly as a flat monthly subscription. Whether a service is ₹800 or ₹15,000, avsar takes 0% cut. What your business earns from a slot is your business's business.",
         },
         {
             q: "How does the single-winner atomic checkout lock work?",
-            a: "When a slot opens up and multiple waitlist patients tap pay simultaneously, our atomic database lock guarantees that exactly one patient wins the slot. The other patient is immediately refunded with zero manual reconciliation required by your staff.",
+            a: "When a slot opens up and multiple waitlist customers tap pay simultaneously, our atomic database lock guarantees that exactly one patient wins the slot. The other patient is immediately refunded with zero manual reconciliation required by your staff.",
         },
         {
             q: "Can I switch between monthly and annual billing?",
@@ -22,7 +22,7 @@ export default function PricingFaq() {
         },
         {
             q: "Why are prices not included in the WhatsApp notification?",
-            a: "Per healthcare marketing guidelines and clinical standards, standby notification templates contain only the appointment time, doctor name, and a secure priority checkout link. The fee is visible only when the patient taps through to the checkout page.",
+            a: "Per healthcare marketing guidelines and clinical standards, standby notification templates contain only the appointment time, professional name, and a secure priority checkout link. The fee is visible only when the customer taps through to the checkout page.",
         },
         {
             q: "What happens after the 14-day free trial?",

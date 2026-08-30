@@ -7,7 +7,7 @@ export default function SliderGroup({ chairs, hourlyRate, cancellations, onChang
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <SliderRow
                 testid="roi-slider-chairs"
-                label="Chairs in your clinic"
+                label="Chairs in your business"
                 value={chairs}
                 min={1}
                 max={10}

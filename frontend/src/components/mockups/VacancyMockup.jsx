@@ -10,13 +10,13 @@ export default function VacancyMockup() {
         >
             <div className="flex items-center justify-between text-xs opacity-60 mb-4">
                 <span>Today · 12 Feb</span>
-                <span className="mono">Smile Service</span>
+                <span className="mono">Acme Center</span>
             </div>
             {[
-                { t: "10:00 AM", d: "Dr. Anjali", state: "booked" },
-                { t: "11:00 AM", d: "Dr. Rohan", state: "vacant" },
-                { t: "12:00 PM", d: "Dr. Anjali", state: "booked" },
-                { t: "01:30 PM", d: "Dr. Rohan", state: "booked" },
+                { t: "10:00 AM", d: "Alex", state: "booked" },
+                { t: "11:00 AM", d: "Sam", state: "vacant" },
+                { t: "12:00 PM", d: "Alex", state: "booked" },
+                { t: "01:30 PM", d: "Sam", state: "booked" },
             ].map((row) => (
                 <div
                     key={row.t}

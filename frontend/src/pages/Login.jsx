@@ -78,14 +78,14 @@ export default function Login() {
             >
                 <div className="max-w-5xl mx-auto">
                     <div className="text-xs uppercase tracking-[0.25em] opacity-60 mb-4">
-                        Clinic access
+                        Business access
                     </div>
                     <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
-                        Sign in to your clinic dashboard.
+                        Sign in to your business dashboard.
                     </h1>
                     <p className="mt-6 text-base sm:text-lg max-w-2xl opacity-80">
                         {redirectTo === "pricing"
-                            ? "Sign in to purchase a subscription plan for your clinic."
+                            ? "Sign in to purchase a subscription plan for your business."
                             : "Access your live schedule, manage standby waitlists, and track recovered appointments."}
                     </p>
                 </div>
@@ -138,7 +138,7 @@ export default function Login() {
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="doctor@clinic.in"
+                                        placeholder="professional@clinic.in"
                                         style={{
                                             width: "100%",
                                             padding: "14px 16px",
@@ -247,7 +247,7 @@ export default function Login() {
 
                         <div style={{ marginTop: 20, padding: "0 4px" }}>
                             <p style={{ fontSize: 14, opacity: 0.6, lineHeight: 1.6 }}>
-                                Need access for your clinic? Contact your administrator or write to us at support.
+                                Need access for your business? Contact your administrator or write to us at support.
                             </p>
                         </div>
                     </div>

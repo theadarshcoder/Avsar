@@ -5,7 +5,7 @@ import { submitEnterpriseLead } from "../../lib/apiClient";
 
 export default function EnterpriseModal({ isOpen, onClose }) {
     const [clinicName, setClinicName] = useState("Apollo Service Care");
-    const [contactName, setContactName] = useState("Dr. Vikram Malhotra");
+    const [contactName, setContactName] = useState("Vikram Malhotra");
     const [email, setEmail] = useState("admin@apolloservice.in");
     const [phone, setPhone] = useState("+919888888888");
     const [chairs, setChairs] = useState(8);
@@ -56,7 +56,7 @@ export default function EnterpriseModal({ isOpen, onClose }) {
                                 Hospital Chains & Groups
                             </div>
                             <h3 className="font-serif text-2xl font-medium tracking-tight">
-                                Enterprise Consultation
+                                Enterprise Setup
                             </h3>
                         </div>
                     </div>
@@ -95,7 +95,7 @@ export default function EnterpriseModal({ isOpen, onClose }) {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-semibold uppercase tracking-wider text-[#101014]/70 mb-1.5">
-                                    Clinic / Hospital Group Name
+                                    Business Group Name
                                 </label>
                                 <input
                                     type="text"

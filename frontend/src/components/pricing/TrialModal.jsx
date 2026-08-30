@@ -4,9 +4,9 @@ import { X, ArrowLeft, ArrowRight, Check, Sparkles, Lock } from "lucide-react";
 import { startFreeTrial } from "../../lib/apiClient";
 
 export default function TrialModal({ isOpen, onClose }) {
-    const [clinicName, setClinicName] = useState("Smile Service, Indiranagar");
-    const [doctorName, setDoctorName] = useState("Dr. Anjali Menon");
-    const [email, setEmail] = useState("demo@smileservice.in");
+    const [clinicName, setClinicName] = useState("Acme Center, Downtown");
+    const [providerName, setProviderName] = useState("Alex Carter");
+    const [email, setEmail] = useState("demo@acmecenter.in");
     const [phone, setPhone] = useState("+919900000001");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
@@ -98,7 +98,7 @@ export default function TrialModal({ isOpen, onClose }) {
                             </div>
                             <div className="pt-4 flex justify-center">
                                 <a
-                                    href={`/dashboard/${successData?.clinic?.id || "clinic_smile_service_indiranagar"}`}
+                                    href={`/dashboard/${successData?.clinic?.id || "demo_business"}`}
                                     className="avsar-pill avsar-pill-primary"
                                     style={{ textDecoration: "none", height: 50, fontSize: 15, padding: "0 32px" }}
                                 >
@@ -115,7 +115,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                         14-Day Free Access
                                     </div>
                                     <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#101014] mt-2 mb-2 leading-tight">
-                                        Start Your Clinic Trial
+                                        Start Your Business Trial
                                     </h1>
                                     <p className="opacity-75 text-sm sm:text-base leading-relaxed max-w-lg">
                                         Test automatic cancellation broadcasts on WhatsApp with zero credit card required.
@@ -126,7 +126,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs uppercase tracking-wider opacity-60 mb-1 font-medium">
-                                                Clinic Name
+                                                Business Name
                                             </label>
                                             <input
                                                 type="text"
@@ -134,20 +134,20 @@ export default function TrialModal({ isOpen, onClose }) {
                                                 value={clinicName}
                                                 onChange={(e) => setClinicName(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="Smile Service Indiranagar"
+                                                placeholder="Acme Center Downtown"
                                             />
                                         </div>
                                         <div>
                                             <label className="block text-xs uppercase tracking-wider opacity-60 mb-1 font-medium">
-                                                Doctor / Contact
+                                                Professional / Contact
                                             </label>
                                             <input
                                                 type="text"
                                                 required
-                                                value={doctorName}
-                                                onChange={(e) => setDoctorName(e.target.value)}
+                                                value={providerName}
+                                                onChange={(e) => setProviderName(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="Dr. Anjali Menon"
+                                                placeholder="Alex Carter"
                                             />
                                         </div>
                                         <div>
@@ -160,7 +160,7 @@ export default function TrialModal({ isOpen, onClose }) {
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="demo@smileservice.in"
+                                                placeholder="demo@acmecenter.in"
                                             />
                                         </div>
                                         <div>

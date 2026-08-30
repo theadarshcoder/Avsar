@@ -48,7 +48,7 @@ export default function RefundOrCreditChoice({ amount, onSubmit, disabled }) {
                     active={selected === "credit"}
                     onSelect={() => setSelected("credit")}
                     title="Priority pass"
-                    body={`Get a ${fmt(amount)} credit that automatically applies to your next appointment at this clinic. Valid for 14 days.`}
+                    body={`Get a ${fmt(amount)} credit that automatically applies to your next appointment at this business. Valid for 14 days.`}
                 />
             </div>
 

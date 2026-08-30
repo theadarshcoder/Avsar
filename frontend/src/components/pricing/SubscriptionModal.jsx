@@ -5,9 +5,9 @@ import { createSubscriptionOrder, confirmSubscription, mockSubscriptionPay } fro
 
 export default function SubscriptionModal({ isOpen, onClose, initialInterval = "monthly" }) {
     const [interval, setInterval] = useState(initialInterval);
-    const [clinicName, setClinicName] = useState("Smile Service, Indiranagar");
-    const [doctorName, setDoctorName] = useState("Dr. Anjali Menon");
-    const [email, setEmail] = useState("demo@smileservice.in");
+    const [clinicName, setClinicName] = useState("Acme Center, Downtown");
+    const [providerName, setProviderName] = useState("Alex Carter");
+    const [email, setEmail] = useState("demo@acmecenter.in");
     const [phone, setPhone] = useState("+919900000001");
     const [stage, setStage] = useState("idle"); // idle | gateway | confirming | success | failed
     const [errorMsg, setErrorMsg] = useState(null);
@@ -187,13 +187,13 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                             <div className="lg:col-span-7 space-y-6">
                                 <div>
                                     <div className="text-xs uppercase tracking-[0.25em] opacity-60 font-semibold">
-                                        Clinic Subscription
+                                        Business Subscription
                                     </div>
                                     <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#101014] mt-2 mb-2 leading-tight">
                                         Subscribe to Standard
                                     </h1>
                                     <p className="opacity-75 text-sm sm:text-base leading-relaxed max-w-xl">
-                                        Turn patient cancellations into recovered standby revenue with automatic WhatsApp broadcasts and single-winner atomic locking.
+                                        Turn customer cancellations into recovered standby revenue with automatic WhatsApp broadcasts and single-winner atomic locking.
                                     </p>
                                 </div>
 
@@ -251,26 +251,26 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs uppercase tracking-wider opacity-60 mb-1 font-medium">
-                                                Clinic Name
+                                                Business Name
                                             </label>
                                             <input
                                                 type="text"
                                                 value={clinicName}
                                                 onChange={(e) => setClinicName(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="Smile Service Indiranagar"
+                                                placeholder="Acme Center Downtown"
                                             />
                                         </div>
                                         <div>
                                             <label className="block text-xs uppercase tracking-wider opacity-60 mb-1 font-medium">
-                                                Doctor / Contact
+                                                Professional / Contact
                                             </label>
                                             <input
                                                 type="text"
-                                                value={doctorName}
-                                                onChange={(e) => setDoctorName(e.target.value)}
+                                                value={providerName}
+                                                onChange={(e) => setProviderName(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="Dr. Anjali Menon"
+                                                placeholder="Alex Carter"
                                             />
                                         </div>
                                         <div>
@@ -282,7 +282,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 className="w-full px-4 py-2.5 rounded-xl border border-[var(--avsar-line)] focus:outline-none focus:border-[var(--avsar-ink)] text-sm font-body"
-                                                placeholder="demo@smileservice.in"
+                                                placeholder="demo@acmecenter.in"
                                             />
                                         </div>
                                         <div>
@@ -331,7 +331,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                             </span>
                                         </div>
                                         <div className="flex justify-between items-center text-xs opacity-75">
-                                            <span>Doctor Fee Commission</span>
+                                            <span>Professional Fee Commission</span>
                                             <span className="font-semibold text-emerald-800">0% (Keep 100%)</span>
                                         </div>
                                         <div className="flex justify-between items-center text-xs opacity-75">
@@ -377,7 +377,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
                                         >
                                             <b>Activating subscription…</b>
                                             <div className="opacity-80 mt-1">
-                                                Linking clinic account. Please keep this tab open.
+                                                Linking business account. Please keep this tab open.
                                             </div>
                                         </div>
                                     )}
@@ -430,7 +430,7 @@ export default function SubscriptionModal({ isOpen, onClose, initialInterval = "
 }
 
 function SuccessView({ data, onClose, interval }) {
-    const clinicId = data?.clinicId || "clinic_smile_service_indiranagar";
+    const clinicId = data?.clinicId || "demo_business";
     const txnId = data?.transactionId || "sub_txn_demo";
     const expiresAtFormatted = data?.expiresAt ? new Date(data.expiresAt).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "30 days from now";
 
@@ -469,7 +469,7 @@ function SuccessView({ data, onClose, interval }) {
                     className="avsar-pill avsar-pill-primary"
                     style={{ textDecoration: "none", height: 50, fontSize: 15, padding: "0 28px" }}
                 >
-                    Open Clinic Dashboard
+                    Open Business Dashboard
                 </a>
                 <button
                     type="button"

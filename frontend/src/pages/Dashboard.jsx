@@ -35,7 +35,7 @@ export default function Dashboard() {
             const result = await openSlotAndBroadcast(slot.id);
             setOutbox({
                 slotId: slot.id,
-                doctorName: slot.doctorName,
+                providerName: slot.providerName,
                 startTime: slot.startTime,
                 broadcast: result,
                 entries: result.outbox || [],
@@ -56,7 +56,7 @@ export default function Dashboard() {
             const result = await cancelBookedSlot(slot.id);
             setCancellation({
                 slotId: slot.id,
-                doctorName: slot.doctorName,
+                providerName: slot.providerName,
                 transactionId: result?.transaction?.id,
                 message: result?.message,
             });
@@ -157,7 +157,7 @@ export default function Dashboard() {
                             Mock WhatsApp outbox
                         </div>
                         <h2 className="font-serif text-3xl sm:text-4xl mt-2 mb-3">
-                            Broadcast fired for {outbox.doctorName} at{" "}
+                            Broadcast fired for {outbox.providerName} at{" "}
                             {new Date(outbox.startTime).toLocaleTimeString([], {
                                 hour: "numeric",
                                 minute: "2-digit",
@@ -213,7 +213,7 @@ export default function Dashboard() {
                                             className="avsar-pill avsar-pill-primary"
                                             style={{ height: 40, minWidth: 0, padding: "0 20px", fontSize: 13 }}
                                         >
-                                            Open checkout as this patient
+                                            Open checkout as this customer
                                         </Link>
                                     )}
                                 </div>
@@ -249,7 +249,7 @@ export default function Dashboard() {
                             Booked slot cancelled
                         </div>
                         <h2 className="font-serif text-3xl sm:text-4xl mt-2 mb-3">
-                            Offer the patient a refund <em>or</em> a priority pass.
+                            Offer the customer a refund <em>or</em> a priority pass.
                         </h2>
                         <p className="opacity-80 max-w-2xl mb-4">{cancellation.message}</p>
                         <Link
@@ -257,7 +257,7 @@ export default function Dashboard() {
                             to={`/choice/${cancellation.transactionId}`}
                             className="avsar-pill avsar-pill-primary"
                         >
-                            Open patient's choice page
+                            Open customer's choice page
                         </Link>
                     </div>
                 </section>

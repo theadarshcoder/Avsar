@@ -24,7 +24,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
     const [confirmRemove, setConfirmRemove] = useState(false);
     const [error, setError] = useState(null);
 
-    const consentText = consentTextFor(clinicName || "this clinic");
+    const consentText = consentTextFor(clinicName || "this business");
     const consented = Boolean(entry.consentGivenAt);
 
     const submitConsent = async () => {
@@ -138,7 +138,7 @@ export default function WaitlistRow({ entry, clinicName, onChanged }) {
                             className="mt-1 w-4 h-4 accent-[var(--avsar-ink)]"
                         />
                         <span className="text-xs">
-                            The patient just confirmed the statement above to me.
+                            The customer just confirmed the statement above to me.
                         </span>
                     </label>
                     <div className="flex gap-2 mt-4">

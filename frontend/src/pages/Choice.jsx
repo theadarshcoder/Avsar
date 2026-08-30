@@ -79,7 +79,7 @@ export default function Choice() {
                     {data && (
                         <p className="opacity-80 max-w-2xl mb-6">
                             We're sorry about your {new Date(data.slot.startTime).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} appointment with{" "}
-                            <b>{data.slot.doctorName}</b> at <b>{data.clinic.name}</b> being
+                            <b>{data.slot.providerName}</b> at <b>{data.clinic.name}</b> being
                             cancelled. Please pick how you'd like your{" "}
                             <b>₹{Number(data.transaction.totalPaid).toLocaleString("en-IN")}</b> back.
                         </p>
@@ -118,7 +118,7 @@ export default function Choice() {
                             <p className="opacity-80 text-sm mb-3">
                                 Your credit of{" "}
                                 <b className="mono">₹{Number(outcome.result.priorityPass.amount).toLocaleString("en-IN")}</b>{" "}
-                                will auto-apply to your next standby appointment at this clinic.
+                                will auto-apply to your next standby appointment at this business.
                             </p>
                             <div className="mono text-xs opacity-60">
                                 Pass id: {outcome.result.priorityPass.id} · Expires:{" "}

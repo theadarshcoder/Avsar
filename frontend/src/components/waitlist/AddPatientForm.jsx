@@ -17,7 +17,7 @@ export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState(null);
 
-    const consentText = consentTextFor(clinicName || "this clinic");
+    const consentText = consentTextFor(clinicName || "this business");
 
     const submit = async (e) => {
         e.preventDefault();
@@ -52,7 +52,7 @@ export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
                 <div className="text-xs uppercase tracking-widest opacity-60">
                     Add to waitlist
                 </div>
-                <div className="font-serif text-2xl mt-1">New patient</div>
+                <div className="font-serif text-2xl mt-1">New customer</div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -96,7 +96,7 @@ export default function AddPatientForm({ clinicId, clinicName, onAdded }) {
                         {consentText}
                     </div>
                     <div className="text-[11px] opacity-60 mt-2">
-                        Leave this unchecked to add the patient without consent. They
+                        Leave this unchecked to add the customer without consent. They
                         will <b>not</b> receive any standby notifications until they
                         opt in.
                     </div>

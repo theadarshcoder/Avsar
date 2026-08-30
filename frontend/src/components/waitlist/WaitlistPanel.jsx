@@ -4,7 +4,7 @@ import AddPatientForm from "./AddPatientForm";
 import WaitlistRow from "./WaitlistRow";
 
 /**
- * Waitlist management panel for the clinic dashboard.
+ * Waitlist management panel for the business dashboard.
  * - Lists entries with clear "consented" vs "no consent" states.
  * - Add-patient form with explicit consent capture.
  * - Per-row actions: record consent, remove.
@@ -85,7 +85,7 @@ export default function WaitlistPanel({ clinicId, clinicName }) {
                         )}
                         {entries?.length === 0 && (
                             <div className="avsar-card" data-testid="waitlist-empty">
-                                No patients on the waitlist yet. Add one on the left.
+                                No customers on the waitlist yet. Add one on the left.
                             </div>
                         )}
                         {(entries || []).map((e) => (

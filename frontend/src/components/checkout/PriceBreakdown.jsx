@@ -12,7 +12,7 @@ export default function PriceBreakdown({ breakdown }) {
                 Price breakdown
             </div>
             <Row
-                label="Standard consultation"
+                label="Standard service"
                 value={fmt(breakdown.standardPrice)}
                 testid="price-standard"
             />
@@ -40,7 +40,7 @@ export default function PriceBreakdown({ breakdown }) {
                     label="Priority pass credit"
                     value={`− ${fmt(breakdown.priorityPassAmount)}`}
                     testid="price-priority-pass"
-                    note="from a clinic-cancelled booking"
+                    note="from a business-cancelled booking"
                 />
             )}
             <div className="border-t border-[rgba(16,16,20,0.1)] my-3"></div>

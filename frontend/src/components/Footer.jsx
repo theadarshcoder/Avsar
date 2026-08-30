@@ -25,7 +25,7 @@ export default function Footer() {
                 <FooterCol
                     title="Support"
                     links={[
-                        ["Demo dashboard", "/dashboard/clinic_smile_service_indiranagar"],
+                        ["Demo dashboard", "/dashboard/demo_business"],
                         ["Docs (OpenAPI)", "/api/openapi.json"],
                         ["Status", "#"],
                     ]}

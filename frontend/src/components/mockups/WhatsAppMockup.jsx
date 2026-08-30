@@ -13,7 +13,7 @@ export default function WhatsAppMockup() {
                     S
                 </div>
                 <div className="text-white">
-                    <div className="text-sm font-semibold">Smile Service, Indiranagar</div>
+                    <div className="text-sm font-semibold">Acme Center, Downtown</div>
                     <div className="text-[11px] opacity-60">online · via avsar</div>
                 </div>
             </div>
@@ -24,7 +24,7 @@ export default function WhatsAppMockup() {
                     style={{ color: "#0F1720" }}
                 >
                     Update on your standby request: a slot opened at{" "}
-                    <b>3:00 PM</b> today with <b>Dr. Anjali Menon</b>. Review your
+                    <b>3:00 PM</b> today with <b>Alex Carter</b>. Review your
                     priority status here:
                     <div className="text-[13px] mt-1 text-[#128C7E] underline break-all">
                         avsar.in/checkout/…

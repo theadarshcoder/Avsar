@@ -15,7 +15,7 @@ function fmtCountdown(ms) {
     return "in less than a minute";
 }
 
-export default function UrgencyBanner({ startTime, doctorName }) {
+export default function UrgencyBanner({ startTime, providerName }) {
     const start = new Date(startTime).getTime();
     const [now, setNow] = useState(Date.now());
     useEffect(() => {
@@ -41,7 +41,7 @@ export default function UrgencyBanner({ startTime, doctorName }) {
                         Standby appointment
                     </div>
                     <div className="font-serif text-3xl mt-1">
-                        {timeLabel} · <span className="opacity-80">{doctorName}</span>
+                        {timeLabel} · <span className="opacity-80">{providerName}</span>
                     </div>
                 </div>
                 <div className="ml-auto text-right">
@@ -57,7 +57,7 @@ export default function UrgencyBanner({ startTime, doctorName }) {
                 </div>
             </div>
             <p className="text-sm opacity-80 mt-4" data-testid="urgency-copy">
-                This slot is offered to multiple standby patients. The first confirmed
+                This slot is offered to multiple standby customers. The first confirmed
                 payment wins. If you aren't the one, your payment is automatically
                 refunded.
             </p>

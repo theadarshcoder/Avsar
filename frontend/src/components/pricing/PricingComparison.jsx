@@ -50,7 +50,7 @@ export default function PricingComparison() {
             name: "Economics & Compliance Guarantee",
             rows: [
                 {
-                    feature: "Commission on Doctor Consultation",
+                    feature: "Commission on Service Session",
                     free: "0% (Keep 100%)",
                     standard: "0% (Keep 100%)",
                     enterprise: "0% (Keep 100%)",
@@ -64,7 +64,7 @@ export default function PricingComparison() {
                     highlight: true,
                 },
                 {
-                    feature: "Patient standby handling fee",
+                    feature: "Customer standby handling fee",
                     free: "₹50 flat",
                     standard: "₹50 flat",
                     enterprise: "Custom / Volume tier",
