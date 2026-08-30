@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { loginClinic } from "@/lib/apiClient";
-import { Lock, Mail, ArrowRight, AlertCircle, KeyRound } from "lucide-react";
+import { Lock, Mail, ArrowRight, AlertCircle, KeyRound, Shield, Calendar, Users } from "lucide-react";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -11,9 +11,6 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Read optional redirect params:
-    // ?redirect=pricing  → from pricing page (unauthenticated subscribe click)
-    // ?from=/dashboard/… → from ProtectedRoute (direct URL access)
     const params = new URLSearchParams(location.search);
     const redirectTo = params.get("redirect");
     const fromPath = params.get("from");
@@ -22,8 +19,6 @@ export default function Login() {
         const data = await loginClinic({ email: emailVal, password: passVal });
         localStorage.setItem("avsar_clinic_token", data.token);
         localStorage.setItem("avsar_clinic", JSON.stringify(data.clinic));
-        // If ProtectedRoute sent us here with a ?from= path, bounce back there.
-        // Otherwise always go to the clinic dashboard.
         if (fromPath && fromPath.startsWith("/dashboard")) {
             navigate(fromPath);
         } else {
@@ -37,10 +32,8 @@ export default function Login() {
             setError("Please enter both email and password.");
             return;
         }
-
         setLoading(true);
         setError(null);
-
         try {
             await _doLogin(email, password);
         } catch (err) {
@@ -61,7 +54,6 @@ export default function Login() {
         setPassword(demoPass);
         setLoading(true);
         setError(null);
-
         try {
             await _doLogin(demoEmail, demoPass);
         } catch (err) {
@@ -76,142 +68,214 @@ export default function Login() {
     };
 
     return (
-        <div className="h-screen w-screen overflow-hidden flex items-center justify-center p-4 sm:p-6 bg-[#FBFBFC]">
-            {/* Split Container Card */}
-            <div className="w-full max-w-4xl bg-white rounded-2xl sm:rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-neutral-200/80 overflow-hidden grid grid-cols-1 md:grid-cols-12">
+        <div className="h-screen w-screen overflow-hidden flex" style={{ fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif" }}>
+            {/* ─── LEFT PANEL: Brand & Hero ─── */}
+            <div
+                className="hidden lg:flex lg:w-[55%] relative flex-col justify-between overflow-hidden"
+                style={{
+                    background: "linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0ea5e9 100%)",
+                }}
+            >
+                {/* Decorative blurred orbs */}
+                <div className="absolute top-[-120px] left-[-80px] w-[400px] h-[400px] rounded-full opacity-20"
+                    style={{ background: "radial-gradient(circle, #38bdf8, transparent 70%)" }} />
+                <div className="absolute bottom-[-100px] right-[-60px] w-[350px] h-[350px] rounded-full opacity-15"
+                    style={{ background: "radial-gradient(circle, #818cf8, transparent 70%)" }} />
 
-                {/* LEFT SIDE: Brand & Purpose */}
-                <div className="md:col-span-6 bg-[#F8F9FA] p-8 sm:p-10 border-b md:border-b-0 md:border-r border-neutral-200/80 flex flex-col justify-between">
-                    <div>
-                        <Link
-                            to="/"
-                            className="inline-block font-serif text-2xl font-bold tracking-tight text-[#101014] hover:opacity-80 transition-opacity"
-                        >
+                {/* Content */}
+                <div className="relative z-10 p-12 pt-14 flex flex-col h-full">
+                    {/* Logo */}
+                    <Link to="/" className="inline-flex items-center gap-2 group">
+                        <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                            <span className="text-lg font-bold text-white" style={{ fontFamily: "'Georgia', serif" }}>A</span>
+                        </div>
+                        <span className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "'Georgia', serif" }}>
                             Avsar
-                        </Link>
+                        </span>
+                    </Link>
 
-                        <div className="mt-8">
-                            <h1 className="font-serif text-2xl sm:text-3xl text-[#101014] leading-snug">
-                                Standby appointment management for dental clinics.
-                            </h1>
-                            <p className="text-sm text-neutral-600 mt-3 leading-relaxed">
-                                Access your live clinic schedule, monitor patient standby notifications, and manage confirmed bookings.
-                            </p>
+                    {/* Hero Copy */}
+                    <div className="mt-auto mb-auto">
+                        <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight tracking-tight">
+                            Smarter waitlists.
+                            <br />
+                            <span className="text-sky-300">Happier patients.</span>
+                        </h1>
+                        <p className="text-base text-slate-300 mt-6 max-w-md leading-relaxed">
+                            The modern way to manage standby appointments, fill last-minute cancellations, and keep your dental clinic running at full capacity.
+                        </p>
+
+                        {/* Feature Pills */}
+                        <div className="flex flex-wrap gap-3 mt-8">
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white">
+                                <Calendar className="w-4 h-4 text-sky-300" />
+                                Live Scheduling
+                            </div>
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white">
+                                <Users className="w-4 h-4 text-sky-300" />
+                                Patient Waitlists
+                            </div>
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white">
+                                <Shield className="w-4 h-4 text-sky-300" />
+                                Secure & HIPAA-ready
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Bottom stats */}
+                    <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
+                        <div>
+                            <p className="text-2xl font-bold text-white">500+</p>
+                            <p className="text-xs text-slate-400 mt-1">Clinics onboarded</p>
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-white">12K+</p>
+                            <p className="text-xs text-slate-400 mt-1">Patients managed</p>
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-white">99.9%</p>
+                            <p className="text-xs text-slate-400 mt-1">Uptime guarantee</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ─── RIGHT PANEL: Sign In Form ─── */}
+            <div className="w-full lg:w-[45%] flex flex-col items-center justify-center bg-white px-6 sm:px-12 lg:px-16 py-10 relative">
+                {/* Mobile Logo (hidden on desktop) */}
+                <div className="lg:hidden mb-10 text-center">
+                    <Link to="/" className="inline-flex items-center gap-2">
+                        <div className="w-9 h-9 rounded-lg bg-slate-900 flex items-center justify-center">
+                            <span className="text-base font-bold text-white" style={{ fontFamily: "'Georgia', serif" }}>A</span>
+                        </div>
+                        <span className="text-xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'Georgia', serif" }}>
+                            Avsar
+                        </span>
+                    </Link>
+                </div>
+
+                {/* Form Container */}
+                <div className="w-full max-w-sm">
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                            Welcome back
+                        </h2>
+                        <p className="text-sm text-slate-500 mt-2">
+                            {redirectTo === "pricing"
+                                ? "Sign in to purchase a subscription"
+                                : "Sign in to your clinic dashboard"}
+                        </p>
+                    </div>
+
+                    {error && (
+                        <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200/80 text-red-700 text-sm flex items-start gap-2.5">
+                            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                            <span>{error}</span>
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                Email address
+                            </label>
+                            <div className="relative">
+                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
+                                <input
+                                    type="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="doctor@clinic.in"
+                                    className="w-full pl-11 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all placeholder:text-slate-400"
+                                />
+                            </div>
                         </div>
 
-                        {/* Test Credentials Box */}
-                        <div className="mt-8 p-4 rounded-xl bg-white border border-neutral-200 shadow-sm">
-                            <div className="flex items-center gap-2 mb-3">
-                                <KeyRound className="w-3.5 h-3.5 text-neutral-500" />
-                                <span className="text-[11px] font-semibold uppercase tracking-widest text-neutral-500">
-                                    Test Credentials
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400" />
+                                <input
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    className="w-full pl-11 pr-4 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all placeholder:text-slate-400"
+                                />
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 active:scale-[0.98] text-white font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-slate-900/10"
+                        >
+                            {loading ? (
+                                <span className="flex items-center gap-2">
+                                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    </svg>
+                                    Signing in...
                                 </span>
-                            </div>
-                            <div className="space-y-1.5 text-xs font-mono">
-                                <div className="flex items-center justify-between gap-4">
-                                    <span className="text-neutral-500">Email</span>
-                                    <span className="text-neutral-900 font-semibold">demo@smiledental.in</span>
-                                </div>
-                                <div className="flex items-center justify-between gap-4">
-                                    <span className="text-neutral-500">Password</span>
-                                    <span className="text-neutral-900 font-semibold">password123</span>
-                                </div>
-                            </div>
-                        </div>
+                            ) : (
+                                <>
+                                    Sign In
+                                    <ArrowRight className="w-4 h-4" />
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    {/* Divider */}
+                    <div className="flex items-center gap-3 my-6">
+                        <div className="flex-1 h-px bg-slate-200" />
+                        <span className="text-xs text-slate-400 font-medium">OR</span>
+                        <div className="flex-1 h-px bg-slate-200" />
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-neutral-200/60">
-                        <p className="text-xs text-neutral-500">
-                            Need access for your clinic? Contact your administrator or support team.
-                        </p>
+                    {/* Quick Login */}
+                    <button
+                        type="button"
+                        onClick={handleQuickLogin}
+                        disabled={loading}
+                        className="w-full py-3 px-4 bg-sky-50 hover:bg-sky-100 border border-sky-200/60 text-sky-700 font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                        <KeyRound className="w-4 h-4" />
+                        Sign in with demo credentials
+                    </button>
+
+                    {/* Test Credentials Info */}
+                    <div className="mt-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                        <div className="flex items-center gap-2 mb-2.5">
+                            <KeyRound className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                                Demo credentials
+                            </span>
+                        </div>
+                        <div className="space-y-1.5 text-xs">
+                            <div className="flex items-center justify-between">
+                                <span className="text-slate-500">Email</span>
+                                <code className="text-slate-700 font-semibold bg-white px-2 py-0.5 rounded text-[11px] border border-slate-100">demo@smiledental.in</code>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-slate-500">Password</span>
+                                <code className="text-slate-700 font-semibold bg-white px-2 py-0.5 rounded text-[11px] border border-slate-100">password123</code>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* RIGHT SIDE: Sign In Form */}
-                <div className="md:col-span-6 p-8 sm:p-10 flex flex-col justify-between bg-white">
-                    <div>
-                        <div className="mb-6">
-                            <h2 className="text-xl font-bold text-[#101014] tracking-tight">
-                                Clinic Sign In
-                            </h2>
-                            <p className="text-xs text-neutral-500 mt-1">
-                                {redirectTo === "pricing"
-                                    ? "Sign in to purchase a subscription"
-                                    : "Enter your email and password to continue"}
-                            </p>
-                        </div>
-
-                        {error && (
-                            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2">
-                                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                                <span>{error}</span>
-                            </div>
-                        )}
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                                    Email
-                                </label>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-                                    <input
-                                        type="email"
-                                        required
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="doctor@clinic.in"
-                                        className="w-full pl-9 pr-3 py-2 text-sm bg-neutral-50 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 transition-colors"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                                    Password
-                                </label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-                                    <input
-                                        type="password"
-                                        required
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="••••••••"
-                                        className="w-full pl-9 pr-3 py-2 text-sm bg-neutral-50 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 transition-colors"
-                                    />
-                                </div>
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full mt-2 py-2.5 px-4 bg-[#101014] hover:bg-neutral-800 active:scale-[0.99] text-white font-medium text-sm rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-                            >
-                                {loading ? "Signing in..." : "Sign In"}
-                                {!loading && <ArrowRight className="w-4 h-4" />}
-                            </button>
-                        </form>
-
-                        <div className="mt-4 pt-4 border-t border-neutral-100 text-center">
-                            <button
-                                type="button"
-                                onClick={handleQuickLogin}
-                                disabled={loading}
-                                className="text-xs text-neutral-600 hover:text-neutral-900 font-medium underline underline-offset-4 transition-colors"
-                            >
-                                Sign in with test credentials
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="mt-6 text-center">
-                        <p className="text-[11px] text-neutral-400">
-                            Secured clinic login · Avsar
-                        </p>
-                    </div>
+                {/* Footer */}
+                <div className="absolute bottom-6 left-0 right-0 text-center">
+                    <p className="text-xs text-slate-400">
+                        Secured with 256-bit encryption · Avsar
+                    </p>
                 </div>
-
             </div>
         </div>
     );
