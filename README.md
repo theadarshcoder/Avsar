@@ -1,6 +1,6 @@
 # avsar
 
-An automated standby revenue and cancellation recovery platform that turns last-minute dental chair openings into instant bookings via consent-first WhatsApp waitlists and atomic single-winner checkout.
+An automated standby revenue and cancellation recovery platform that turns last-minute appointment cancellations and empty slot openings into instant bookings via consent-first WhatsApp waitlists and atomic single-winner checkout.
 
 ![version](https://img.shields.io/badge/version-0.1.0-blue)
 ![python](https://img.shields.io/badge/python-%3E%3D3.11-yellow?logo=python&logoColor=white)
@@ -15,19 +15,19 @@ An automated standby revenue and cancellation recovery platform that turns last-
 
 ## Why avsar
 
-Dental practices face severe structural revenue leakage from last-minute appointment cancellations. A standard 2-to-4 chair clinic loses between **₹12,000 and ₹50,000+ each month** when patients cancel within 2 to 4 hours of their scheduled slot.
+Appointment-driven businesses (clinics, salons, spas, wellness centers, consultancies, and specialty practices) face severe structural revenue leakage from last-minute cancellations. A typical service business loses between **₹15,000 and ₹60,000+ each month** when clients cancel within 2 to 4 hours of their scheduled slot.
 
 Manual front-desk operations cannot resolve this problem:
-- **High-Friction Phone Calling**: Staff spend 20–30 minutes calling waitlisted patients sequentially, during which the chair remains idle and unfilled.
-- **Double-Booking Risks**: Broadcast messages without atomic concurrency locks cause multiple patients to arrive at the clinic simultaneously.
-- **Predatory Aggregator Commissions**: Healthcare marketplaces frequently take **15% to 30%** cuts from consultation revenues.
+- **High-Friction Manual Outreach**: Staff spend 20–30 minutes calling waitlisted clients sequentially, during which the slot or service capacity remains idle and lost forever.
+- **Double-Booking Risks**: Uncoordinated broadcast messages without atomic concurrency locks cause multiple clients to arrive at the same time.
+- **Predatory Aggregator Commissions**: Third-party aggregators and booking marketplaces frequently extract **15% to 30%** cuts from your hard-earned service revenue.
 
 **avsar provides an automated, race-condition-proof solution:**
-1. **Instant Broadcast**: When a cancellation is flagged, an automated WhatsApp alert is dispatched immediately to opted-in waitlist patients.
-2. **Atomic Single-Winner Checkout**: The first patient to confirm locks the slot instantly in an atomic database operation (`status: "available" → "booked"`).
-3. **Automated Instant Refunds**: Any patient who completes checkout in the same second receives an immediate, automated gateway refund with zero manual staff reconciliation.
-4. **Self-Serve Priority Passes**: If a clinic cancels a confirmed standby patient, the patient can choose between an instant bank refund or an automated 14-day priority pass credit.
-5. **Zero Commission Economics**: avsar operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby patient. **avsar takes 0% commission on doctor consultation fees.**
+1. **Instant Broadcast**: When a cancellation is flagged, an automated WhatsApp alert is dispatched immediately to opted-in waitlist clients.
+2. **Atomic Single-Winner Checkout**: The first client to confirm locks the slot instantly in an atomic database operation (`status: "available" → "booked"`).
+3. **Automated Instant Refunds**: Any client who attempts checkout in the same split-second receives an immediate, automated gateway refund with zero manual staff reconciliation.
+4. **Self-Serve Priority Passes**: If a business cancels a confirmed standby slot, the customer can choose between an instant bank refund or an automated 14-day priority pass credit.
+5. **Zero Commission Economics**: avsar operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby customer. **avsar takes 0% commission on your service and consultation fees.**
 
 ---
 
@@ -97,7 +97,7 @@ REACT_APP_API_URL="http://localhost:8000/api"
 
 ### 3. Seed Demo Data
 
-Populate demo dental clinics, doctors, standby slots, and consent-verified waitlist entries:
+Populate demo businesses, service providers / specialists, standby slots, and consent-verified waitlist entries:
 
 ```bash
 cd backend
@@ -124,15 +124,15 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Usage Example
 
-### Create a Standby Slot Broadcast Programmatically via the Internal API:
+### Create a Standby Slot Broadcast Programmatically via the API:
 
 ```javascript
-const response = await fetch("http://127.0.0.1:8000/api/clinics/clinic_smile_dental_indiranagar/slots", {
+const response = await fetch("http://127.0.0.1:8000/api/clinics/biz_prime_indiranagar/slots", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     doctorName: "Dr. Anjali Menon",
-    doctorSpecialty: "Orthodontics & General Dentistry",
+    doctorSpecialty: "Consultant Specialist",
     chairNumber: 1,
     startTime: "2026-08-30T15:30:00Z",
     endTime: "2026-08-30T16:15:00Z",
@@ -150,10 +150,10 @@ console.log(slotData);
 ```json
 {
   "slot": {
-    "id": "slot_smile_indira_20260830_1530",
-    "clinicId": "clinic_smile_dental_indiranagar",
+    "id": "slot_prime_indira_20260830_1530",
+    "clinicId": "biz_prime_indiranagar",
     "doctorName": "Dr. Anjali Menon",
-    "doctorSpecialty": "Orthodontics & General Dentistry",
+    "doctorSpecialty": "Consultant Specialist",
     "chairNumber": 1,
     "startTime": "2026-08-30T15:30:00Z",
     "endTime": "2026-08-30T16:15:00Z",
@@ -177,14 +177,14 @@ console.log(slotData);
                        │          Standby Cancellation Event          │
                        └──────────────────────┬───────────────────────┘
                                               │
-                                   (Broadcast Webhook)
+                                    (Broadcast Webhook)
                                               ▼
                        ┌──────────────────────────────────────────────┐
                        │   Consent-First WhatsApp Notification Queue  │
                        │     (Strict Price-Free Compliance Copy)      │
                        └──────────────────────┬───────────────────────┘
                                               │
-                              (Concurrent Patient Checkouts)
+                               (Concurrent Client Checkouts)
                                               ▼
                        ┌──────────────────────────────────────────────┐
                        │     Atomic Concurrency Slot Lock Engine      │
@@ -204,14 +204,14 @@ console.log(slotData);
 
 ## Features
 
-- **Automated Standby Broadcast Engine**: Instantly dispatches price-free WhatsApp alerts to opted-in waitlists when slots open.
+- **Automated Standby Broadcast Engine**: Instantly dispatches price-free WhatsApp alerts to opted-in waitlists when cancellations occur.
 - **Single-Winner Atomic Concurrency Lock**: Eliminates double-booking via database-level race condition protection.
-- **Zero Commission Guarantee**: Flat subscription model ensuring clinics keep 100% of their consultation fees.
+- **Zero Commission Guarantee**: Flat subscription model ensuring businesses keep 100% of their service and consultation fees.
 - **Full-Screen Desktop Subscription Checkout**: Executive 2-column web checkout for Monthly (₹1,999/mo) and Annual (₹19,190/yr - Save 20%) plans.
 - **14-Day Free Access System**: Instant trial onboarding with phone and email duplicate abuse prevention.
-- **Patient Refund & Credit Choice Portal**: Self-serve portal allowing patients to choose between immediate refunds or 14-day priority pass credits.
+- **Customer Refund & Credit Choice Portal**: Self-serve portal allowing customers to choose between immediate refunds or 14-day priority pass credits.
 - **Interactive Bleed ROI Calculator**: Real-time slider calculation illustrating monthly revenue bleed vs. recovery potential.
-- **Live Operations Dashboard & Delivery Outbox**: Comprehensive tracking of recovered revenue, chair statuses, and WhatsApp notification states.
+- **Live Operations Dashboard & Delivery Outbox**: Comprehensive tracking of recovered revenue, active slots/resources, and WhatsApp notification states.
 - **Production Mock Payment Gating**: Strict token override protection preventing unauthorized mock activations in production.
 
 ---
