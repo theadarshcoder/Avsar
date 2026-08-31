@@ -1,6 +1,6 @@
 # avsar
 
-> Automated standby revenue & last-minute cancellation recovery for appointment-based businesses.
+When a customer cancels an appointment at the last minute, **avsar** instantly alerts waiting people on WhatsApp so the open spot gets booked right away — saving businesses from losing money.
 
 ![version](https://img.shields.io/badge/version-0.1.0-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688?logo=fastapi&logoColor=white)
