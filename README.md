@@ -1,6 +1,6 @@
-# avsar
+# Avsar
 
-When a customer cancels an appointment at the last minute, **avsar** automatically alerts waiting people on WhatsApp so the empty spot gets booked right away — saving businesses from lost revenue.
+When a customer cancels an appointment at the last minute, **Avsar** automatically alerts waiting people on WhatsApp so the empty spot gets booked right away — saving businesses from lost revenue.
 
 ![version](https://img.shields.io/badge/version-0.1.0-blue)
 ![python](https://img.shields.io/badge/python-%3E%3D3.11-yellow?logo=python&logoColor=white)
@@ -13,7 +13,7 @@ When a customer cancels an appointment at the last minute, **avsar** automatical
 
 ---
 
-## Why avsar
+## Why Avsar
 
 Appointment-driven businesses (clinics, salons, spas, wellness centers, consultancies, and specialty practices) face severe structural revenue leakage from last-minute cancellations. A typical service business loses between **₹15,000 and ₹60,000+ each month** when clients cancel within 2 to 4 hours of their scheduled slot.
 
@@ -22,12 +22,12 @@ Manual front-desk operations cannot resolve this problem:
 - **Double-Booking Risks**: Uncoordinated broadcast messages without atomic concurrency locks cause multiple clients to arrive at the same time.
 - **Predatory Aggregator Commissions**: Third-party aggregators and booking marketplaces frequently extract **15% to 30%** cuts from your hard-earned service revenue.
 
-**avsar provides an automated, race-condition-proof solution:**
+**Avsar provides an automated, race-condition-proof solution:**
 1. **Instant Broadcast**: When a cancellation is flagged, an automated WhatsApp alert is dispatched immediately to opted-in waitlist clients.
 2. **Atomic Single-Winner Checkout**: The first client to confirm locks the slot instantly in an atomic database operation (`status: "available" → "booked"`).
 3. **Automated Instant Refunds**: Any client who attempts checkout in the same split-second receives an immediate, automated gateway refund with zero manual staff reconciliation.
 4. **Self-Serve Priority Passes**: If a business cancels a confirmed standby slot, the customer can choose between an instant bank refund or an automated 14-day priority pass credit.
-5. **Zero Commission Economics**: avsar operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby customer. **avsar takes 0% commission on your service and consultation fees.**
+5. **Zero Commission Economics**: Avsar operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby customer. **Avsar takes 0% commission on your service and consultation fees.**
 
 ---
 
@@ -39,7 +39,7 @@ Manual front-desk operations cannot resolve this problem:
 - **Data Validation & Serialization**: [Pydantic v2](https://docs.pydantic.dev/)
 - **Payment Gateway & Security**: [Razorpay Orders & Webhooks API](https://razorpay.com/docs/) with HMAC-SHA256 signature verification & idempotency handling
 - **Frontend UI & State**: [React 18.2.0](https://react.dev/), [React Router DOM 6.22.0](https://reactrouter.com/)
-- **Styling & Design System**: [Tailwind CSS 3.4.1](https://tailwindcss.com/) with custom avsar editorial token palette
+- **Styling & Design System**: [Tailwind CSS 3.4.1](https://tailwindcss.com/) with custom Avsar editorial token palette
 - **Animation & Motion**: [Framer Motion 11.0.0](https://www.framer.com/motion/)
 - **Icons**: [Lucide React 0.344.0](https://lucide.dev/)
 - **HTTP Client**: [Axios 1.6.7](https://axios-http.com/) & [HTTPX 0.27.0](https://www.python-httpx.org/)
@@ -53,8 +53,8 @@ Manual front-desk operations cannot resolve this problem:
 
 ```bash
 # Clone the repository
-git clone https://github.com/theadarshcoder/avsar.git
-cd avsar
+git clone https://github.com/theadarshcoder/Avsar.git
+cd Avsar
 
 # Install Backend Dependencies
 cd backend
