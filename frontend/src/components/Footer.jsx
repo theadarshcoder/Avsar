@@ -1,208 +1,154 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Mail, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
-import footerNatureImg from "../assets/footer-nature.jpg";
-
 export default function Footer() {
-    const [email, setEmail] = useState("");
-    const [status, setStatus] = useState("idle"); // idle | loading | success | error
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const handleSubscribe = (e) => {
-        e.preventDefault();
-        if (!email || !email.includes("@")) {
-            setErrorMessage("Please enter a valid email address.");
-            setStatus("error");
-            return;
-        }
-
-        setStatus("loading");
-        setErrorMessage("");
-
-        setTimeout(() => {
-            setStatus("success");
-            setEmail("");
-        }, 500);
-    };
-
     return (
         <footer
-            className="avsar-section section-bg-ink relative overflow-hidden"
+            className="avsar-section section-bg-ink"
             data-testid="footer"
-            style={{ padding: "40px 36px", marginBottom: 24 }}
+            style={{ padding: "48px 40px", marginBottom: 24 }}
         >
-            <div className="max-w-5xl mx-auto">
-                {/* ── TOP NEWSLETTER & SCENIC CARD BANNER ── */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pb-2">
-                    {/* Left: Kicker, Heading, Subtitle & Subscription */}
-                    <div className="lg:col-span-7">
-                        <div className="text-xs uppercase tracking-[0.25em] opacity-60 mb-2">
-                            Stay ahead with Avsar
+            <div className="max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
+                    {/* ── COLUMN 1: BRAND LOGO, SOCIALS & REGISTRATION ── */}
+                    <div className="lg:col-span-4 flex flex-col items-start">
+                        {/* Brand Name */}
+                        <div className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#F5EFE1]">
+                            avsar
                         </div>
 
-                        <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight leading-snug mb-2">
-                            Turn last-minute openings into bookings.
-                        </h2>
+                        {/* Social Media Icons */}
+                        <div className="flex items-center gap-4 mt-5 text-[#F5EFE1]/75">
+                            <a
+                                href="https://instagram.com"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="hover:text-white transition-colors"
+                                aria-label="Instagram"
+                            >
+                                <InstagramIcon className="w-5 h-5" />
+                            </a>
+                            <a
+                                href="https://x.com"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="hover:text-white transition-colors"
+                                aria-label="X (Twitter)"
+                            >
+                                <XIcon className="w-4 h-4" />
+                            </a>
+                            <a
+                                href="https://facebook.com"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="hover:text-white transition-colors"
+                                aria-label="Facebook"
+                            >
+                                <FacebookIcon className="w-5 h-5" />
+                            </a>
+                            <a
+                                href="https://linkedin.com"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="hover:text-white transition-colors"
+                                aria-label="LinkedIn"
+                            >
+                                <LinkedinIcon className="w-5 h-5" />
+                            </a>
+                        </div>
 
-                        <p className="text-sm opacity-75 max-w-lg leading-relaxed mb-5">
-                            Join hundreds of clinics and service businesses recovering standby revenue from cancellations every day. Zero spam, 100% opt-in.
-                        </p>
+                        {/* Copyright & License Information */}
+                        <div className="mt-6 text-xs text-[#F5EFE1]/50 space-y-1 leading-relaxed">
+                            <p>© Avsar Technologies Private Limited</p>
+                            <p>reg lic no : 1122499000872</p>
+                        </div>
+                    </div>
 
-                        {/* Subscription Form */}
-                        <form onSubmit={handleSubscribe} className="max-w-md">
-                            <AnimatePresence mode="wait">
-                                {status === "success" ? (
-                                    <motion.div
-                                        key="success-box"
-                                        initial={{ opacity: 0, y: 4 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -4 }}
-                                        className="flex items-center gap-2.5 py-2 px-3.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs"
+                    {/* ── COLUMN 2: NAVIGATION LIST 1 ── */}
+                    <div className="lg:col-span-3">
+                        <ul className="space-y-3.5 text-sm text-[#F5EFE1]/80">
+                            {[
+                                ["Home", "/"],
+                                ["How It Works", "#how"],
+                                ["ROI Calculator", "#roi"],
+                                ["Careers", "#roi"],
+                                ["Customer Support", "mailto:hello@avsar.in"],
+                                ["Press", "#compliance"],
+                                ["Mojo – an Avsar Blog", "#how"],
+                                ["Avsar Standby System", "#pricing"],
+                                ["Bestsellers & Pricing", "#pricing"],
+                            ].map(([label, href]) => (
+                                <li key={label}>
+                                    <a
+                                        href={href}
+                                        className="hover:text-white transition-colors inline-block"
                                     >
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                                        <span className="font-medium">You're on the list! We'll keep you posted.</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => setStatus("idle")}
-                                            className="ml-auto underline text-xs text-emerald-300 hover:text-white"
-                                        >
-                                            Reset
-                                        </button>
-                                    </motion.div>
-                                ) : (
-                                    <motion.div
-                                        key="form-box"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        className="space-y-1.5"
-                                    >
-                                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                                            <div className="relative flex-1">
-                                                <Mail className="w-3.5 h-3.5 opacity-40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                                <input
-                                                    type="email"
-                                                    value={email}
-                                                    onChange={(e) => {
-                                                        setEmail(e.target.value);
-                                                        if (status === "error") setStatus("idle");
-                                                    }}
-                                                    placeholder="Enter your email"
-                                                    aria-label="Email address"
-                                                    className="w-full pl-9 pr-3 py-2 rounded-full bg-white/[0.07] border border-white/15 text-sm text-[var(--avsar-cream)] placeholder:opacity-40 focus:outline-none focus:border-white/30 transition-colors"
-                                                />
-                                            </div>
-                                            <button
-                                                type="submit"
-                                                disabled={status === "loading"}
-                                                className="px-5 py-2 rounded-full bg-[var(--avsar-cream)] text-[var(--avsar-ink)] font-semibold text-xs sm:text-sm hover:bg-white active:scale-95 transition-all flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-60"
-                                            >
-                                                {status === "loading" ? (
-                                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                                ) : (
-                                                    <>
-                                                        <span>Subscribe Now</span>
-                                                        <ArrowRight className="w-3.5 h-3.5" />
-                                                    </>
-                                                )}
-                                            </button>
-                                        </div>
-                                        {status === "error" && (
-                                            <p className="text-xs text-rose-400 pl-3">
-                                                {errorMessage}
-                                            </p>
-                                        )}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </form>
-                    </div>
-
-                    {/* Right: Compact Layered Scenic Card */}
-                    <div className="lg:col-span-5 flex justify-start lg:justify-end">
-                        <div className="relative w-full max-w-[290px] sm:max-w-[320px] group">
-                            {/* Tilted back card */}
-                            <div className="absolute inset-0 transform -rotate-2 scale-[0.98] rounded-2xl bg-white/[0.04] border border-white/10 pointer-events-none transition-transform duration-300 group-hover:-rotate-3" />
-
-                            {/* Main front image card */}
-                            <div className="relative rounded-xl overflow-hidden border border-white/15 shadow-xl bg-neutral-900">
-                                <img
-                                    src={footerNatureImg || "/footer-nature.jpg"}
-                                    alt="Serene scenic landscape"
-                                    className="w-full h-[145px] sm:h-[160px] object-cover transition-transform duration-500 group-hover:scale-105"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
-
-                                <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
-                                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 text-[11px] text-white/90">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                        <span>Peace of mind for your practice</span>
-                                    </div>
-                                    <span className="text-[10px] opacity-70 px-2 py-0.5 rounded bg-black/40 border border-white/10 hidden sm:inline-block">
-                                        Consent-First
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* ── DIVIDER ── */}
-                <div className="my-8 border-t border-white/10" />
-
-                {/* ── LOWER NAVIGATION COLUMNS (SITE-CONSISTENT) ── */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div>
-                        <div className="font-serif text-2xl font-bold tracking-tight mb-2">
-                            Avsar
-                        </div>
-                        <p className="text-sm opacity-75 max-w-[240px] leading-relaxed">
-                            Standby appointments for service businesses in India. Consent-first, flat-fee, single-winner checkout.
-                        </p>
-                        <div className="mt-3 flex items-center gap-2 text-xs text-emerald-300 opacity-90">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
-                            <span>All systems operational · 0% take rate</span>
-                        </div>
-                    </div>
-
-                    <FooterCol
-                        title="Product"
-                        links={[
-                            ["How it works", "#how"],
-                            ["ROI calculator", "#roi"],
-                            ["Pricing", "#pricing"],
-                            ["Compliance", "#compliance"],
-                        ]}
-                    />
-
-                    <FooterCol
-                        title="Support"
-                        links={[
-                            ["Demo dashboard", "/dashboard/demo_business"],
-                            ["Docs (OpenAPI)", "/api/openapi.json"],
-                            ["WhatsApp Rules", "#compliance"],
-                        ]}
-                    />
-
-                    <div>
-                        <div className="text-sm font-semibold mb-3 opacity-90">Company</div>
-                        <ul className="space-y-2 text-sm opacity-75">
-                            <li>hello@avsar.in</li>
-                            <li>+91 99000 00001</li>
-                            <li>Indiranagar, Bengaluru</li>
+                                        {label}
+                                    </a>
+                                </li>
+                            ))}
                         </ul>
                     </div>
-                </div>
 
-                {/* ── SUB-FOOTER BOTTOM BAR ── */}
-                <div className="mt-8 pt-5 border-t border-white/10 text-xs opacity-60 flex flex-wrap gap-4 justify-between">
-                    <span>© {new Date().getFullYear()} Avsar. Built for Indian service businesses.</span>
-                    <div className="flex items-center gap-3">
-                        <span>Phase-1 demo build</span>
-                        <span>•</span>
-                        <span>Razorpay test mode</span>
-                        <span>•</span>
-                        <span>DPDP Act compliant</span>
+                    {/* ── COLUMN 3: NAVIGATION LIST 2 ── */}
+                    <div className="lg:col-span-3">
+                        <ul className="space-y-3.5 text-sm text-[#F5EFE1]/80">
+                            {[
+                                ["Privacy Policy", "#compliance"],
+                                ["Terms of Use", "#compliance"],
+                                ["Responsible Disclosure Policy", "#compliance"],
+                                ["Partner with Avsar", "/login"],
+                                ["Business Dashboard", "/dashboard/demo_business"],
+                                ["Single-Winner Lock", "#compliance"],
+                                ["OpenAPI Docs", "/api/openapi.json"],
+                                ["Investor Relations", "mailto:hello@avsar.in"],
+                            ].map(([label, href]) => (
+                                <li key={label}>
+                                    <a
+                                        href={href}
+                                        className="hover:text-white transition-colors inline-block"
+                                    >
+                                        {label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* ── COLUMN 4: DOWNLOAD APP BUTTONS ── */}
+                    <div className="lg:col-span-2">
+                        <div className="text-sm font-medium text-[#F5EFE1] mb-3.5">
+                            Download App
+                        </div>
+
+                        <div className="space-y-2.5">
+                            {/* Google Play Store Button */}
+                            <a
+                                href="#playstore"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    alert("Avsar App coming soon on Google Play!");
+                                }}
+                                className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/30 transition-all group cursor-pointer"
+                            >
+                                <GooglePlayIcon className="w-5 h-5 shrink-0" />
+                                <span className="text-xs sm:text-sm font-medium text-[#F5EFE1] group-hover:text-white">
+                                    Get it on play store
+                                </span>
+                            </a>
+
+                            {/* Apple App Store Button */}
+                            <a
+                                href="#appstore"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    alert("Avsar App coming soon on Apple App Store!");
+                                }}
+                                className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/30 transition-all group cursor-pointer"
+                            >
+                                <AppleIcon className="w-5 h-5 shrink-0 fill-current text-[#F5EFE1] group-hover:text-white" />
+                                <span className="text-xs sm:text-sm font-medium text-[#F5EFE1] group-hover:text-white">
+                                    Get it on app store
+                                </span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -210,19 +156,56 @@ export default function Footer() {
     );
 }
 
-function FooterCol({ title, links }) {
+/* ── SOCIAL & APP STORE SVG ICONS ── */
+function InstagramIcon({ className }) {
     return (
-        <div>
-            <div className="text-sm font-semibold mb-3 opacity-90">{title}</div>
-            <ul className="space-y-2 text-sm opacity-75">
-                {links.map(([label, href]) => (
-                    <li key={label}>
-                        <a href={href} className="hover:opacity-100 transition-opacity">
-                            {label}
-                        </a>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <svg className={`${className} fill-none stroke-current stroke-2`} viewBox="0 0 24 24">
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+        </svg>
+    );
+}
+
+function XIcon({ className }) {
+    return (
+        <svg className={`${className} fill-current`} viewBox="0 0 24 24">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+    );
+}
+
+function FacebookIcon({ className }) {
+    return (
+        <svg className={`${className} fill-current`} viewBox="0 0 24 24">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+        </svg>
+    );
+}
+
+function LinkedinIcon({ className }) {
+    return (
+        <svg className={`${className} fill-current`} viewBox="0 0 24 24">
+            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+        </svg>
+    );
+}
+
+function GooglePlayIcon({ className }) {
+    return (
+        <svg className={className} viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M3.6 1.5c-.3.3-.5.8-.5 1.4v18.2c0 .6.2 1.1.5 1.4L13.1 12 3.6 1.5z" />
+            <path fill="#34A853" d="M16.2 8.9L13.1 12l3.1 3.1 3.6-2.1c1-.6 1-1.5 0-2.1l-3.6-2z" />
+            <path fill="#FBBC05" d="M3.6 22.5c.4.4 1 .4 1.6.1l11-6.4L13.1 12 3.6 22.5z" />
+            <path fill="#EA4335" d="M3.6 1.5L13.1 12l3.1-4.2-11-6.4c-.6-.3-1.2-.3-1.6.1z" />
+        </svg>
+    );
+}
+
+function AppleIcon({ className }) {
+    return (
+        <svg className={className} viewBox="0 0 24 24">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.73c.62-.75 1.04-1.8 1.01-2.73-.9-.02-2.02.59-2.65 1.34-.56.65-.99 1.72-.94 2.64.97.08 2.02-.54 2.58-1.25z" />
+        </svg>
     );
 }
