@@ -54,26 +54,26 @@ export default function Footer() {
                             </a>
                         </div>
 
-                        {/* Copyright & License Information */}
+                        {/* Copyright & Location Information */}
                         <div className="mt-6 text-xs text-[#F5EFE1]/50 space-y-1 leading-relaxed">
-                            <p>© Avsar Technologies Private Limited</p>
-                            <p>reg lic no : 1122499000872</p>
+                            <p>© {new Date().getFullYear()} Avsar Technologies Private Limited</p>
+                            <p>All rights reserved · Bengaluru, India</p>
                         </div>
                     </div>
 
-                    {/* ── COLUMN 2: NAVIGATION LIST 1 ── */}
+                    {/* ── COLUMN 2: PRODUCT & FEATURES ── */}
                     <div className="lg:col-span-3">
                         <ul className="space-y-3.5 text-sm text-[#F5EFE1]/80">
                             {[
                                 ["Home", "/"],
                                 ["How It Works", "#how"],
                                 ["ROI Calculator", "#roi"],
-                                ["Careers", "#roi"],
-                                ["Customer Support", "mailto:hello@avsar.in"],
-                                ["Press", "#compliance"],
-                                ["Mojo – an Avsar Blog", "#how"],
-                                ["Avsar Standby System", "#pricing"],
-                                ["Bestsellers & Pricing", "#pricing"],
+                                ["Pricing & Plans", "#pricing"],
+                                ["Clinic Dashboard", "/dashboard/demo_business"],
+                                ["WhatsApp Alerts", "#compliance"],
+                                ["Cancellation Recovery", "#how"],
+                                ["Customer Stories", "#how"],
+                                ["Help & Support", "mailto:hello@avsar.in"],
                             ].map(([label, href]) => (
                                 <li key={label}>
                                     <a
@@ -87,19 +87,19 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* ── COLUMN 3: NAVIGATION LIST 2 ── */}
+                    {/* ── COLUMN 3: COMPANY & POLICIES ── */}
                     <div className="lg:col-span-3">
                         <ul className="space-y-3.5 text-sm text-[#F5EFE1]/80">
                             {[
+                                ["About Us", "#how"],
                                 ["Privacy Policy", "#compliance"],
-                                ["Terms of Use", "#compliance"],
-                                ["Responsible Disclosure Policy", "#compliance"],
-                                ["Partner with Avsar", "/login"],
-                                ["Business Dashboard", "/dashboard/demo_business"],
-                                ["Single-Winner Lock", "#compliance"],
-                                ["OpenAPI Docs", "/api/openapi.json"],
-                                ["WhatsApp Compliance", "#compliance"],
-                                ["Investor Relations", "mailto:hello@avsar.in"],
+                                ["Terms of Service", "#compliance"],
+                                ["Clinic Compliance", "#compliance"],
+                                ["Security & Trust", "#compliance"],
+                                ["Partner Program", "/login"],
+                                ["API Documentation", "/api/openapi.json"],
+                                ["Contact Us", "mailto:hello@avsar.in"],
+                                ["Careers", "mailto:careers@avsar.in"],
                             ].map(([label, href]) => (
                                 <li key={label}>
                                     <a
@@ -131,7 +131,7 @@ export default function Footer() {
                             >
                                 <GooglePlayIcon className="w-5 h-5 shrink-0" />
                                 <span className="text-xs sm:text-sm font-medium text-[#F5EFE1] group-hover:text-white">
-                                    Get it on play store
+                                    Get it on Google Play
                                 </span>
                             </a>
 
@@ -146,7 +146,7 @@ export default function Footer() {
                             >
                                 <AppleIcon className="w-5 h-5 shrink-0 fill-current text-[#F5EFE1] group-hover:text-white" />
                                 <span className="text-xs sm:text-sm font-medium text-[#F5EFE1] group-hover:text-white">
-                                    Get it on app store
+                                    Download on App Store
                                 </span>
                             </a>
                         </div>
