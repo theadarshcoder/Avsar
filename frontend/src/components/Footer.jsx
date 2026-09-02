@@ -1,7 +1,7 @@
 export default function Footer() {
     return (
         <footer
-            className="avsar-section section-bg-ink"
+            className="avsar-section section-bg-ink font-serif"
             data-testid="footer"
             style={{ padding: "48px 40px", marginBottom: 24 }}
         >
@@ -11,7 +11,7 @@ export default function Footer() {
                     <div className="lg:col-span-4 flex flex-col items-start">
                         {/* Brand Name */}
                         <div className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#F5EFE1]">
-                            avsar
+                            Avsar
                         </div>
 
                         {/* Social Media Icons */}
