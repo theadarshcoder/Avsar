@@ -98,6 +98,7 @@ export default function Footer() {
                                 ["Business Dashboard", "/dashboard/demo_business"],
                                 ["Single-Winner Lock", "#compliance"],
                                 ["OpenAPI Docs", "/api/openapi.json"],
+                                ["WhatsApp Compliance", "#compliance"],
                                 ["Investor Relations", "mailto:hello@avsar.in"],
                             ].map(([label, href]) => (
                                 <li key={label}>
