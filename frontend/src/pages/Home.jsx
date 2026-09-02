@@ -154,8 +154,8 @@ export default function Home() {
             {/* Compliance*/}
             <section
                 id="compliance"
-                className="avsar-section"
-                style={{ background: "#FFFFFF" }}
+                className="avsar-section !mt-0 !pt-4"
+                style={{ background: "#FFFFFF", marginTop: "0px", paddingTop: "16px" }}
                 data-testid="compliance-section"
             >
                 <div className="max-w-5xl mx-auto">

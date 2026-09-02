@@ -1,4 +1,3 @@
-# pyrefly: ignore-all-errors
 import asyncio
 from datetime import datetime, timezone, timedelta
 from database import clinics, patients, waitlist_entries, slots, sent_messages, checkout_tokens
@@ -20,25 +19,15 @@ async def run_flow():
     # Step 2: Add Adarsh to waitlist with explicit consent
     name = "Adarsh"
     phone = "+919250543490"
-    patient = await patients.find_one({"phone": phone, "clinicId": clinic_id}, {"_id": 0})
-    if not patient:
-        res = await add_patient_with_consent(
-            clinic_id=clinic_id,
-            name=name,
-            phone=phone,
-            notification_preference="whatsapp",
-            consent_given=True,
-        )
-        patient = res["patient"]
-        entry = res["waitlistEntry"]
-    else:
-        entry = await waitlist_entries.find_one({"patientId": patient["id"], "clinicId": clinic_id}, {"_id": 0})
-        if not entry.get("consentGivenAt"):
-            await waitlist_entries.update_one(
-                {"id": entry["id"]},
-                {"$set": {"consentGivenAt": datetime.now(timezone.utc).isoformat()}}
-            )
-            entry = await waitlist_entries.find_one({"id": entry["id"]}, {"_id": 0})
+    res = await add_patient_with_consent(
+        clinic_id=clinic_id,
+        name=name,
+        phone=phone,
+        notification_preference="whatsapp",
+        consent_given=True,
+    )
+    patient = res["patient"]
+    entry = res["waitlistEntry"]
     print("2. Waitlist entry added/updated:")
     print(f"   Patient ID: {patient['id']}")
     print(f"   Patient Name: {patient['name']}")
@@ -50,7 +39,7 @@ async def run_flow():
     print("3. Phone Format Audit:")
     print(f"   Database Storage: {patient['phone']} (E.164 standard format)")
     print(f"   Twilio Transport: whatsapp:{patient['phone']} (Twilio WhatsApp format)")
-    print("   Mismatch: None. The DB stores valid E.164 '+919250543490', and notification_service formats it as 'whatsapp:+919250543490' on the wire.")
+    print("   -> Mismatch: None. The DB stores valid E.164 '+919250543490', and notification_service formats it as 'whatsapp:+919250543490' on the wire.")
 
     # Step 4: Create a test slot for today
     now = datetime.now(timezone.utc)
@@ -104,12 +93,9 @@ async def run_flow():
         
         # Verify sent_messages collection
         msg_doc = await sent_messages.find_one({"providerMessageId": msg_id}, {"_id": 0})
-        status_val = msg_doc.get('status')
-        provider_val = msg_doc.get('provider')
-        sent_at_val = msg_doc.get('sentAt')
-        print(f"    DB Logged Status: {status_val}")
-        print(f"    Provider: {provider_val}")
-        print(f"    Sent Timestamp: {sent_at_val}")
+        print(f"    DB Logged Status: {msg_doc.get('status')}")
+        print(f"    Provider: {msg_doc.get('provider')}")
+        print(f"    Sent Timestamp: {msg_doc.get('sentAt')}")
     except Exception as e:
         print(f"\n>>> TWILIO DISPATCH FAILED: {e}")
 

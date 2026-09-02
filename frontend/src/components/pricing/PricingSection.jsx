@@ -34,8 +34,11 @@ export default function PricingSection({ isStandalone = false }) {
     return (
         <section
             id="pricing"
-            className="avsar-section"
-            style={{ background: "#FFFFFF" }}
+            className={`avsar-section ${!isStandalone ? "!pb-8 !mb-0" : ""}`}
+            style={{
+                background: "#FFFFFF",
+                ...(!isStandalone ? { paddingBottom: "32px", marginBottom: "0px" } : {}),
+            }}
             data-testid="pricing-section"
         >
             <div className="max-w-5xl mx-auto">
