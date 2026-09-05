@@ -4,12 +4,15 @@ When a customer cancels an appointment at the last minute, **Avsar** automatical
 
 ![version](https://img.shields.io/badge/version-0.1.0-blue)
 ![python](https://img.shields.io/badge/python-%3E%3D3.11-yellow?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688?logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react&logoColor=black)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110.1-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-19.0.0-61DAFB?logo=react&logoColor=black)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Motor-47A248?logo=mongodb&logoColor=white)
 ![Razorpay](https://img.shields.io/badge/Razorpay-Gateway-0C2340?logo=razorpay&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/TailwindCSS-v3-38B2AC?logo=tailwindcss&logoColor=white)
-![tests](https://img.shields.io/badge/tests-37%20passed-brightgreen)
+![tests](https://img.shields.io/badge/tests-38%20passed-brightgreen)
+
+> [!NOTE]
+> **Local & Self-Hosted Architecture**: Avsar is configured for standalone, self-hosted deployment using local MongoDB or MongoDB Atlas, self-hosted FastAPI, and React. Although earlier development iterations used Emergent-hosted cloud infrastructure (and residual non-runtime files like `.emergent/` or packages like `@emergentbase/visual-edits` may remain in the repository), the platform has **zero runtime dependencies** on Emergent cloud infrastructure. All database operations, webhook event processors, notification transports, and payment workflows execute completely locally or through your own third-party API credentials (Razorpay, Twilio).
 
 ---
 
@@ -33,17 +36,17 @@ Manual front-desk operations cannot resolve this problem:
 
 ## Tech Stack
 
-- **Backend API**: [FastAPI 0.110.0](https://fastapi.tiangolo.com/) (Python 3.11+, Async ASGI Engine)
-- **ASGI Web Server**: [Uvicorn 0.28.0](https://www.uvicorn.org/)
-- **Database & ODM**: [MongoDB](https://www.mongodb.com/) via [Motor 3.3.2](https://motor.readthedocs.io/) & [PyMongo 4.6.2](https://pymongo.readthedocs.io/)
-- **Data Validation & Serialization**: [Pydantic v2](https://docs.pydantic.dev/)
-- **Payment Gateway & Security**: [Razorpay Orders & Webhooks API](https://razorpay.com/docs/) with HMAC-SHA256 signature verification & idempotency handling
-- **Frontend UI & State**: [React 18.2.0](https://react.dev/), [React Router DOM 6.22.0](https://reactrouter.com/)
-- **Styling & Design System**: [Tailwind CSS 3.4.1](https://tailwindcss.com/) with custom Avsar editorial token palette
-- **Animation & Motion**: [Framer Motion 11.0.0](https://www.framer.com/motion/)
-- **Icons**: [Lucide React 0.344.0](https://lucide.dev/)
-- **HTTP Client**: [Axios 1.6.7](https://axios-http.com/) & [HTTPX 0.27.0](https://www.python-httpx.org/)
-- **Testing**: [Pytest 9.0.2](https://docs.pytest.org/), `pytest-asyncio`, `pytest-cov`
+- **Backend API**: [FastAPI 0.110.1](https://fastapi.tiangolo.com/) (Python 3.11+, Async ASGI Engine)
+- **ASGI Web Server**: [Uvicorn 0.25.0](https://www.uvicorn.org/)
+- **Database & ODM**: [MongoDB](https://www.mongodb.com/) via [Motor 3.3.1+](https://motor.readthedocs.io/) & [PyMongo 4.7.0+](https://pymongo.readthedocs.io/)
+- **Data Validation & Serialization**: [Pydantic v2](https://docs.pydantic.dev/) (>= 2.6.4)
+- **Payment Gateway & Security**: [Razorpay 2.0.1](https://razorpay.com/docs/) Orders & Webhooks API with HMAC-SHA256 signature verification & idempotency handling
+- **Frontend UI & State**: [React 19.0.0](https://react.dev/), [React Router DOM 7.5.1](https://reactrouter.com/)
+- **Styling & Design System**: [Tailwind CSS 3.4.17](https://tailwindcss.com/) with custom Avsar editorial token palette
+- **Animation & Motion**: [Framer Motion 13.1.1](https://www.framer.com/motion/)
+- **Icons**: [Lucide React 0.507.0](https://lucide.dev/)
+- **HTTP Client**: [Axios 1.18.0](https://axios-http.com/) & [HTTPX 0.28.0+](https://www.python-httpx.org/)
+- **Testing**: [Pytest 8.0.0+](https://docs.pytest.org/), `pytest-asyncio`, `pytest-cov`, `pytest-xdist`
 
 ---
 
@@ -67,11 +70,25 @@ npm install
 
 ### 2. Configure Environment Variables
 
-Create a `.env` file in `backend/`:
+Avsar includes preconfigured `.env.example` templates with safe defaults for both backend and frontend. Copy them to `.env` rather than creating configurations from scratch:
+
+```bash
+# Backend configuration
+cd backend
+cp .env.example .env    # On Windows: copy .env.example .env
+
+# Frontend configuration
+cd ../frontend
+cp .env.example .env    # On Windows: copy .env.example .env
+```
+
+#### Backend Settings (`backend/.env`)
+
+> **Important**: The backend database connector (`backend/database.py`) requires **`MONGO_URL`** (not `MONGO_URI`).
 
 ```env
-# MongoDB Connection
-MONGO_URI="mongodb://127.0.0.1:27017"
+# MongoDB Connection (Local instance or MongoDB Atlas connection URI)
+MONGO_URL="mongodb://127.0.0.1:27017"
 DB_NAME="avsar_db"
 
 # Server & CORS Configuration
@@ -87,12 +104,21 @@ RAZORPAY_WEBHOOK_SECRET="your_webhook_secret_here"
 
 # Test / Mock Gating Token (Required for 1-click test checkout in razorpay mode)
 MOCK_OVERRIDE_TOKEN="avsar"
+
+# WhatsApp Notification Transport ("twilio" or "mock")
+NOTIFICATION_MODE="twilio"
+TWILIO_ACCOUNT_SID="your_twilio_account_sid_here"
+TWILIO_AUTH_TOKEN="your_twilio_auth_token_here"
+TWILIO_WHATSAPP_FROM="whatsapp:+17372508034"
+TEST_RECIPIENT_PHONE="whatsapp:+919876543210"
 ```
 
-Create a `.env` file in `frontend/`:
+#### Frontend Settings (`frontend/.env`)
+
+The frontend API client (`frontend/src/lib/apiClient.js`) expects **`REACT_APP_BACKEND_URL`**:
 
 ```env
-REACT_APP_API_URL="http://localhost:8000/api"
+REACT_APP_BACKEND_URL="http://localhost:8000"
 ```
 
 ### 3. Seed Demo Data
@@ -226,8 +252,24 @@ python -m pytest tests/test_payment_gateway_local.py -v
 ```
 
 ```
-============================= 37 passed in 0.56s =============================
+============================= 38 passed in 2.57s =============================
 ```
+
+---
+
+## Known Issues
+
+### 1. Windows `strftime` Format Specifier in `webhooks/razorpay.py`
+Formatting timestamps with Unix-style non-padded specifiers like `%-I` (e.g., `dt.strftime('%-I:%M %p')`) works seamlessly on Linux/macOS glibc runtimes but raises `ValueError: Invalid format string` under the Microsoft Visual C++ runtime on Windows (which expects `%#I`).
+- **Resolution**: Cross-platform formatting is implemented in `backend/routes/webhooks/razorpay.py` by converting the hour integer: `f"{int(dt.strftime('%I'))}:{dt.strftime('%M %p')}"`.
+
+### 2. WhatsApp Confirmation Failure & Slot State Inconsistency
+In earlier implementations, if an outgoing WhatsApp confirmation message encountered a network or gateway failure (e.g., Twilio timeout or unverified sandbox recipient) after successful payment capture, the standby slot could inadvertently revert to or stay in a `LOCKED` state instead of remaining `BOOKED`.
+- **Resolution**: The payment capture webhook is the definitive single source of truth for transaction authorization. The slot strictly transitions to `BOOKED` upon successful payment capture, and notification dispatch errors are recorded on the transaction document (`confirmationSent: False`, `confirmationError: "<details>"`) without reversing the customer's confirmed booking. This invariant is validated by regression test `TestWebhookNotificationFailure` (`test_slot_stays_booked_when_notification_fails`).
+
+### 3. Frontend npm Audit Transitive Vulnerabilities
+Running `npm audit` inside `frontend/` reports 33 vulnerabilities (11 low, 8 moderate, 14 high), including `@eslint/plugin-kit`, `@tootallnate/once`, `nth-check`, `postcss`, `qs`, `serialize-javascript`, `underscore`, and `uuid`.
+- **Impact & Mitigation**: These vulnerabilities originate transitively from `react-scripts 5.0.1` (Create React App dependencies including Webpack 5 development server, `resolve-url-loader`, and Jest/Babel tooling). Running `npm audit fix --force` attempts to downgrade or break dependencies by installing `react-scripts@0.0.0`. These warnings affect development/build-time tooling only, with no exposure in static production client bundles. They will be resolved as part of the planned frontend build pipeline migration from CRA/Craco to Vite.
 
 ---
 
