@@ -14,8 +14,6 @@ When a customer cancels an appointment at the last minute, **Avsar** automatical
 > [!NOTE]
 > **Local & Self-Hosted Architecture**: Avsar is configured for standalone, self-hosted deployment using local MongoDB or MongoDB Atlas, self-hosted FastAPI, and React. Although earlier development iterations used Emergent-hosted cloud infrastructure (and residual non-runtime files like `.emergent/` or packages like `@emergentbase/visual-edits` may remain in the repository), the platform has **zero runtime dependencies** on Emergent cloud infrastructure. All database operations, webhook event processors, notification transports, and payment workflows execute completely locally or through your own third-party API credentials (Razorpay, Twilio).
 
----
-
 ## Why Avsar
 
 Appointment-driven businesses (clinics, salons, spas, wellness centers, consultancies, and specialty practices) face severe structural revenue leakage from last-minute cancellations. A typical service business loses between **₹15,000 and ₹60,000+ each month** when clients cancel within 2 to 4 hours of their scheduled slot.
@@ -32,8 +30,6 @@ Manual front-desk operations cannot resolve this problem:
 4. **Self-Serve Priority Passes**: If a business cancels a confirmed standby slot, the customer can choose between an instant bank refund or an automated 14-day priority pass credit.
 5. **Zero Commission Economics**: Avsar operates on a flat monthly subscription (₹1,999/mo) and a ₹50 flat handling fee paid by the standby customer. **Avsar takes 0% commission on your service and consultation fees.**
 
----
-
 ## Tech Stack
 
 - **Backend API**: [FastAPI 0.110.1](https://fastapi.tiangolo.com/) (Python 3.11+, Async ASGI Engine)
@@ -47,8 +43,6 @@ Manual front-desk operations cannot resolve this problem:
 - **Icons**: [Lucide React 0.507.0](https://lucide.dev/)
 - **HTTP Client**: [Axios 1.18.0](https://axios-http.com/) & [HTTPX 0.28.0+](https://www.python-httpx.org/)
 - **Testing**: [Pytest 8.0.0+](https://docs.pytest.org/), `pytest-asyncio`, `pytest-cov`, `pytest-xdist`
-
----
 
 ## Quick Start
 
@@ -146,8 +140,6 @@ npm start
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
----
-
 ## Usage Example
 
 ### Create a Standby Slot Broadcast Programmatically via the API:
@@ -194,8 +186,6 @@ console.log(slotData);
 }
 ```
 
----
-
 ## Architecture
 
 ```
@@ -226,8 +216,6 @@ console.log(slotData);
                        └──────────────────────┘└──────────────────────┘
 ```
 
----
-
 ## Features
 
 - **Automated Standby Broadcast Engine**: Instantly dispatches price-free WhatsApp alerts to opted-in waitlists when cancellations occur.
@@ -239,8 +227,6 @@ console.log(slotData);
 - **Interactive Bleed ROI Calculator**: Real-time slider calculation illustrating monthly revenue bleed vs. recovery potential.
 - **Live Operations Dashboard & Delivery Outbox**: Comprehensive tracking of recovered revenue, active slots/resources, and WhatsApp notification states.
 - **Production Mock Payment Gating**: Strict token override protection preventing unauthorized mock activations in production.
-
----
 
 ## Automated Test Suite
 
@@ -254,8 +240,6 @@ python -m pytest tests/test_payment_gateway_local.py -v
 ```
 ============================= 38 passed in 2.57s =============================
 ```
-
----
 
 ## Known Issues
 
@@ -271,13 +255,9 @@ In earlier implementations, if an outgoing WhatsApp confirmation message encount
 Running `npm audit` inside `frontend/` reports 33 vulnerabilities (11 low, 8 moderate, 14 high), including `@eslint/plugin-kit`, `@tootallnate/once`, `nth-check`, `postcss`, `qs`, `serialize-javascript`, `underscore`, and `uuid`.
 - **Impact & Mitigation**: These vulnerabilities originate transitively from `react-scripts 5.0.1` (Create React App dependencies including Webpack 5 development server, `resolve-url-loader`, and Jest/Babel tooling). Running `npm audit fix --force` attempts to downgrade or break dependencies by installing `react-scripts@0.0.0`. These warnings affect development/build-time tooling only, with no exposure in static production client bundles. They will be resolved as part of the planned frontend build pipeline migration from CRA/Craco to Vite.
 
----
-
 ## Contributing
 
 Contributions are welcome. Please open an issue or submit a pull request with unit test coverage for any proposed modifications.
-
----
 
 ## License
 
