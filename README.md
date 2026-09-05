@@ -103,8 +103,8 @@ MOCK_OVERRIDE_TOKEN="avsar"
 NOTIFICATION_MODE="twilio"
 TWILIO_ACCOUNT_SID="your_twilio_account_sid_here"
 TWILIO_AUTH_TOKEN="your_twilio_auth_token_here"
-TWILIO_WHATSAPP_FROM="whatsapp:+17372508034"
-TEST_RECIPIENT_PHONE="whatsapp:+919876543210"
+TWILIO_WHATSAPP_FROM="whatsapp:+14155238886"
+TEST_RECIPIENT_PHONE="whatsapp:+910000000000"
 ```
 
 #### Frontend Settings (`frontend/.env`)
@@ -251,9 +251,9 @@ Formatting timestamps with Unix-style non-padded specifiers like `%-I` (e.g., `d
 In earlier implementations, if an outgoing WhatsApp confirmation message encountered a network or gateway failure (e.g., Twilio timeout or unverified sandbox recipient) after successful payment capture, the standby slot could inadvertently revert to or stay in a `LOCKED` state instead of remaining `BOOKED`.
 - **Resolution**: The payment capture webhook is the definitive single source of truth for transaction authorization. The slot strictly transitions to `BOOKED` upon successful payment capture, and notification dispatch errors are recorded on the transaction document (`confirmationSent: False`, `confirmationError: "<details>"`) without reversing the customer's confirmed booking. This invariant is validated by regression test `TestWebhookNotificationFailure` (`test_slot_stays_booked_when_notification_fails`).
 
-### 3. Frontend npm Audit Transitive Vulnerabilities
-Running `npm audit` inside `frontend/` reports 33 vulnerabilities (11 low, 8 moderate, 14 high), including `@eslint/plugin-kit`, `@tootallnate/once`, `nth-check`, `postcss`, `qs`, `serialize-javascript`, `underscore`, and `uuid`.
-- **Impact & Mitigation**: These vulnerabilities originate transitively from `react-scripts 5.0.1` (Create React App dependencies including Webpack 5 development server, `resolve-url-loader`, and Jest/Babel tooling). Running `npm audit fix --force` attempts to downgrade or break dependencies by installing `react-scripts@0.0.0`. These warnings affect development/build-time tooling only, with no exposure in static production client bundles. They will be resolved as part of the planned frontend build pipeline migration from CRA/Craco to Vite.
+### 3. Frontend Tooling & npm Audit Warnings (React 19 on Legacy Create React App)
+The frontend runs React 19 on `react-scripts 5.0.1` (Create React App / Craco). Because Create React App was effectively deprecated before React 19 shipped, modern tooling incompatibilities may surface alongside 33 build-toolchain `npm audit` vulnerabilities (11 low, 8 moderate, 14 high, including `@eslint/plugin-kit`, `@tootallnate/once`, `nth-check`, `postcss`, `qs`, `serialize-javascript`, `underscore`, and `uuid`).
+- **Impact & Resolution Plan**: These warnings and vulnerabilities stem transitively from CRA's legacy dependencies (Webpack 5 development server, `resolve-url-loader`, and Jest/Babel tooling) and affect development/build-time environments rather than the deployed static production client bundle. Running `npm audit fix --force` is unsafe as it attempts to install breaking packages (`react-scripts@0.0.0`). Both the React 19 / CRA tooling incompatibilities and the transitive audit vulnerabilities represent a single known limitation that will be resolved together by the planned build pipeline migration from CRA/Craco to Vite.
 
 ## Contributing
 
