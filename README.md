@@ -1,6 +1,6 @@
 # Avsar
 
-When a customer cancels an appointment at the last minute, **Avsar** automatically alerts waiting people on WhatsApp so the empty spot gets booked right away — saving businesses from lost revenue.
+When a customer cancels an appointment at the last minute, **Avsar** automatically alerts waiting people on WhatsApp so the empty spot gets booked right away, saving businesses from lost revenue.
 
 ![version](https://img.shields.io/badge/version-0.1.0-blue)
 ![python](https://img.shields.io/badge/python-%3E%3D3.11-yellow?logo=python&logoColor=white)
